@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 142.1 76.2% 36.3%;
+    /* Primary color */
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 142.1 76.2% 36.3%;
+    --radius: 0.5rem;
+
+    /* Chart Colors */
+    --chart-1: 142.1 76.2% 45%;
+    /* Slightly lighter than primary */
+    --chart-2: 193 70% 50%;
+    /* A cool teal to contrast */
+    --chart-3: 38 90% 60%;
+    /* A warm orange for energy */
+    --chart-4: 60 80% 50%;
+    /* A fresh lime green */
+    --chart-5: 0 60% 50%;
+    /* A bold red for attention */
+
+    /* Sidebar Colors */
+    --sidebar-background: 0 0% 95%;
+    /* Light background for sidebar */
+    --sidebar-foreground: 240 10% 20%;
+    /* Dark text for contrast */
+    --sidebar-primary: 142.1 76.2% 36.3%;
+    /* Use primary color */
+    --sidebar-primary-foreground: 0 0% 100%;
+    /* White text for readability */
+    --sidebar-accent: 240 4.8% 90%;
+    /* Light gray for accents */
+    --sidebar-accent-foreground: 240 10% 20%;
+    /* Dark text for accents */
+    --sidebar-border: 240 5.9% 85%;
+    /* Light border for separation */
+    --sidebar-ring: 142.1 76.2% 45%;
+    /* Same as primary for a cohesive look */
+  }
+
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 0 0% 95%;
+    --card: 24 9.8% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 142.1 70.6% 45.3%;
+    --primary-foreground: 144.9 80.4% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 142.4 71.8% 29.2%;
+
+    /* Dark Mode Chart Colors */
+    --chart-1: 142.1 70.6% 55%;
+    /* A slightly darker variant for dark mode */
+    --chart-2: 193 60% 45%;
+    /* A muted teal */
+    --chart-3: 38 80% 65%;
+    /* A warm orange for dark mode */
+    --chart-4: 60 70% 60%;
+    /* A darker lime green */
+    --chart-5: 0 50% 60%;
+    /* A muted red */
+
+    /* Dark Mode Sidebar Colors */
+    --sidebar-background: 20 14.3% 5%;
+    /* Darker background for sidebar */
+    --sidebar-foreground: 0 0% 95%;
+    /* Lighter text for readability */
+    --sidebar-primary: 142.1 76.2% 50%;
+    /* Use a mid-tone of primary for dark mode */
+    --sidebar-primary-foreground: 0 0% 100%;
+    /* White text for visibility */
+    --sidebar-accent: 240 5.9% 15%;
+    /* Darker gray for accents */
+    --sidebar-accent-foreground: 240 4.8% 95%;
+    /* Light text for accents */
+    --sidebar-border: 240 3.7% 15.9%;
+    /* Dark border for separation */
+    --sidebar-ring: 142.1 70.6% 40%;
+    /* Slightly darker than primary */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply box-border bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .min-h-screen {
+    min-height: 100vh; /* Fallback */
+    min-height: 100dvh;
+  }
+  .h-screen {
+    height: 100vh; /* Fallback */
+    height: 100dvh;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
