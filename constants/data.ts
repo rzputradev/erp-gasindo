@@ -128,21 +128,22 @@ export const navItems: NavItem[] = [
     icon: 'dashboard',
     isActive: false,
     shortcut: ['d', 'd'],
-    items: [] // Empty array as there are no child items for Dashboard
+    items: [], // Empty array as there are no child items for Dashboard
   },
   {
-    title: 'Employee',
-    url: '/dashboard/employee',
+    title: 'Pengguna',
+    url: '/dashboard/user',
     icon: 'user',
     shortcut: ['e', 'e'],
     isActive: false,
-    items: [] // No child items
+    items: [], // No child items
+    permission: ['read:user']
   },
   {
-    title: 'Product',
-    url: '/dashboard/product',
+    title: 'Timbangan',
+    url: '/dashboard/scale',
     icon: 'product',
-    shortcut: ['p', 'p'],
+    shortcut: ['s', 's'],
     isActive: false,
     items: [] // No child items
   },

@@ -41,7 +41,7 @@ const formSchema = z.object({
   })
 });
 
-export default function EmployeeForm() {
+export default function UserForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,10 +58,10 @@ export default function EmployeeForm() {
   }
 
   return (
-    <Card className="mx-auto w-full">
+    <Card className="mx-auto w-full rounded-md">
       <CardHeader>
         <CardTitle className="text-left text-2xl font-bold">
-          Employee Information
+          Informasi Pengguna
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -73,7 +73,7 @@ export default function EmployeeForm() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Nama</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter your name" {...field} />
                     </FormControl>
@@ -86,7 +86,7 @@ export default function EmployeeForm() {
                 name="country"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Country</FormLabel>
+                    <FormLabel>Location</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -130,7 +130,7 @@ export default function EmployeeForm() {
                 name="company"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Company</FormLabel>
+                    <FormLabel>Role</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter your company" {...field} />
                     </FormControl>

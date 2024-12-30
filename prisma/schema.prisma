@@ -1,0 +1,454 @@
+// DATABASE CONNECTION
+datasource db {
+   provider = "postgresql"
+   url      = env("DATABASE_URL")
+}
+
+// CLIENT GENERATOR
+generator client {
+   provider = "prisma-client-js"
+}
+
+// Enums
+enum LocationType {
+   OFFICE
+   MILL
+   WAREHOUSE
+}
+
+enum UnitType {
+   KG
+   TON
+   LTR
+   PCS
+}
+
+enum ContractStatus {
+   CREATED
+   APPROVED
+   ACTIVE
+   COMPLETED
+   EXPIRED
+   CANCELED
+   SUSPENDED
+}
+
+enum OrderStatus {
+   PENDING
+   CONFIRMED
+   IN_PROGRESS
+   LOADING
+   SHIPPED
+   IN_TRANSIT
+   DELIVERED
+   COMPLETED
+   CANCELED
+}
+
+enum TransactionType {
+   DEBIT
+   CREDIT
+}
+
+enum IncomingScaleType {
+   WEIGH
+   REWEIGH
+   OTHERS
+}
+
+// Core Models
+model Location {
+   id      String        @id @default(cuid())
+   name    String
+   code    String        @unique
+   type    LocationType?
+   address String
+
+   suppliers    Supplier[]
+   stocks       Stock[]
+   transactions Transaction[]
+   contracts    Contract[]
+   roles        Role[]
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model Stock {
+   id           String @id @default(cuid())
+   locationId   String
+   itemId       String
+   remainingQty Float?
+
+   location Location @relation(fields: [locationId], references: [id])
+   item     Item     @relation(fields: [itemId], references: [id])
+
+   @@unique([itemId, locationId])
+}
+
+model Item {
+   id            String   @id @default(cuid())
+   typeId        String?
+   name          String
+   description   String?
+   code          String   @unique
+   unit          UnitType
+   isWeighted    Boolean  @default(false)
+   isSalable     Boolean  @default(false)
+   hasUnloadCost Boolean  @default(false)
+
+   supplierItems SupplierItem[]
+   contracts     Contract[]
+   stocks        Stock[]
+
+   itemType ItemType? @relation(fields: [typeId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model ItemType {
+   id          String  @id @default(cuid())
+   name        String
+   code        String  @unique
+   description String?
+
+   items Item[]
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+// Supplier Models
+model Supplier {
+   id         String         @id @default(cuid())
+   locationId String?
+   name       String
+   code       String         @unique
+   address    String
+   phone      String
+   items      SupplierItem[]
+
+   location Location? @relation(fields: [locationId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model SupplierItem {
+   id             String          @id @default(cuid())
+   supplierId     String
+   itemId         String
+   priceHistories PriceHistory[]
+   incomingScales IncomingScale[]
+
+   supplier Supplier @relation(fields: [supplierId], references: [id])
+   item     Item     @relation(fields: [itemId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+
+   @@unique([supplierId, itemId]) // Unique constraint on supplier-item combination
+}
+
+model PriceHistory {
+   id             String          @id @default(cuid())
+   itemId         String
+   price          Float
+   validFrom      DateTime        @default(now())
+   validTo        DateTime?
+   incomingScales IncomingScale[]
+
+   item SupplierItem @relation(fields: [itemId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+// Buyer Models
+model Buyer {
+   id        String     @id @default(cuid())
+   name      String
+   code      String     @unique
+   tin       String     @unique
+   address   String
+   phone     String
+   contracts Contract[]
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model Contract {
+   id             String         @id @default(cuid())
+   buyerId        String
+   itemId         String
+   locationId     String?
+   status         ContractStatus @default(CREATED)
+   contractNo     String
+   unit           UnitType       @default(KG)
+   unitPrice      Float
+   vat            Float          @default(0)
+   totalQty       Int
+   remainingQty   Int
+   tolerance      Float
+   toleranceWeigh Int            @default(0)
+   terms          String?
+   startDate      DateTime
+   endDate        DateTime?
+   orders         Order[]
+
+   buyer    Buyer     @relation(fields: [buyerId], references: [id])
+   item     Item      @relation(fields: [itemId], references: [id])
+   location Location? @relation(fields: [locationId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+
+   @@unique([buyerId, contractNo])
+   @@index([buyerId, itemId])
+}
+
+model Order {
+   id             String          @id @default(cuid())
+   orderNo        String          @unique
+   contractId     String
+   // locationId     String?
+   totalQty       Int             @default(0)
+   remainingQty   Int             @default(0)
+   status         OrderStatus     @default(PENDING)
+   outgoingScales OutgoingScale[]
+
+   contract Contract @relation(fields: [contractId], references: [id])
+   // location Location? @relation(fields: [locationId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model VehicleType {
+   id             String          @id @default(cuid())
+   name           String
+   description    String?
+   loadingCost    Float
+   unloadingCost  Float
+   incomingScales IncomingScale[]
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model Transporter {
+   id      String  @id @default(cuid())
+   name    String
+   code    String  @unique
+   phone   String?
+   address String?
+
+   outgoingScales OutgoingScale[]
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model IncomingScale {
+   id            String            @id @default(cuid())
+   queueNo       BigInt            @default(autoincrement())
+   operatorId    String
+   vehicleTypeId String?
+   itemId        String
+   priceId       String
+   driver        String
+   plateNo       String
+   licenseNo     String
+   origin        String
+   entryTime     DateTime          @default(now())
+   exitTime      DateTime?
+   weightIn      Int
+   weightOut     Int?
+   type          IncomingScaleType @default(WEIGH)
+   sorting       Float?            @default(0)
+   oer           Float?            @default(0)
+   waybillNo     String?
+   note          String?
+   operator      User              @relation(fields: [operatorId], references: [id])
+   item          SupplierItem      @relation(fields: [itemId], references: [id])
+   price         PriceHistory?     @relation(fields: [priceId], references: [id])
+   vehicle       VehicleType?      @relation(fields: [vehicleTypeId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+
+   @@index([operatorId, queueNo, plateNo, exitTime, itemId])
+}
+
+model OutgoingScale {
+   id            String    @id @default(cuid())
+   queueNo       BigInt    @default(autoincrement())
+   operatorId    String
+   transporterId String
+   orderId       String
+   splitOrderNo  String?
+   driver        String
+   plateNo       String
+   licenseNo     String
+   entryTime     DateTime  @default(now())
+   exitTime      DateTime?
+   weightIn      Int
+   weightOut     Int?
+   sealStartNo   String?
+   sealEndNo     String?
+   poNo          String?
+   sto           Float?
+   so            Float?
+   ffa           Float?
+   moist         Float?
+   broken        Float?
+   dirty         Float?
+   fiber         Float?
+   note          String?
+
+   order       Order       @relation(fields: [orderId], references: [id])
+   operator    User        @relation(fields: [operatorId], references: [id])
+   transporter Transporter @relation(fields: [transporterId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+
+   @@index([operatorId, queueNo, plateNo, exitTime])
+}
+
+// Transaction Model
+model TransactionCategory {
+   id          String  @id @default(cuid())
+   name        String  @unique
+   description String?
+
+   transactions Transaction[]
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+   id              String          @id @default(cuid())
+   transactionNo   String          @unique
+   locationId      String
+   weighingLogId   String?
+   transactionType TransactionType
+   amount          Float
+   description     String?
+   transactionDate DateTime        @default(now())
+   categoryId      String
+
+   // Relations
+   location Location            @relation(fields: [locationId], references: [id])
+   category TransactionCategory @relation(fields: [categoryId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+
+   @@index([transactionType, categoryId])
+}
+
+// User Model
+model User {
+   id             String          @id @default(cuid())
+   roleId         String?
+   name           String?
+   // username       String?         @unique
+   email          String?         @unique
+   emailVerified  DateTime?
+   image          String?
+   password       String?
+   accounts       Account[]
+   sessions       Session[]
+   authenticators Authenticator[]
+   incomingScales IncomingScale[]
+   outgoingScales OutgoingScale[]
+
+   role Role? @relation(fields: [roleId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model Role {
+   id          String  @id @default(cuid())
+   locationId  String?
+   name        String  @unique
+   description String?
+   dashboardId String
+   users       User[]
+
+   location Location? @relation(fields: [locationId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model Permission {
+   id          String  @id @default(cuid())
+   roleId      String?
+   name        String  @unique
+   description String?
+   icon        String
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model Account {
+   userId            String
+   type              String
+   provider          String
+   providerAccountId String
+   refresh_token     String?
+   access_token      String?
+   expires_at        Int?
+   token_type        String?
+   scope             String?
+   id_token          String?
+   session_state     String?
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+
+   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+   @@id([provider, providerAccountId])
+}
+
+model Session {
+   sessionToken String   @unique
+   userId       String
+   expires      DateTime
+   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+   identifier String
+   token      String
+   expires    DateTime
+
+   @@id([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+   credentialID         String  @unique
+   userId               String
+   providerAccountId    String
+   credentialPublicKey  String
+   counter              Int
+   credentialDeviceType String
+   credentialBackedUp   Boolean
+   transports           String?
+
+   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+   @@id([userId, credentialID])
+}

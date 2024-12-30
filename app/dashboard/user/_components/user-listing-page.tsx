@@ -8,11 +8,11 @@ import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import EmployeeTable from './employee-tables';
+import EmployeeTable from './user-tables';
 
 type TEmployeeListingPage = {};
 
-export default async function EmployeeListingPage({}: TEmployeeListingPage) {
+export default async function UserListingPage({ }: TEmployeeListingPage) {
   // Showcasing the use of search params cache in nested RSCs
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
@@ -36,15 +36,15 @@ export default async function EmployeeListingPage({}: TEmployeeListingPage) {
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title={`Employee (${totalUsers})`}
-            description="Manage employees (Server side table functionalities.)"
+            title={`Pengguna (${totalUsers})`}
+            description="Kelola data pengguna dan hak akses"
           />
 
           <Link
-            href={'/dashboard/employee/new'}
+            href={'/dashboard/user/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
-            <Plus className="mr-2 h-4 w-4" /> Add New
+            <Plus className="mr-2 h-4 w-4" /> Tambah
           </Link>
         </div>
         <Separator />

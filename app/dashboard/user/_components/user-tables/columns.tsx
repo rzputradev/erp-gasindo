@@ -26,26 +26,28 @@ export const columns: ColumnDef<Employee>[] = [
   },
   {
     accessorKey: 'first_name',
-    header: 'NAME'
-  },
-  {
-    accessorKey: 'country',
-    header: 'COUNTRY'
-  },
-  {
-    accessorKey: 'email',
-    header: 'EMAIL'
-  },
-  {
-    accessorKey: 'job',
-    header: 'COMPANY'
+    header: 'Name'
   },
   {
     accessorKey: 'gender',
-    header: 'GENDER'
+    header: 'Gender'
   },
   {
+    accessorKey: 'email',
+    header: 'Email'
+  },
+  {
+    accessorKey: 'role.name',
+    header: 'Role'
+  },
+  {
+    accessorKey: 'role.location.name',
+    header: 'Location'
+  },
+
+  {
     id: 'actions',
+    // header: 'ACTION',
     cell: ({ row }) => <CellAction data={row.original} />
   }
 ];
