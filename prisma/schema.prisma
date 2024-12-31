@@ -10,6 +10,17 @@ generator client {
 }
 
 // Enums
+enum UserStatus {
+   ACTIVE
+   SUSPENDED
+   BLOCKED
+}
+
+enum Gender {
+   MALE
+   FEMALE
+}
+
 enum LocationType {
    OFFICE
    MILL
@@ -64,11 +75,13 @@ model Location {
    type    LocationType?
    address String
 
-   suppliers    Supplier[]
-   stocks       Stock[]
-   transactions Transaction[]
-   contracts    Contract[]
-   roles        Role[]
+   suppliers      Supplier[]
+   stocks         Stock[]
+   transactions   Transaction[]
+   contracts      Contract[]
+   roles          Role[]
+   incomingScales IncomingScale[]
+   outgoingScales OutgoingScale[]
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -213,14 +226,12 @@ model Order {
    id             String          @id @default(cuid())
    orderNo        String          @unique
    contractId     String
-   // locationId     String?
    totalQty       Int             @default(0)
    remainingQty   Int             @default(0)
    status         OrderStatus     @default(PENDING)
    outgoingScales OutgoingScale[]
 
    contract Contract @relation(fields: [contractId], references: [id])
-   // location Location? @relation(fields: [locationId], references: [id])
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -253,7 +264,8 @@ model Transporter {
 
 model IncomingScale {
    id            String            @id @default(cuid())
-   queueNo       BigInt            @default(autoincrement())
+   queueNo       Int               @unique @default(autoincrement())
+   locationId    String
    operatorId    String
    vehicleTypeId String?
    itemId        String
@@ -271,20 +283,23 @@ model IncomingScale {
    oer           Float?            @default(0)
    waybillNo     String?
    note          String?
-   operator      User              @relation(fields: [operatorId], references: [id])
-   item          SupplierItem      @relation(fields: [itemId], references: [id])
-   price         PriceHistory?     @relation(fields: [priceId], references: [id])
-   vehicle       VehicleType?      @relation(fields: [vehicleTypeId], references: [id])
+
+   operator User          @relation(fields: [operatorId], references: [id])
+   item     SupplierItem  @relation(fields: [itemId], references: [id])
+   price    PriceHistory? @relation(fields: [priceId], references: [id])
+   vehicle  VehicleType?  @relation(fields: [vehicleTypeId], references: [id])
+   location Location      @relation(fields: [locationId], references: [id])
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
 
-   @@index([operatorId, queueNo, plateNo, exitTime, itemId])
+   @@index([locationId, operatorId, queueNo, plateNo, exitTime, itemId])
 }
 
 model OutgoingScale {
    id            String    @id @default(cuid())
-   queueNo       BigInt    @default(autoincrement())
+   queueNo       Int       @unique @default(autoincrement())
+   locationId    String
    operatorId    String
    transporterId String
    orderId       String
@@ -310,6 +325,7 @@ model OutgoingScale {
 
    order       Order       @relation(fields: [orderId], references: [id])
    operator    User        @relation(fields: [operatorId], references: [id])
+   location    Location    @relation(fields: [locationId], references: [id])
    transporter Transporter @relation(fields: [transporterId], references: [id])
 
    createdAt DateTime @default(now())
@@ -356,7 +372,8 @@ model User {
    id             String          @id @default(cuid())
    roleId         String?
    name           String?
-   // username       String?         @unique
+   gender         Gender?
+   status         UserStatus      @default(SUSPENDED)
    email          String?         @unique
    emailVerified  DateTime?
    image          String?
@@ -374,28 +391,47 @@ model User {
 }
 
 model Role {
-   id          String  @id @default(cuid())
+   id          String           @id @default(cuid())
    locationId  String?
-   name        String  @unique
+   key         String
+   name        String           @unique
    description String?
-   dashboardId String
    users       User[]
+   permissions RolePermission[]
 
    location Location? @relation(fields: [locationId], references: [id])
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
+
+   @@index([locationId]) // Optimize queries involving locationId
 }
 
 model Permission {
-   id          String  @id @default(cuid())
-   roleId      String?
-   name        String  @unique
+   id          String           @id @default(cuid())
+   name        String
+   key         String           @unique
    description String?
    icon        String
+   roles       RolePermission[]
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
+}
+
+model RolePermission {
+   id           String @id @default(cuid())
+   roleId       String
+   permissionId String
+
+   role       Role       @relation(fields: [roleId], references: [id])
+   permission Permission @relation(fields: [permissionId], references: [id])
+
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+
+   @@unique([roleId, permissionId]) // Prevent duplicate Role-Permission pairs
+   @@index([roleId, permissionId]) // Optimize join queries
 }
 
 model Account {

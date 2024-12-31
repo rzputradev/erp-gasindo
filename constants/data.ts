@@ -130,15 +130,15 @@ export const navItems: NavItem[] = [
     shortcut: ['d', 'd'],
     items: [], // Empty array as there are no child items for Dashboard
   },
-  {
-    title: 'Pengguna',
-    url: '/dashboard/user',
-    icon: 'user',
-    shortcut: ['e', 'e'],
-    isActive: false,
-    items: [], // No child items
-    permission: ['read:user']
-  },
+  // {
+  //   title: 'Management Pengguna',
+  //   url: '/dashboard/user',
+  //   icon: 'user',
+  //   shortcut: ['e', 'e'],
+  //   isActive: false,
+  //   items: [], // No child items
+  //   permission: ['read:user']
+  // },
   {
     title: 'Timbangan',
     url: '/dashboard/scale',
@@ -148,11 +148,42 @@ export const navItems: NavItem[] = [
     items: [] // No child items
   },
   {
+    title: 'Administrasi',
+    url: '#', // Placeholder as there is no direct link for the parent
+    icon: 'shieldCheck',
+    isActive: false,
+    items: [
+      {
+        title: 'Pengguna',
+        url: '/dashboard/user',
+        icon: 'user',
+        shortcut: ['m', 'm']
+      },
+      {
+        title: 'Lokasi',
+        shortcut: ['l', 'l'],
+        url: '/',
+        icon: 'login'
+      },
+      {
+        title: 'Role',
+        shortcut: ['l', 'l'],
+        url: '/',
+        icon: 'login'
+      },
+      {
+        title: 'Akses',
+        shortcut: ['l', 'l'],
+        url: '/',
+        icon: 'login'
+      }
+    ]
+  },
+  {
     title: 'Account',
     url: '#', // Placeholder as there is no direct link for the parent
     icon: 'billing',
-    isActive: true,
-
+    isActive: false,
     items: [
       {
         title: 'Profile',

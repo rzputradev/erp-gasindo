@@ -1,6 +1,6 @@
 'use client';
 
-import { CrossIcon, UploadIcon } from 'lucide-react';
+import { CrossIcon, UploadIcon, X } from 'lucide-react';
 import Image from 'next/image';
 import * as React from 'react';
 import Dropzone, {
@@ -114,53 +114,56 @@ export function FileUploader(props: FileUploaderProps) {
 
   const onDrop = React.useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-      if (!multiple && maxFiles === 1 && acceptedFiles.length > 1) {
-        toast.error('Cannot upload more than 1 file at a time');
-        return;
-      }
+      // Ensure files is treated as an array, even if undefined
+      const currentFiles = files ?? [];
 
-      if ((files?.length ?? 0) + acceptedFiles.length > maxFiles) {
+      // If multiple is false, replace the existing file with the new one
+      const filteredAcceptedFiles = !multiple
+        ? acceptedFiles.slice(0, 1) // Only accept the first file
+        : acceptedFiles;
+
+      const newFiles = filteredAcceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      );
+
+      const updatedFiles = !multiple ? newFiles : [...currentFiles, ...newFiles];
+
+      // Prevent exceeding maxFiles
+      if (updatedFiles.length > maxFiles) {
         toast.error(`Cannot upload more than ${maxFiles} files`);
         return;
       }
 
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file)
-        })
-      );
-
-      const updatedFiles = files ? [...files, ...newFiles] : newFiles;
-
       setFiles(updatedFiles);
 
+      // Notify for rejected files
       if (rejectedFiles.length > 0) {
         rejectedFiles.forEach(({ file }) => {
           toast.error(`File ${file.name} was rejected`);
         });
       }
 
-      if (
-        onUpload &&
-        updatedFiles.length > 0 &&
-        updatedFiles.length <= maxFiles
-      ) {
+      // Trigger upload if `onUpload` is defined
+      if (onUpload && updatedFiles.length > 0) {
         const target =
-          updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`;
+          updatedFiles.length > 1 ? `${updatedFiles.length} files` : `file`;
 
         toast.promise(onUpload(updatedFiles), {
           loading: `Uploading ${target}...`,
           success: () => {
             setFiles([]);
-            return `${target} uploaded`;
+            return `${target} uploaded successfully`;
           },
-          error: `Failed to upload ${target}`
+          error: `Failed to upload ${target}`,
         });
       }
     },
-
     [files, maxFiles, multiple, onUpload, setFiles]
   );
+
+
 
   function onRemove(index: number) {
     if (!files) return;
@@ -302,7 +305,7 @@ function FileCard({ file, progress, onRemove }: FileCardProps) {
           className="size-7"
           onClick={onRemove}
         >
-          <CrossIcon className="size-4 " aria-hidden="true" />
+          <X className="size-4 " aria-hidden="true" />
           <span className="sr-only">Remove file</span>
         </Button>
       </div>

@@ -8,7 +8,9 @@ import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import EmployeeTable from './user-tables';
+import UserTable from './user-tables';
+import { db } from '@/lib/db';
+import { Prisma, User } from '@prisma/client';
 
 type TEmployeeListingPage = {};
 
@@ -16,20 +18,33 @@ export default async function UserListingPage({ }: TEmployeeListingPage) {
   // Showcasing the use of search params cache in nested RSCs
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
-  const gender = searchParamsCache.get('gender');
   const pageLimit = searchParamsCache.get('limit');
+  const gender = searchParamsCache.get('gender');
+  const genderArray = gender ? gender.split(".") as any : [];
 
-  const filters = {
-    page,
-    limit: pageLimit,
-    ...(search && { search }),
-    ...(gender && { genders: gender })
+  const filters: Prisma.UserFindManyArgs = {
+    skip: (page - 1) * pageLimit,
+    take: pageLimit,
+    where: {
+      ...(search && {
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { email: { contains: search, mode: 'insensitive' } },
+        ],
+      }),
+      ...(genderArray.length > 0 && {
+        gender: {
+          in: genderArray,
+        },
+      }),
+    },
   };
 
-  // mock api call
-  const data = await fakeUsers.getUsers(filters);
-  const totalUsers = data.total_users;
-  const employee: Employee[] = data.users;
+  const [data, totalUsers] = await Promise.all([
+    db.user.findMany(filters),
+    db.user.count({ where: filters.where }),
+  ]);
+  const users: User[] = data;
 
   return (
     <PageContainer scrollable>
@@ -39,7 +54,6 @@ export default async function UserListingPage({ }: TEmployeeListingPage) {
             title={`Pengguna (${totalUsers})`}
             description="Kelola data pengguna dan hak akses"
           />
-
           <Link
             href={'/dashboard/user/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
@@ -48,7 +62,7 @@ export default async function UserListingPage({ }: TEmployeeListingPage) {
           </Link>
         </div>
         <Separator />
-        <EmployeeTable data={employee} totalData={totalUsers} />
+        <UserTable data={users} totalData={totalUsers} />
       </div>
     </PageContainer>
   );
