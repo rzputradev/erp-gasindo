@@ -22,38 +22,30 @@ import {
 } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { addUserSchema } from '@/schemas/user';
+import { FileUploader } from '@/components/file-uploader';
+import { Gender, Role } from '@prisma/client';
+import { RoleWithLocation } from '@/types/role';
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.'
-  }),
-  country: z.string({
-    required_error: 'Please select a country.'
-  }),
-  email: z.string().email({
-    message: 'Please enter a valid email address.'
-  }),
-  company: z.string().min(1, {
-    message: 'Company name is required.'
-  }),
-  gender: z.enum(['male', 'female', 'other'], {
-    required_error: 'Please select a gender.'
-  })
-});
+interface AddUserFormProps {
+  roles: RoleWithLocation[]
+}
 
-export default function UserForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+export function AddUserForm({ roles }: AddUserFormProps) {
+  const form = useForm<z.infer<typeof addUserSchema>>({
+    resolver: zodResolver(addUserSchema),
     defaultValues: {
       name: '',
-      country: '',
       email: '',
-      company: '',
-      gender: undefined
+      image: '',
+      roleId: '',
+      password: '',
+      confirm_password: '',
+      gender: undefined,
     }
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof addUserSchema>) {
     console.log(values);
   }
 
@@ -61,12 +53,38 @@ export default function UserForm() {
     <Card className="mx-auto w-full rounded-md">
       <CardHeader>
         <CardTitle className="text-left text-2xl font-bold">
-          Informasi Pengguna
+          Tambah Pengguna
         </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <div className="space-y-6">
+                  <FormItem className="w-full">
+                    <FormLabel>Foto Profil</FormLabel>
+                    <FormControl>
+                      <FileUploader
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        maxFiles={4}
+                        maxSize={4 * 1024 * 1024}
+                        multiple={true}
+                      // disabled={loading}
+                      // progresses={progresses}
+                      // pass the onUpload function here for direct upload
+                      // onUpload={uploadFiles}
+                      // disabled={isUploading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
@@ -75,39 +93,13 @@ export default function UserForm() {
                   <FormItem>
                     <FormLabel>Nama</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your name" {...field} />
+                      <Input placeholder="Masukkan nama pengguna" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Location</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a country" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="usa">USA</SelectItem>
-                        <SelectItem value="uk">UK</SelectItem>
-                        <SelectItem value="canada">Canada</SelectItem>
-                        <SelectItem value="australia">Australia</SelectItem>
-                        <SelectItem value="germany">Germany</SelectItem>
-                        <SelectItem value="france">France</SelectItem>
-                        <SelectItem value="japan">Japan</SelectItem>
-                        <SelectItem value="brazil">Brazil</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
               <FormField
                 control={form.control}
                 name="email"
@@ -117,7 +109,7 @@ export default function UserForm() {
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="Enter your email"
+                        placeholder="Masukkan alamat email"
                         {...field}
                       />
                     </FormControl>
@@ -125,50 +117,114 @@ export default function UserForm() {
                   </FormItem>
                 )}
               />
+
+              <FormItem>
+                <FormLabel>Lokasi</FormLabel>
+                <FormControl>
+                  <Select>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih lokasi" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="m@example.com">m@example.com</SelectItem>
+                      <SelectItem value="m@google.com">m@google.com</SelectItem>
+                      <SelectItem value="m@support.com">m@support.com</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+
+              <FormItem>
+                <FormLabel>Role</FormLabel>
+                <FormControl>
+                  <Select>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih Role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="m@example.com">m@example.com</SelectItem>
+                      <SelectItem value="m@google.com">m@google.com</SelectItem>
+                      <SelectItem value="m@support.com">m@support.com</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+
+
               <FormField
                 control={form.control}
-                name="company"
+                name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role</FormLabel>
+                    <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your company" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="******"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+
+              <FormField
+                control={form.control}
+                name="confirm_password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Konfirmasi Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder='******'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
             </div>
             <FormField
               control={form.control}
               name="gender"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <FormLabel>Gender</FormLabel>
+                  <FormLabel>Jenis Kelamin</FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
                       value={field.value}
                       className="flex space-x-4"
                     >
-                      <FormItem className="flex items-center space-x-2">
+                      <FormItem className="flex items-center space-x-2 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="male" />
+                          <RadioGroupItem value={Gender.MALE} />
                         </FormControl>
-                        <FormLabel className="font-normal">Male</FormLabel>
+                        <FormLabel className="font-normal">Laki-laki</FormLabel>
                       </FormItem>
-                      <FormItem className="flex items-center space-x-2">
+                      <FormItem className="flex items-center space-x-2 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="female" />
+                          <RadioGroupItem value={Gender.FEMALE} />
                         </FormControl>
-                        <FormLabel className="font-normal">Female</FormLabel>
+                        <FormLabel className="font-normal">Perempuan</FormLabel>
                       </FormItem>
-                      <FormItem className="flex items-center space-x-2">
+                      {/* <FormItem className="flex items-center space-x-2">
                         <FormControl>
                           <RadioGroupItem value="other" />
                         </FormControl>
                         <FormLabel className="font-normal">Other</FormLabel>
-                      </FormItem>
+                      </FormItem> */}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />

@@ -10,12 +10,13 @@ import {
   GENDER_OPTIONS,
   useEmployeeTableFilters
 } from './use-employee-table-filters';
+import { User } from '@prisma/client';
 
 export default function EmployeeTable({
   data,
   totalData
 }: {
-  data: Employee[];
+  data: User[];
   totalData: number;
 }) {
   const {

@@ -1,12 +1,13 @@
 'use client';
 
 import { searchParams } from '@/lib/searchparams';
+import { Gender } from '@prisma/client';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 
 export const GENDER_OPTIONS = [
-  { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' }
+  { value: Gender.MALE, label: 'Male' },
+  { value: Gender.FEMALE, label: 'Female' }
 ];
 
 export function useEmployeeTableFilters() {

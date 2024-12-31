@@ -1,6 +1,7 @@
 import {
   createSearchParamsCache,
   createSerializer,
+  parseAsBoolean,
   parseAsInteger,
   parseAsString
 } from 'nuqs/server';
