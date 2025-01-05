@@ -1,20 +1,19 @@
-import { searchParamsCache } from '@/lib/searchparams';
 import { SearchParams } from 'nuqs/server';
 import React from 'react';
-import UserListingPage from './_components/user-listing-page';
+import { ListingPage } from './_components/listing-page';
+import { searchUserParamsCache } from '@/lib/params/user';
 
 type pageProps = {
-  searchParams: Promise<SearchParams>;
+   searchParams: Promise<SearchParams>;
 };
 
 export const metadata = {
-  title: 'Dashboard : Pengguna'
+   title: 'Dashboard : User'
 };
 
 export default async function Page(props: pageProps) {
-  const searchParams = await props.searchParams;
-  // Allow nested RSCs to access the search params (in a type-safe way)
-  searchParamsCache.parse(searchParams);
+   const searchParams = await props.searchParams;
+   searchUserParamsCache.parse(searchParams);
 
-  return <UserListingPage />;
+   return <ListingPage />;
 }
