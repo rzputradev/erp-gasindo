@@ -71,20 +71,22 @@ enum IncomingScaleType {
 model Location {
    id      String        @id @default(cuid())
    name    String
-   code    String        @unique
+   key     String        @unique
    type    LocationType?
    address String
 
+   users          User[]
    suppliers      Supplier[]
    stocks         Stock[]
    transactions   Transaction[]
    contracts      Contract[]
-   roles          Role[]
    incomingScales IncomingScale[]
    outgoingScales OutgoingScale[]
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
+
+   @@index([key])
 }
 
 model Stock {
@@ -104,7 +106,7 @@ model Item {
    typeId        String?
    name          String
    description   String?
-   code          String   @unique
+   key           String   @unique
    unit          UnitType
    isWeighted    Boolean  @default(false)
    isSalable     Boolean  @default(false)
@@ -123,7 +125,7 @@ model Item {
 model ItemType {
    id          String  @id @default(cuid())
    name        String
-   code        String  @unique
+   key         String  @unique
    description String?
 
    items Item[]
@@ -137,7 +139,7 @@ model Supplier {
    id         String         @id @default(cuid())
    locationId String?
    name       String
-   code       String         @unique
+   key        String         @unique
    address    String
    phone      String
    items      SupplierItem[]
@@ -182,7 +184,7 @@ model PriceHistory {
 model Buyer {
    id        String     @id @default(cuid())
    name      String
-   code      String     @unique
+   key       String     @unique
    tin       String     @unique
    address   String
    phone     String
@@ -252,7 +254,7 @@ model VehicleType {
 model Transporter {
    id      String  @id @default(cuid())
    name    String
-   code    String  @unique
+   key     String  @unique
    phone   String?
    address String?
 
@@ -371,6 +373,7 @@ model Transaction {
 model User {
    id             String          @id @default(cuid())
    roleId         String?
+   locationId     String?
    name           String?
    gender         Gender?
    status         UserStatus      @default(SUSPENDED)
@@ -384,7 +387,8 @@ model User {
    incomingScales IncomingScale[]
    outgoingScales OutgoingScale[]
 
-   role Role? @relation(fields: [roleId], references: [id])
+   role     Role?     @relation(fields: [roleId], references: [id])
+   location Location? @relation(fields: [locationId], references: [id])
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -392,19 +396,16 @@ model User {
 
 model Role {
    id          String           @id @default(cuid())
-   locationId  String?
-   key         String
-   name        String           @unique
+   name        String
+   key         String           @unique
    description String?
    users       User[]
    permissions RolePermission[]
 
-   location Location? @relation(fields: [locationId], references: [id])
-
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
 
-   @@index([locationId]) // Optimize queries involving locationId
+   @@index([key])
 }
 
 model Permission {
@@ -412,7 +413,6 @@ model Permission {
    name        String
    key         String           @unique
    description String?
-   icon        String
    roles       RolePermission[]
 
    createdAt DateTime @default(now())
