@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { startTransition, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Gender, Location, Role } from '@prisma/client';
+import { Gender, Location, Role, UserStatus } from '@prisma/client';
 
 import { createUserSchema } from '@/lib/schemas/user';
 
@@ -55,6 +55,7 @@ export function CreateForm({ locations, roles }: CreateUserFormProps) {
          roleId: '',
          password: '',
          confirm_password: '',
+         status: undefined,
          gender: undefined
       }
    });
@@ -140,24 +141,6 @@ export function CreateForm({ locations, roles }: CreateUserFormProps) {
 
                      <FormField
                         control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                 <Input
-                                    type="email"
-                                    placeholder="Masukkan alamat email"
-                                    {...field}
-                                 />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
                         name="locationId"
                         render={({ field }) => (
                            <FormItem>
@@ -188,6 +171,24 @@ export function CreateForm({ locations, roles }: CreateUserFormProps) {
                                        )}
                                     </SelectContent>
                                  </Select>
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+
+                     <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    type="email"
+                                    placeholder="Masukkan alamat email"
+                                    {...field}
+                                 />
                               </FormControl>
                               <FormMessage />
                            </FormItem>
@@ -245,6 +246,39 @@ export function CreateForm({ locations, roles }: CreateUserFormProps) {
                                     {...field}
                                  />
                               </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+
+                     <FormField
+                        control={form.control}
+                        name="status"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select
+                                 onValueChange={field.onChange}
+                                 defaultValue={field.value}
+                                 disabled={isPending}
+                              >
+                                 <FormControl>
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Status akun" />
+                                    </SelectTrigger>
+                                 </FormControl>
+                                 <SelectContent>
+                                    <SelectItem value={UserStatus.ACTIVE}>
+                                       Aktif
+                                    </SelectItem>
+                                    <SelectItem value={UserStatus.SUSPENDED}>
+                                       Ditangguhkan
+                                    </SelectItem>
+                                    <SelectItem value={UserStatus.BLOCKED}>
+                                       Di Blokir
+                                    </SelectItem>
+                                 </SelectContent>
+                              </Select>
                               <FormMessage />
                            </FormItem>
                         )}

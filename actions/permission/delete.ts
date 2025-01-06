@@ -17,7 +17,7 @@ export async function deletePermission(id: string) {
          });
       });
 
-      revalidatePath(`/dashboard/location`);
+      revalidatePath(`/dashboard/permission`);
       return { success: 'Data deleted successfully' };
    } catch (error) {
       console.error(error);

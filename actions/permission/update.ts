@@ -3,8 +3,7 @@
 import { z } from 'zod';
 import { currentUser } from '@/data/user';
 import { db } from '@/lib/db';
-import { updateLocationSchema } from '@/lib/schemas/location';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 import { updatePermissionSchema } from '@/lib/schemas/permission';
 
 export async function updatePermission(
@@ -27,7 +26,7 @@ export async function updatePermission(
          });
       });
 
-      revalidateTag(`/dashboard/permission/update?id=${id}`);
+      revalidatePath(`/dashboard/permission/update`);
 
       return { success: 'Data updated successfully' };
    } catch (error) {

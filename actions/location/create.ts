@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { createLocationSchema } from '@/lib/schemas/location';
+import { revalidatePath } from 'next/cache';
 
 export async function createLocation(
    values: z.infer<typeof createLocationSchema>
@@ -28,6 +29,8 @@ export async function createLocation(
             }
          });
       });
+
+      revalidatePath('/dashboard/location');
 
       return { success: 'Data saved successfully' };
    } catch (error) {

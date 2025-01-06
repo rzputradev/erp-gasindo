@@ -76,7 +76,7 @@ model Location {
    address String
 
    users          User[]
-   suppliers      Supplier[]
+   items          SupplierItem[]
    stocks         Stock[]
    transactions   Transaction[]
    contracts      Contract[]
@@ -136,15 +136,12 @@ model ItemType {
 
 // Supplier Models
 model Supplier {
-   id         String         @id @default(cuid())
-   locationId String?
-   name       String
-   key        String         @unique
-   address    String
-   phone      String
-   items      SupplierItem[]
-
-   location Location? @relation(fields: [locationId], references: [id])
+   id      String         @id @default(cuid())
+   name    String
+   key     String         @unique
+   address String?
+   phone   String         @unique
+   items   SupplierItem[]
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -154,16 +151,18 @@ model SupplierItem {
    id             String          @id @default(cuid())
    supplierId     String
    itemId         String
+   locationId     String
    priceHistories PriceHistory[]
    incomingScales IncomingScale[]
 
    supplier Supplier @relation(fields: [supplierId], references: [id])
    item     Item     @relation(fields: [itemId], references: [id])
+   location Location @relation(fields: [locationId], references: [id])
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
 
-   @@unique([supplierId, itemId]) // Unique constraint on supplier-item combination
+   @@unique([supplierId, itemId, locationId]) // Unique constraint on supplier-item combination
 }
 
 model PriceHistory {
@@ -187,7 +186,7 @@ model Buyer {
    key       String     @unique
    tin       String     @unique
    address   String
-   phone     String
+   phone     String     @unique
    contracts Contract[]
 
    createdAt DateTime @default(now())

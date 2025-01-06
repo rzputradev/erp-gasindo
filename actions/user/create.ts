@@ -26,7 +26,8 @@ export async function createUser(values: z.infer<typeof createUserSchema>) {
          confirm_password,
          locationId,
          roleId,
-         image
+         image,
+         status
       } = parsedValues;
 
       const existingEmail = await db.user.findUnique({ where: { email } });
@@ -56,8 +57,10 @@ export async function createUser(values: z.infer<typeof createUserSchema>) {
             name,
             email,
             gender,
+            status,
             password: hashedPassword,
-            image: imageUrl
+            image: imageUrl,
+            emailVerified: new Date()
          }
       });
 

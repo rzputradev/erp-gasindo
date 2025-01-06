@@ -169,7 +169,7 @@ export function CreateForm({ permissions }: CreateFormProps) {
                                           >
                                              <div className="space-y-0.5">
                                                 <FormLabel>
-                                                   {permission.key}
+                                                   {permission.name}
                                                 </FormLabel>
                                                 <FormDescription className="truncate">
                                                    {permission.description}

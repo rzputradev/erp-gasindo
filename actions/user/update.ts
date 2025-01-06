@@ -5,34 +5,59 @@ import { hash } from 'bcryptjs';
 import { currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { updateUserSchema } from '@/lib/schemas/user';
-import { revalidatePath } from 'next/cache';
-import { saveImage } from '@/lib/file-uploader';
+import { revalidateTag } from 'next/cache';
+import { saveImage, deleteImage } from '@/lib/file-uploader';
 
 export async function updateUser(values: z.infer<typeof updateUserSchema>) {
    try {
       const user = await currentUser();
-      if (!user) return { error: 'User is not authenticated' };
+      if (!user) return { error: 'Pengguna tidak ter authentikasi' };
 
       const { success, data: parsedValues } =
          updateUserSchema.safeParse(values);
-      if (!success) return { error: 'Invalid fields', details: parsedValues };
+      if (!success) return { error: 'Data tidak valid', details: parsedValues };
 
-      const { id, name, email, gender, password, locationId, roleId, image } =
-         parsedValues;
+      const {
+         id,
+         name,
+         email,
+         gender,
+         password,
+         locationId,
+         roleId,
+         image,
+         status,
+         confirm_password
+      } = parsedValues;
+
+      if (password !== confirm_password) {
+         return { error: 'Password dan konfirmasi password tidak sama' };
+      }
+
+      // Fetch the existing user data
+      const existingUser = await db.user.findUnique({ where: { id } });
+      if (!existingUser) return { error: 'Pengguna tidak ditemukan' };
 
       // Check if the email already exists (except for the current user)
       const existingEmail = await db.user.findUnique({ where: { email } });
       if (existingEmail && existingEmail.id !== id) {
-         return { error: 'Email already exists' };
+         return { error: 'Email sudah digunakan' };
       }
 
-      // Handle image upload or URL preservation
-      let imageUrl = existingEmail?.image;
+      // Handle image upload and replacement
+      let imageUrl = existingUser.image; // Current image URL
       if (image) {
          try {
+            // If there is an existing image, delete it
+            if (imageUrl) {
+               await deleteImage(imageUrl);
+            }
+
+            // Save the new image
             imageUrl = await saveImage(image);
          } catch (error) {
-            return { error: 'Image upload failed' };
+            console.error('Error handling image:', error);
+            return { error: 'Penggunggahan file gagal' };
          }
       }
 
@@ -43,6 +68,7 @@ export async function updateUser(values: z.infer<typeof updateUserSchema>) {
          name,
          email,
          gender,
+         status,
          image: imageUrl
       };
 
@@ -58,9 +84,9 @@ export async function updateUser(values: z.infer<typeof updateUserSchema>) {
       });
 
       // Revalidate the path
-      revalidatePath(`/dashboard/user`);
+      revalidateTag(`/dashboard/user/update`);
 
-      return { success: 'User updated successfully' };
+      return { success: 'Data sukses di update' };
    } catch (error) {
       console.error(error);
       return { error: 'An unexpected error occurred' };
