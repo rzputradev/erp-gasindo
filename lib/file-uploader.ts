@@ -60,3 +60,17 @@ export async function saveImage(files: FileList): Promise<string> {
       throw new Error('Failed to save image.');
    }
 }
+
+export async function deleteImage(relativePath: string): Promise<void> {
+   try {
+      const filePath = path.join(process.cwd(), 'public', relativePath);
+
+      // Check if the file exists before attempting to delete
+      await fs.access(filePath);
+      await fs.unlink(filePath);
+      console.log(`Image deleted: ${filePath}`);
+   } catch (error) {
+      console.error('Error deleting image:', error);
+      throw new Error('Failed to delete image.');
+   }
+}

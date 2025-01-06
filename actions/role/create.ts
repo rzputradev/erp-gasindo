@@ -40,7 +40,7 @@ export async function createRole(values: z.infer<typeof createRoleSchema>) {
 
       revalidatePath(`/dashboard/role`);
 
-      return { success: 'Role created successfully' };
+      return { success: 'Data saved successfully' };
    } catch (error) {
       console.error(error);
       return {

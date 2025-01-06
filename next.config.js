@@ -1,23 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+   // images: {
+   //    localPatterns: [
+   //       {
+   //          pathname: 'public/**',
+   //          search: '',
+   //       },
+   //    ],
+   // },
    experimental: {
       serverActions: {
          bodySizeLimit: '2mb'
       }
-   },
-   images: {
-      remotePatterns: [
-         {
-            protocol: 'https',
-            hostname: 'utfs.io',
-            port: ''
-         },
-         {
-            protocol: 'https',
-            hostname: 'api.slingacademy.com',
-            port: ''
-         }
-      ]
    },
    transpilePackages: ['geist']
 };

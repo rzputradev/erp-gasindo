@@ -3,9 +3,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Employee } from '@/constants/data';
 import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
-import { Gender, User } from '@prisma/client';
+import { Gender, User, UserStatus } from '@prisma/client';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 
 export const columns: ColumnDef<User>[] = [
    {
@@ -31,19 +32,18 @@ export const columns: ColumnDef<User>[] = [
       enableHiding: false
    },
    {
-      accessorKey: 'name',
-      header: 'Nama'
-   },
-   {
-      accessorKey: 'gender',
-      header: 'Jenis Kelamin',
+      accessorKey: 'status',
+      header: 'Status Akun',
       cell: ({ row }) => {
-         const gender = row.original.gender;
-         return gender === Gender.FEMALE
-            ? 'Perempuan'
-            : gender === Gender.MALE
-              ? 'Laki-laki'
-              : 'Lain-lain';
+         const status = row.original.status;
+
+         if (status === UserStatus.ACTIVE) {
+            return <Badge variant={'default'}>Aktif</Badge>;
+         } else if (status === UserStatus.SUSPENDED) {
+            return <Badge variant={'secondary'}>Ditangguhkan</Badge>;
+         } else if (status === UserStatus.BLOCKED) {
+            return <Badge variant="destructive">Diblokir</Badge>;
+         }
       }
    },
    {
@@ -60,7 +60,6 @@ export const columns: ColumnDef<User>[] = [
    },
    {
       id: 'actions',
-      // header: 'ACTION',
       cell: ({ row }) => <CellAction data={row.original} />
    }
 ];

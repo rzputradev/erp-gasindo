@@ -171,7 +171,7 @@ export function UpdateForm({ data, allPermissions }: UpdateFormProps) {
                                           >
                                              <div className="space-y-0.5">
                                                 <FormLabel>
-                                                   {permission.key}
+                                                   {permission.name}
                                                 </FormLabel>
                                                 <FormDescription className="truncate">
                                                    {permission.description}

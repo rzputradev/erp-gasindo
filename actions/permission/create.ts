@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { createPermissionSchema } from '@/lib/schemas/permission';
+import { revalidatePath } from 'next/cache';
 
 export async function createPersmission(
    values: z.infer<typeof createPermissionSchema>
@@ -27,6 +28,8 @@ export async function createPersmission(
             }
          });
       });
+
+      revalidatePath('/dashboard/permission');
 
       return { success: 'Data saved successfully' };
    } catch (error) {

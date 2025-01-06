@@ -3,6 +3,7 @@
 import { currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+import { deleteImage } from '@/lib/file-uploader';
 
 export async function deleteUser(id: string) {
    try {
@@ -12,6 +13,21 @@ export async function deleteUser(id: string) {
       if (!id) return { error: 'Id is required' };
 
       await db.$transaction(async (tx) => {
+         // Fetch the user's data to get the image URL
+         const userToDelete = await tx.user.findUnique({ where: { id } });
+         if (!userToDelete) return { error: 'User not found' };
+
+         // Delete the associated image if it exists
+         if (userToDelete.image) {
+            try {
+               await deleteImage(userToDelete.image);
+            } catch (error) {
+               console.error('Error deleting image:', error);
+               throw new Error('Failed to delete user image');
+            }
+         }
+
+         // Delete the user from the database
          await tx.user.delete({
             where: { id }
          });

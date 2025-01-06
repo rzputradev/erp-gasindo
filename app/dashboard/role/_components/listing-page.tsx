@@ -7,14 +7,13 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Table } from './tables';
 import { db } from '@/lib/db';
-import { Location, LocationType, Prisma, Role } from '@prisma/client';
-import { searchRoleParamsCache } from '@/lib/params/role';
+import { Prisma, Role } from '@prisma/client';
+import { searchBaseParamsCache } from '@/lib/params/base';
 
 export async function ListingPage() {
-   // Showcasing the use of search params cache in nested RSCs
-   const page = searchRoleParamsCache.get('page');
-   const search = searchRoleParamsCache.get('q');
-   const pageLimit = searchRoleParamsCache.get('limit');
+   const page = searchBaseParamsCache.get('page');
+   const search = searchBaseParamsCache.get('q');
+   const pageLimit = searchBaseParamsCache.get('limit');
 
    const filters: Prisma.RoleFindManyArgs = {
       skip: (page - 1) * pageLimit,

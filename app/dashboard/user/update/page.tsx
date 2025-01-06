@@ -6,7 +6,7 @@ import { Location, Role, User } from '@prisma/client';
 import { SearchParams } from 'nuqs';
 
 export const metadata = {
-   title: 'Dashboard : Perbaharui Lokasi'
+   title: 'Dashboard : Perbaharui Pengguna'
 };
 
 type pageProps = {

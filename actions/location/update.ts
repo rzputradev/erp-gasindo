@@ -26,7 +26,7 @@ export async function updateLocation(
          });
       });
 
-      revalidateTag(`/dashboard/location/update?id=${id}`);
+      revalidateTag(`/dashboard/location/update`);
 
       return { success: 'Data updated successfully' };
    } catch (error) {

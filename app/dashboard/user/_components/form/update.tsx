@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { startTransition, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Gender, Location, Role, User } from '@prisma/client';
+import { Gender, Location, Role, User, UserStatus } from '@prisma/client';
 
 import { updateUserSchema } from '@/lib/schemas/user';
 
@@ -56,6 +56,7 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
          roleId: data.roleId || '',
          password: undefined,
          confirm_password: undefined,
+         status: data.status || undefined,
          gender: data.gender || undefined
       }
    });
@@ -137,24 +138,6 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
 
                      <FormField
                         control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                 <Input
-                                    type="email"
-                                    placeholder="Masukkan alamat email"
-                                    {...field}
-                                 />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
                         name="locationId"
                         render={({ field }) => (
                            <FormItem>
@@ -185,6 +168,24 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                                        )}
                                     </SelectContent>
                                  </Select>
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+
+                     <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    type="email"
+                                    placeholder="Masukkan alamat email"
+                                    {...field}
+                                 />
                               </FormControl>
                               <FormMessage />
                            </FormItem>
@@ -242,6 +243,39 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                                     {...field}
                                  />
                               </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+
+                     <FormField
+                        control={form.control}
+                        name="status"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select
+                                 onValueChange={field.onChange}
+                                 defaultValue={field.value}
+                                 disabled={isPending}
+                              >
+                                 <FormControl>
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Status akun" />
+                                    </SelectTrigger>
+                                 </FormControl>
+                                 <SelectContent>
+                                    <SelectItem value={UserStatus.ACTIVE}>
+                                       Aktif
+                                    </SelectItem>
+                                    <SelectItem value={UserStatus.SUSPENDED}>
+                                       Ditangguhkan
+                                    </SelectItem>
+                                    <SelectItem value={UserStatus.BLOCKED}>
+                                       Di Blokir
+                                    </SelectItem>
+                                 </SelectContent>
+                              </Select>
                               <FormMessage />
                            </FormItem>
                         )}

@@ -7,6 +7,7 @@ import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 import * as z from 'zod';
 import { AuthError } from 'next-auth';
 import { signIn } from '@/auth';
+import { UserStatus } from '@prisma/client';
 
 export async function login(
    values: z.infer<typeof loginSchema>,
@@ -15,14 +16,26 @@ export async function login(
    const validateFields = loginSchema.safeParse(values);
 
    if (!validateFields.success) {
-      return { error: 'Invalid fields' };
+      return { error: 'Data tidak valid' };
    }
    const { email, password } = validateFields.data;
 
    const existingUser = await getUserByEmail(email);
 
    if (!existingUser) {
-      return { error: "Email doesn't exist!" };
+      return { error: 'Email tidak ditemukan' };
+   }
+
+   if (!existingUser.emailVerified) {
+      return { error: 'Email belum terkonfirmasi' };
+   }
+
+   if (existingUser.status === UserStatus.SUSPENDED) {
+      return { error: `Akun anda sedang Ditangguhkan` };
+   }
+
+   if (existingUser.status === UserStatus.BLOCKED) {
+      return { error: `Akun anda sudah Diblokir` };
    }
 
    // TODO: Check email is verified and send email to verified user email
