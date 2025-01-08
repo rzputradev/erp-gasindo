@@ -48,6 +48,8 @@ export function CreateForm() {
       startTransition(() => {
          createPersmission(values)
             .then((res) => {
+               setIspending(false);
+               form.reset();
                if (res?.error) {
                   setError(res.error);
                   toast.error(res.error);
@@ -57,8 +59,6 @@ export function CreateForm() {
                   toast.success(res.success);
                   router.push('/dashboard/permission');
                }
-               setIspending(false);
-               form.reset();
             })
             .catch((e) => {
                console.log(e);

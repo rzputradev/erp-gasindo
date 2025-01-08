@@ -28,6 +28,7 @@ import { useRouter } from 'next/navigation';
 import { Switch } from '@/components/ui/switch';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
+import { toast } from 'sonner';
 
 interface UpdateFormProps {
    data: Role & {
@@ -41,8 +42,8 @@ export function UpdateForm({ data, allPermissions }: UpdateFormProps) {
    const [isPending, setIspending] = useState(false);
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
-   const activePermissions =
-      data.permissions?.map((perm) => perm.permissionId) || [];
+   const activePermissions: (string | undefined)[] =
+      data.permissions?.map((perm) => perm.permissionId ?? undefined) || [];
 
    const form = useForm<z.infer<typeof updateRoleSchema>>({
       resolver: zodResolver(updateRoleSchema),
@@ -61,15 +62,22 @@ export function UpdateForm({ data, allPermissions }: UpdateFormProps) {
       startTransition(() => {
          updateRole(values)
             .then((res) => {
+               setIspending(false);
                if (res?.error) {
                   setError(res.error);
+                  toast.error(res.error);
                   form.reset();
-               } else if (res?.success) {
-                  setSuccess(res.success);
                }
-               setIspending(false);
+               if (res?.success) {
+                  setSuccess(res.success);
+                  toast.success(res.success);
+               }
             })
-            .catch(() => setError('Something went wrong!'));
+            .catch((e) => {
+               console.log(e);
+               form.reset();
+               toast.error('Terjadi kesalahan tak terduga');
+            });
       });
    }
 

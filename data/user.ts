@@ -1,28 +1,52 @@
-import { db } from "@/lib/db"
-import { auth } from "@/auth"
-
+import { db } from '@/lib/db';
+import { auth } from '@/auth';
 
 export async function getUserByEmail(email: string) {
    try {
-      const user = await db.user.findUnique({ where: { email } })
-      return user
+      const user = await db.user.findUnique({
+         where: {
+            email
+         },
+         include: {
+            role: {
+               include: {
+                  permissions: {
+                     include: { permission: true }
+                  }
+               }
+            },
+            location: true
+         }
+      });
+      return user;
    } catch {
-      return null
+      return null;
    }
 }
 
 export async function getUserById(id: string) {
    try {
-      const user = await db.user.findUnique({ where: { id } })
-      return user
+      const user = await db.user.findUnique({
+         where: { id },
+         include: {
+            role: {
+               include: {
+                  permissions: {
+                     include: { permission: true }
+                  }
+               }
+            },
+            location: true
+         }
+      });
+      return user;
    } catch {
-      return null
+      return null;
    }
 }
 
 export async function currentUser() {
-   const session = await auth()
+   const session = await auth();
 
-   return session?.user
+   return session?.user;
 }
-

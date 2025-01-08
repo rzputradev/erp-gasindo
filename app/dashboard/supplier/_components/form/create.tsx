@@ -51,6 +51,8 @@ export function CreateForm() {
       startTransition(() => {
          createSupplier(values)
             .then((res) => {
+               setIspending(false);
+               form.reset();
                if (res?.error) {
                   setError(res.error);
                   toast.error(res.error);
@@ -60,11 +62,10 @@ export function CreateForm() {
                   toast.success(res.success);
                   router.push('/dashboard/supplier');
                }
-               setIspending(false);
-               form.reset();
             })
             .catch((e) => {
                console.log(e);
+               form.reset();
                toast.error('Something went wrong!');
             });
       });

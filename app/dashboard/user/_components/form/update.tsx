@@ -4,7 +4,6 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { startTransition, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Gender, Location, Role, User, UserStatus } from '@prisma/client';
 
 import { updateUserSchema } from '@/lib/schemas/user';
@@ -32,6 +31,7 @@ import { FileUploader } from '@/components/file-uploader';
 import { updateUser } from '@/actions/user/update';
 import { FormSuccess } from '@/components/form-success';
 import { FormError } from '@/components/form-error';
+import { toast } from 'sonner';
 
 interface UpdateFormProps {
    data: User;
@@ -40,7 +40,6 @@ interface UpdateFormProps {
 }
 
 export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
-   const router = useRouter();
    const [isPending, setIspending] = useState(false);
    const [error, setError] = useState<string | undefined>(undefined);
    const [success, setSuccess] = useState<string | undefined>(undefined);
@@ -68,15 +67,22 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
       startTransition(() => {
          updateUser(values)
             .then((res) => {
+               setIspending(false);
                if (res?.error) {
                   setError(res.error);
+                  toast.error(res.error);
                   form.reset();
-               } else if (res?.success) {
-                  setSuccess(res.success);
                }
-               setIspending(false);
+               if (res?.success) {
+                  setSuccess(res.success);
+                  toast.success(res.success);
+               }
             })
-            .catch(() => setError('Something went wrong!'));
+            .catch((e) => {
+               form.reset();
+               console.log(e);
+               toast.error('Something went wrong!');
+            });
       });
    }
 

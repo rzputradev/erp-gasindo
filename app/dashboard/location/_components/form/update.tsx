@@ -61,6 +61,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
       startTransition(() => {
          updateLocation(values)
             .then((res) => {
+               setIspending(false);
                if (res?.error) {
                   setError(res.error);
                   toast.error(res.error);
@@ -70,10 +71,10 @@ export function UpdateForm({ data }: UpdateFormProps) {
                   setSuccess(res.success);
                   toast.success(res.success);
                }
-               setIspending(false);
             })
             .catch((e) => {
                console.log(e);
+               form.reset();
                toast.error('Something went wrong!');
             });
       });
