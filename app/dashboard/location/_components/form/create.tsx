@@ -57,6 +57,8 @@ export function CreateForm() {
       startTransition(() => {
          createLocation(values)
             .then((res) => {
+               setIspending(false);
+               form.reset();
                if (res?.error) {
                   setError(res.error);
                   toast.error(res.error);
@@ -66,8 +68,6 @@ export function CreateForm() {
                   toast.success(res.success);
                   router.push('/dashboard/location');
                }
-               setIspending(false);
-               form.reset();
             })
             .catch(() => toast.error('Something went wrong!'));
       });

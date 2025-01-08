@@ -53,6 +53,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
       startTransition(() => {
          updatePermission(values)
             .then((res) => {
+               setIspending(false);
                if (res?.error) {
                   setError(res.error);
                   toast.error(res.error);
@@ -62,9 +63,9 @@ export function UpdateForm({ data }: UpdateFormProps) {
                   setSuccess(res.success);
                   toast.success(res.success);
                }
-               setIspending(false);
             })
             .catch((e) => {
+               form.reset();
                console.log(e);
                toast.error('Something went wrong!');
             });

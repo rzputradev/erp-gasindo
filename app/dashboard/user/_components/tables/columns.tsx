@@ -16,7 +16,10 @@ export const columns: ColumnDef<User>[] = [
          <div className="flex items-center space-x-4">
             <Avatar className="size-8">
                {row.original.image ? (
-                  <AvatarImage src={row.original.image} alt="Profile Image" />
+                  <AvatarImage
+                     src={`/api/images${row.original.image}`}
+                     alt="Profile Image"
+                  />
                ) : (
                   <AvatarFallback>
                      {row.original.name

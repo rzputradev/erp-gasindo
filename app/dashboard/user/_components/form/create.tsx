@@ -34,12 +34,12 @@ import { toast } from 'sonner';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 
-interface CreateUserFormProps {
+interface CreateFormProps {
    roles: Role[];
    locations: Location[];
 }
 
-export function CreateForm({ locations, roles }: CreateUserFormProps) {
+export function CreateForm({ locations, roles }: CreateFormProps) {
    const router = useRouter();
    const [isPending, setIspending] = useState(false);
    const [error, setError] = useState<string | undefined>(undefined);
@@ -79,7 +79,10 @@ export function CreateForm({ locations, roles }: CreateUserFormProps) {
                   router.push('/dashboard/user');
                }
             })
-            .catch(() => toast.error('Something went wrong!'));
+            .catch((e) => {
+               console.log(e);
+               toast.error('Something went wrong!');
+            });
       });
    }
 

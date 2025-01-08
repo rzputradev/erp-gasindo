@@ -8,12 +8,12 @@ import Link from 'next/link';
 import { Table } from './tables';
 import { db } from '@/lib/db';
 import { Permission, Prisma } from '@prisma/client';
-import { searchPermissionParamsCache } from '@/lib/params/permission';
+import { searchBaseParamsCache } from '@/lib/params/base';
 
 export async function ListingPage() {
-   const page = searchPermissionParamsCache.get('page');
-   const search = searchPermissionParamsCache.get('q');
-   const pageLimit = searchPermissionParamsCache.get('limit');
+   const page = searchBaseParamsCache.get('page');
+   const search = searchBaseParamsCache.get('q');
+   const pageLimit = searchBaseParamsCache.get('limit');
 
    const filters: Prisma.PermissionFindManyArgs = {
       skip: (page - 1) * pageLimit,

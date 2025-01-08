@@ -38,22 +38,16 @@ enum ContractStatus {
    CREATED
    APPROVED
    ACTIVE
-   COMPLETED
    EXPIRED
    CANCELED
-   SUSPENDED
+   COMPLETED
 }
 
 enum OrderStatus {
-   PENDING
-   CONFIRMED
-   IN_PROGRESS
+   CREATED
    LOADING
-   SHIPPED
-   IN_TRANSIT
-   DELIVERED
-   COMPLETED
    CANCELED
+   COMPLETED
 }
 
 enum TransactionType {
@@ -82,6 +76,7 @@ model Location {
    contracts      Contract[]
    incomingScales IncomingScale[]
    outgoingScales OutgoingScale[]
+   transporters   Transporter[]
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -90,33 +85,32 @@ model Location {
 }
 
 model Stock {
-   id           String @id @default(cuid())
-   locationId   String
-   itemId       String
+   id           String  @id @default(cuid())
+   locationId   String?
+   itemId       String?
    remainingQty Float?
 
-   location Location @relation(fields: [locationId], references: [id])
-   item     Item     @relation(fields: [itemId], references: [id])
+   location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+   item     Item?     @relation(fields: [itemId], references: [id], onDelete: SetNull)
 
    @@unique([itemId, locationId])
 }
 
 model Item {
-   id            String   @id @default(cuid())
-   typeId        String?
-   name          String
-   description   String?
-   key           String   @unique
-   unit          UnitType
-   isWeighted    Boolean  @default(false)
-   isSalable     Boolean  @default(false)
-   hasUnloadCost Boolean  @default(false)
+   id          String   @id @default(cuid())
+   typeId      String?
+   name        String
+   description String?
+   key         String   @unique
+   unit        UnitType
+   isWeighted  Boolean  @default(false)
+   isSalable   Boolean  @default(false)
 
    supplierItems SupplierItem[]
    contracts     Contract[]
    stocks        Stock[]
 
-   itemType ItemType? @relation(fields: [typeId], references: [id])
+   itemType ItemType? @relation(fields: [typeId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -149,31 +143,31 @@ model Supplier {
 
 model SupplierItem {
    id             String          @id @default(cuid())
-   supplierId     String
-   itemId         String
-   locationId     String
+   supplierId     String?
+   itemId         String?
+   locationId     String?
    priceHistories PriceHistory[]
    incomingScales IncomingScale[]
 
-   supplier Supplier @relation(fields: [supplierId], references: [id])
-   item     Item     @relation(fields: [itemId], references: [id])
-   location Location @relation(fields: [locationId], references: [id])
+   supplier Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+   item     Item?     @relation(fields: [itemId], references: [id], onDelete: SetNull)
+   location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
 
-   @@unique([supplierId, itemId, locationId]) // Unique constraint on supplier-item combination
+   @@unique([supplierId, itemId, locationId])
 }
 
 model PriceHistory {
    id             String          @id @default(cuid())
-   itemId         String
+   itemId         String?
    price          Float
    validFrom      DateTime        @default(now())
    validTo        DateTime?
    incomingScales IncomingScale[]
 
-   item SupplierItem @relation(fields: [itemId], references: [id])
+   item SupplierItem? @relation(fields: [itemId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -195,26 +189,25 @@ model Buyer {
 
 model Contract {
    id             String         @id @default(cuid())
-   buyerId        String
-   itemId         String
+   buyerId        String?
+   itemId         String?
    locationId     String?
    status         ContractStatus @default(CREATED)
    contractNo     String
-   unit           UnitType       @default(KG)
    unitPrice      Float
-   vat            Float          @default(0)
+   vat            Float?
    totalQty       Int
    remainingQty   Int
-   tolerance      Float
-   toleranceWeigh Int            @default(0)
+   tolerance      Float?
+   toleranceWeigh Int?
    terms          String?
-   startDate      DateTime
+   startDate      DateTime       @default(now())
    endDate        DateTime?
    orders         Order[]
 
-   buyer    Buyer     @relation(fields: [buyerId], references: [id])
-   item     Item      @relation(fields: [itemId], references: [id])
-   location Location? @relation(fields: [locationId], references: [id])
+   buyer    Buyer?    @relation(fields: [buyerId], references: [id], onDelete: SetNull)
+   item     Item?     @relation(fields: [itemId], references: [id], onDelete: SetNull)
+   location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -226,13 +219,13 @@ model Contract {
 model Order {
    id             String          @id @default(cuid())
    orderNo        String          @unique
-   contractId     String
-   totalQty       Int             @default(0)
-   remainingQty   Int             @default(0)
-   status         OrderStatus     @default(PENDING)
+   contractId     String?
+   totalQty       Int
+   remainingQty   Int
+   status         OrderStatus     @default(CREATED)
    outgoingScales OutgoingScale[]
 
-   contract Contract @relation(fields: [contractId], references: [id])
+   contract Contract? @relation(fields: [contractId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -242,8 +235,8 @@ model VehicleType {
    id             String          @id @default(cuid())
    name           String
    description    String?
-   loadingCost    Float
-   unloadingCost  Float
+   loadingCost    Float?
+   unloadingCost  Float?
    incomingScales IncomingScale[]
 
    createdAt DateTime @default(now())
@@ -251,13 +244,15 @@ model VehicleType {
 }
 
 model Transporter {
-   id      String  @id @default(cuid())
-   name    String
-   key     String  @unique
-   phone   String?
-   address String?
-
+   id             String          @id @default(cuid())
+   locationId     String?
+   name           String
+   key            String          @unique
+   phone          String?         @unique
+   address        String?
    outgoingScales OutgoingScale[]
+
+   location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -266,11 +261,11 @@ model Transporter {
 model IncomingScale {
    id            String            @id @default(cuid())
    queueNo       Int               @unique @default(autoincrement())
-   locationId    String
-   operatorId    String
+   locationId    String?
+   operatorId    String?
    vehicleTypeId String?
-   itemId        String
-   priceId       String
+   itemId        String?
+   priceId       String?
    driver        String
    plateNo       String
    licenseNo     String
@@ -285,11 +280,11 @@ model IncomingScale {
    waybillNo     String?
    note          String?
 
-   operator User          @relation(fields: [operatorId], references: [id])
-   item     SupplierItem  @relation(fields: [itemId], references: [id])
-   price    PriceHistory? @relation(fields: [priceId], references: [id])
-   vehicle  VehicleType?  @relation(fields: [vehicleTypeId], references: [id])
-   location Location      @relation(fields: [locationId], references: [id])
+   operator User?         @relation(fields: [operatorId], references: [id], onDelete: SetNull)
+   item     SupplierItem? @relation(fields: [itemId], references: [id], onDelete: SetNull)
+   price    PriceHistory? @relation(fields: [priceId], references: [id], onDelete: SetNull)
+   vehicle  VehicleType?  @relation(fields: [vehicleTypeId], references: [id], onDelete: SetNull)
+   location Location?     @relation(fields: [locationId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -300,10 +295,10 @@ model IncomingScale {
 model OutgoingScale {
    id            String    @id @default(cuid())
    queueNo       Int       @unique @default(autoincrement())
-   locationId    String
-   operatorId    String
-   transporterId String
-   orderId       String
+   locationId    String?
+   operatorId    String?
+   transporterId String?
+   orderId       String?
    splitOrderNo  String?
    driver        String
    plateNo       String
@@ -324,10 +319,10 @@ model OutgoingScale {
    fiber         Float?
    note          String?
 
-   order       Order       @relation(fields: [orderId], references: [id])
-   operator    User        @relation(fields: [operatorId], references: [id])
-   location    Location    @relation(fields: [locationId], references: [id])
-   transporter Transporter @relation(fields: [transporterId], references: [id])
+   order       Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+   operator    User?        @relation(fields: [operatorId], references: [id], onDelete: SetNull)
+   location    Location?    @relation(fields: [locationId], references: [id], onDelete: SetNull)
+   transporter Transporter? @relation(fields: [transporterId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -349,23 +344,21 @@ model TransactionCategory {
 
 model Transaction {
    id              String          @id @default(cuid())
-   transactionNo   String          @unique
-   locationId      String
-   weighingLogId   String?
+   transactionNo   String?         @unique
+   locationId      String?
+   categoryId      String?
    transactionType TransactionType
    amount          Float
    description     String?
    transactionDate DateTime        @default(now())
-   categoryId      String
 
-   // Relations
-   location Location            @relation(fields: [locationId], references: [id])
-   category TransactionCategory @relation(fields: [categoryId], references: [id])
+   location Location?            @relation(fields: [locationId], references: [id], onDelete: SetNull)
+   category TransactionCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
 
-   @@index([transactionType, categoryId])
+   @@index([transactionType, categoryId, locationId])
 }
 
 // User Model
@@ -386,8 +379,8 @@ model User {
    incomingScales IncomingScale[]
    outgoingScales OutgoingScale[]
 
-   role     Role?     @relation(fields: [roleId], references: [id])
-   location Location? @relation(fields: [locationId], references: [id])
+   role     Role?     @relation(fields: [roleId], references: [id], onDelete: SetDefault)
+   location Location? @relation(fields: [locationId], references: [id], onDelete: SetDefault)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -419,12 +412,12 @@ model Permission {
 }
 
 model RolePermission {
-   id           String @id @default(cuid())
-   roleId       String
-   permissionId String
+   id           String  @id @default(cuid())
+   roleId       String?
+   permissionId String?
 
-   role       Role       @relation(fields: [roleId], references: [id])
-   permission Permission @relation(fields: [permissionId], references: [id])
+   role       Role?       @relation(fields: [roleId], references: [id], onDelete: SetNull)
+   permission Permission? @relation(fields: [permissionId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt

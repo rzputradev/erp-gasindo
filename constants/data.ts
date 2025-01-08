@@ -190,21 +190,39 @@ export const navItems: NavItem[] = [
             // icon: 'login'
          },
          {
+            title: 'Tipe Item',
+            shortcut: ['t', 'i'],
+            url: '/dashboard/item-type'
+            // icon: 'login'
+         },
+         {
             title: 'Item',
-            shortcut: ['l', 'l'],
+            shortcut: ['i', 'i'],
             url: '/dashboard/item'
             // icon: 'login'
          },
          {
             title: 'Pembeli',
-            shortcut: ['l', 'l'],
+            shortcut: ['p', 'i'],
             url: '/dashboard/buyer'
             // icon: 'login'
          },
          {
             title: 'Pemasok',
-            shortcut: ['l', 'l'],
+            shortcut: ['p', 'k'],
             url: '/dashboard/supplier'
+            // icon: 'login'
+         },
+         {
+            title: 'Tipe Kendaraan',
+            shortcut: ['t', 'p'],
+            url: '/dashboard/vehicle-type'
+            // icon: 'login'
+         },
+         {
+            title: 'Pengangkutan',
+            shortcut: ['p', 'p'],
+            url: '/dashboard/transporter'
             // icon: 'login'
          }
       ]

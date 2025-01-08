@@ -14,6 +14,7 @@ import {
    authRoutes,
    publicRoutes
 } from '@/routes';
+import { User } from '@prisma/client';
 
 const credentialsConfig = credentials({
    async authorize(credentials) {
@@ -22,7 +23,7 @@ const credentialsConfig = credentials({
       if (validateFields.success) {
          const { email, password } = validateFields.data;
 
-         const user = await getUserByEmail(email);
+         const user: User | null = await getUserByEmail(email);
          if (!user || !user.password) return null;
 
          const passwordMatch = await bcrypt.compare(password, user.password);
@@ -61,32 +62,35 @@ const config = {
 
          return true;
       },
-      async session({ session, token }: any) {
-         if (token.sub && session.user) {
-            session.user.id = token.sub;
-         }
-         if (token.locationId && session.user) {
-            // session.user.locationId = token.locationId
-            session.user.name = token.name;
-            session.user.email = token.email;
-            // session.user.isOAuth = token.isOAuth
-         }
-
-         return session;
-      },
       async jwt({ token }) {
          if (!token.sub) return token;
 
          const existingUser = await getUserById(token.sub);
          if (!existingUser) return token;
 
-         // const existingAccount = await getAccountByUserId(existingUser.id)
-         // token.isOAuth = !!existingAccount
          token.name = existingUser.name;
          token.email = existingUser.email;
-         // token.locationId = existingUser.locationId
+         token.location = existingUser.location?.key;
+         token.role = existingUser.role?.key;
+         token.permissions =
+            existingUser.role?.permissions?.map(
+               (perm) => perm.permission?.key
+            ) ?? [];
 
          return token;
+      },
+      async session({ session, token }: any) {
+         if (token.sub && session.user) {
+            session.user.id = token.sub;
+         }
+         if (session.user) {
+            session.user.name = token.name;
+            session.user.email = token.email;
+            session.user.location = token.location;
+            session.user.role = token.role;
+            session.user.permissions = token.permissions;
+         }
+         return session;
       }
    },
    events: {

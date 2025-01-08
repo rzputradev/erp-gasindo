@@ -26,7 +26,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormSuccess } from '@/components/form-success';
-import { updateBuyerSchema } from '@/lib/schemas/buyer';
 import { updateSupplier } from '@/actions/supplier/update';
 import { updateSupplierSchema } from '@/lib/schemas/supplier';
 
@@ -57,6 +56,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
       startTransition(() => {
          updateSupplier(values)
             .then((res) => {
+               setIspending(false);
                if (res?.error) {
                   setError(res.error);
                   toast.error(res.error);
@@ -66,9 +66,9 @@ export function UpdateForm({ data }: UpdateFormProps) {
                   setSuccess(res.success);
                   toast.success(res.success);
                }
-               setIspending(false);
             })
             .catch((e) => {
+               form.reset();
                console.log(e);
                toast.error('Something went wrong!');
             });

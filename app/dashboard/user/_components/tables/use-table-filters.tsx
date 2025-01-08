@@ -42,7 +42,7 @@ export function useTableFilters() {
    }, [setSearchQuery, setLocationFilter, setRoleFilter, setPage]);
 
    const isAnyFilterActive = useMemo(() => {
-      return !!searchQuery || !!locationFilter || roleFilter;
+      return !!searchQuery || !!locationFilter || !!roleFilter;
    }, [searchQuery, locationFilter, roleFilter]);
 
    return {
