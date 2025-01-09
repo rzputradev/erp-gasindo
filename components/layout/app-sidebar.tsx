@@ -12,6 +12,7 @@ import {
    DropdownMenuItem,
    DropdownMenuLabel,
    DropdownMenuSeparator,
+   DropdownMenuShortcut,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import {
@@ -39,9 +40,9 @@ import {
    GalleryVerticalEnd,
    LogOut
 } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
 import { Logo } from '../logo';
@@ -55,6 +56,7 @@ export const company = {
 export default function AppSidebar() {
    const { data: session } = useSession();
    const pathname = usePathname();
+   const router = useRouter();
 
    return (
       <Sidebar collapsible="icon">
@@ -71,7 +73,7 @@ export default function AppSidebar() {
          </SidebarHeader>
          <SidebarContent className="overflow-x-hidden">
             <SidebarGroup>
-               <SidebarGroupLabel>Overview</SidebarGroupLabel>
+               <SidebarGroupLabel>Manu Applikasi</SidebarGroupLabel>
                <SidebarMenu>
                   {navItems.map((item) => {
                      const Icon = item.icon ? Icons[item.icon] : Icons.logo;
@@ -193,22 +195,37 @@ export default function AppSidebar() {
                         <DropdownMenuSeparator />
 
                         <DropdownMenuGroup>
-                           <DropdownMenuItem>
-                              <BadgeCheck />
-                              Account
+                           <DropdownMenuItem
+                              onClick={() => router.push('/dashboard')}
+                           >
+                              Beranda
+                              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
                            </DropdownMenuItem>
-                           <DropdownMenuItem>
-                              <CreditCard />
-                              Billing
+                           <DropdownMenuItem
+                              onClick={() => router.push('/dashboard/personal')}
+                           >
+                              Info Pribadi
+                              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                            </DropdownMenuItem>
-                           <DropdownMenuItem>
-                              <Bell />
-                              Notifications
+                           <DropdownMenuItem
+                              onClick={() =>
+                                 router.push('/dashboard/change-password')
+                              }
+                           >
+                              Ganti Password
+                              <DropdownMenuShortcut>⌘G</DropdownMenuShortcut>
+                           </DropdownMenuItem>
+                           <DropdownMenuItem
+                              onClick={() => router.push('/dashboard/kanban')}
+                           >
+                              Papan Catatan
+                              <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
                            </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                           <LogOut />
+                        <DropdownMenuItem
+                           onClick={() => signOut({ callbackUrl: '/' })}
+                        >
                            Log out
                         </DropdownMenuItem>
                      </DropdownMenuContent>

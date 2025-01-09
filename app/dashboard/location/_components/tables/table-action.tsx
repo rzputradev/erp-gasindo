@@ -1,28 +1,24 @@
 'use client';
 
-import { Location, Role } from '@prisma/client';
-
-import { useTableFilters } from './use-table-filters';
-import { columns } from './columns';
+import {
+   LOCATION_TYPE_OPTIONS,
+   useLocationTableFilters
+} from './use-table-filters';
 
 import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
-import { DataTable } from '@/components/ui/table/data-table';
 
-interface TableProps {
-   data: Role[];
-   totalData: number;
-}
-
-export function Table({ data, totalData }: TableProps) {
+export function TableAction() {
    const {
+      typeFilter,
+      setTypeFilter,
       isAnyFilterActive,
       resetFilters,
       searchQuery,
       setPage,
       setSearchQuery
-   } = useTableFilters();
+   } = useLocationTableFilters();
 
    return (
       <div className="space-y-4">
@@ -33,12 +29,18 @@ export function Table({ data, totalData }: TableProps) {
                setSearchQuery={setSearchQuery}
                setPage={setPage}
             />
+            <DataTableFilterBox
+               filterKey="type"
+               title="Tipe Lokasi"
+               options={LOCATION_TYPE_OPTIONS}
+               setFilterValue={setTypeFilter}
+               filterValue={typeFilter}
+            />
             <DataTableResetFilter
                isFilterActive={isAnyFilterActive}
                onReset={resetFilters}
             />
          </div>
-         <DataTable columns={columns} data={data} totalItems={totalData} />
       </div>
    );
 }

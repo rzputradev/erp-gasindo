@@ -1,8 +1,9 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { CellAction } from './cell-action';
 import { ItemType } from '@prisma/client';
+
+import { CellAction } from './cell-action';
 
 export const columns: ColumnDef<ItemType>[] = [
    {

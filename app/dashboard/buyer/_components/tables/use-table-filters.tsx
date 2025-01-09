@@ -1,15 +1,8 @@
 'use client';
 
 import { searchBaseParams } from '@/lib/params/base';
-import { LocationType } from '@prisma/client';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
-
-export const LOCATION_TYPE_OPTIONS = [
-   { value: LocationType.OFFICE, label: 'Kantor' },
-   { value: LocationType.MILL, label: 'Pabrik' },
-   { value: LocationType.WAREHOUSE, label: 'Gudang' }
-];
 
 export function useTableFilters() {
    const [searchQuery, setSearchQuery] = useQueryState(

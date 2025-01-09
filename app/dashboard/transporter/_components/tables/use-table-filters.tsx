@@ -1,8 +1,9 @@
 'use client';
 
-import { searchTransporterParams } from '@/lib/params/transporter';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
+
+import { searchTransporterParams } from '@/lib/params/transporter';
 
 export function useTableFilters() {
    const [searchQuery, setSearchQuery] = useQueryState(

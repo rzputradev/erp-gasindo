@@ -1,9 +1,13 @@
-import PageContainer from '@/components/layout/page-container';
-import { db } from '@/lib/db';
-import { UpdateForm } from '../_components/form/update';
-import { notFound } from 'next/navigation';
-import { Location, Role, User } from '@prisma/client';
 import { SearchParams } from 'nuqs';
+import { Suspense } from 'react';
+import { Location, Role, User } from '@prisma/client';
+import { notFound } from 'next/navigation';
+
+import { db } from '@/lib/db';
+
+import { UpdateForm } from '../_components/form/update';
+import PageContainer from '@/components/layout/page-container';
+import FormCardSkeleton from '@/components/form-card-skeleton';
 
 export const metadata = {
    title: 'Dashboard : Perbaharui Pengguna'
@@ -31,8 +35,12 @@ export default async function Page(props: pageProps) {
    }
 
    return (
-      <PageContainer>
-         <UpdateForm data={data} locations={locations} roles={roles} />
+      <PageContainer scrollable>
+         <div className="flex-1 space-y-4">
+            <Suspense fallback={<FormCardSkeleton />}>
+               <UpdateForm data={data} locations={locations} roles={roles} />
+            </Suspense>
+         </div>
       </PageContainer>
    );
 }

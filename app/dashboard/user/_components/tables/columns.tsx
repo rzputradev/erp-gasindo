@@ -1,10 +1,10 @@
 'use client';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Employee } from '@/constants/data';
+
 import { ColumnDef } from '@tanstack/react-table';
+import { User, UserStatus } from '@prisma/client';
+
 import { CellAction } from './cell-action';
-import { Gender, User, UserStatus } from '@prisma/client';
-import Image from 'next/image';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 

@@ -1,14 +1,13 @@
-import PageContainer from '@/components/layout/page-container';
-import { db } from '@/lib/db';
-import { UpdateForm } from '../_components/form/update';
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { SearchParams } from 'nuqs';
-import {
-   Location,
-   LocationType,
-   Transporter,
-   VehicleType
-} from '@prisma/client';
+
+import { db } from '@/lib/db';
+
+import { UpdateForm } from '../_components/form/update';
+import { Location, LocationType, Transporter } from '@prisma/client';
+import PageContainer from '@/components/layout/page-container';
+import FormCardSkeleton from '@/components/form-card-skeleton';
 
 export const metadata = {
    title: 'Dashboard : Perbaharui Lokasi'
@@ -40,8 +39,12 @@ export default async function Page(props: pageProps) {
    }
 
    return (
-      <PageContainer>
-         <UpdateForm data={data} locations={locations} />
+      <PageContainer scrollable>
+         <div className="flex-1 space-y-4">
+            <Suspense fallback={<FormCardSkeleton />}>
+               <UpdateForm data={data} locations={locations} />
+            </Suspense>
+         </div>
       </PageContainer>
    );
 }

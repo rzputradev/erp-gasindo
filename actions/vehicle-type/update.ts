@@ -17,17 +17,15 @@ export async function updateVehicleType(
          updateVehicleTypeSchema.safeParse(values);
       if (!success) return { error: 'Data tidak valid' };
 
-      const { id, name, description, loadingCost, unloadingCost } =
-         parsedValues;
+      const { id, name, description, key } = parsedValues;
 
       await db.$transaction(async (tx) => {
          await tx.vehicleType.update({
             where: { id },
             data: {
                name,
-               description,
-               loadingCost,
-               unloadingCost
+               key,
+               description
             }
          });
       });

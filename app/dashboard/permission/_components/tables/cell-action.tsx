@@ -6,6 +6,7 @@ import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Permission } from '@prisma/client';
+import { deletePermission } from '@/actions/permission/delete';
 
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,6 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { deletePermission } from '@/actions/permission/delete';
 
 interface CellActionProps {
    data: Permission;

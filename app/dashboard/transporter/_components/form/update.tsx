@@ -1,15 +1,16 @@
 'use client';
 
 import * as z from 'zod';
-import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
+import { Location, Transporter } from '@prisma/client';
 
-import { Location, Transporter, VehicleType } from '@prisma/client';
+import { updateTransporterSchema } from '@/lib/schemas/transporter';
+import { updateTransporter } from '@/actions/transporter/update';
+
 import { FormError } from '@/components/form-error';
-
 import { Button } from '@/components/ui/button';
 import {
    Form,
@@ -23,7 +24,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormSuccess } from '@/components/form-success';
-import { updateTransporterSchema } from '@/lib/schemas/transporter';
 import {
    Select,
    SelectContent,
@@ -31,7 +31,6 @@ import {
    SelectTrigger,
    SelectValue
 } from '@/components/ui/select';
-import { updateTransporter } from '@/actions/transporter/update';
 
 interface UpdateFormProps {
    data: Transporter;
@@ -82,7 +81,7 @@ export function UpdateForm({ data, locations }: UpdateFormProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Perbaharui Tipe Kendaraan

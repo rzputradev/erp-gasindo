@@ -1,9 +1,10 @@
 'use client';
 
-import { searchLocationParams } from '@/lib/params/location';
 import { LocationType } from '@prisma/client';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
+
+import { searchLocationParams } from '@/lib/params/location';
 
 export const LOCATION_TYPE_OPTIONS = [
    { value: LocationType.OFFICE, label: 'Kantor' },

@@ -18,8 +18,9 @@ export async function GET(
    { params }: { params: any }
 ): Promise<NextResponse> {
    try {
-      // Construct the file path
-      const imagePath = await params.path.join('/');
+      // Await params to resolve before accessing its properties
+      const resolvedParams = await params;
+      const imagePath = resolvedParams.path.join('/');
       const fullPath = path.join(UPLOADS_DIR, imagePath);
 
       // Check if the file exists

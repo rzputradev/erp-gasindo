@@ -1,18 +1,16 @@
 'use client';
 
 import * as z from 'zod';
-import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { Buyer } from '@prisma/client';
 
-import { Buyer, Permission } from '@prisma/client';
+import { updateBuyer } from '@/actions/buyer/update';
+import { updateBuyerSchema } from '@/lib/schemas/buyer';
+
 import { FormError } from '@/components/form-error';
-import { updatePermissionSchema } from '@/lib/schemas/permission';
-import { updatePermission } from '@/actions/permission/update';
-
 import { Button } from '@/components/ui/button';
 import {
    Form,
@@ -26,8 +24,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormSuccess } from '@/components/form-success';
-import { updateBuyerSchema } from '@/lib/schemas/buyer';
-import { updateBuyer } from '@/actions/buyer/update';
 
 interface UpdateFormProps {
    data: Buyer;
@@ -77,10 +73,10 @@ export function UpdateForm({ data }: UpdateFormProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
-               Perbaharui Pembelian
+               Perbaharui Pembeli
             </CardTitle>
          </CardHeader>
          <CardContent>

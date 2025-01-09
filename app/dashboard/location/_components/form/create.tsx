@@ -3,6 +3,13 @@
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { LocationType } from '@prisma/client';
+import { useState, startTransition } from 'react';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+
+import { createLocationSchema } from '@/lib/schemas/location';
+import { createLocation } from '@/actions/location/create';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,14 +30,6 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-
-import { createLocationSchema } from '@/lib/schemas/location';
-import { LocationType } from '@prisma/client';
-
-import { useState, startTransition } from 'react';
-import { createLocation } from '@/actions/location/create';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 
@@ -74,7 +73,7 @@ export function CreateForm() {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Tambah Lokasi

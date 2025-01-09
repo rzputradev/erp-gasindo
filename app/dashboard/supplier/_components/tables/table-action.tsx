@@ -1,19 +1,10 @@
 'use client';
 
-import { DataTable } from '@/components/ui/table/data-table';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
-import { columns } from './columns';
 import { useTableFilters } from './use-table-filters';
-import { Buyer, Permission } from '@prisma/client';
 
-export function Table({
-   data,
-   totalData
-}: {
-   data: Buyer[];
-   totalData: number;
-}) {
+export function TableAction() {
    const {
       isAnyFilterActive,
       resetFilters,
@@ -36,7 +27,6 @@ export function Table({
                onReset={resetFilters}
             />
          </div>
-         <DataTable columns={columns} data={data} totalItems={totalData} />
       </div>
    );
 }

@@ -1,8 +1,9 @@
 'use client';
 
-import { searchBaseParams } from '@/lib/params/base';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
+
+import { searchBaseParams } from '@/lib/params/base';
 
 export function useTableFilters() {
    const [searchQuery, setSearchQuery] = useQueryState(
