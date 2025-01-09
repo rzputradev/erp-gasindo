@@ -1,20 +1,17 @@
 'use client';
 
-import { DataTable } from '@/components/ui/table/data-table';
+import { Location } from '@prisma/client';
+
+import { useTableFilters } from './use-table-filters';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
-import { columns } from './columns';
-import { useTableFilters } from './use-table-filters';
-import { Location, Transporter } from '@prisma/client';
 import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
 
 interface TableProps {
-   data: Transporter[];
-   totalData: number;
    locations: Location[];
 }
 
-export function Table({ data, totalData, locations }: TableProps) {
+export function TableAction({ locations }: TableProps) {
    const LOCATION_OPTIONS = locations.map((location) => ({
       value: location.id,
       label: location.name
@@ -51,7 +48,6 @@ export function Table({ data, totalData, locations }: TableProps) {
                onReset={resetFilters}
             />
          </div>
-         <DataTable columns={columns} data={data} totalItems={totalData} />
       </div>
    );
 }

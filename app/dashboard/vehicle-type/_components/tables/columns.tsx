@@ -1,8 +1,9 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { CellAction } from './cell-action';
 import { VehicleType } from '@prisma/client';
+
+import { CellAction } from './cell-action';
 
 export const columns: ColumnDef<VehicleType>[] = [
    {
@@ -17,12 +18,8 @@ export const columns: ColumnDef<VehicleType>[] = [
       header: 'Nama'
    },
    {
-      accessorKey: 'unloadingCost',
-      header: 'Biaya Bongkar'
-   },
-   {
-      accessorKey: 'loadingCost',
-      header: 'Biaya Muat'
+      accessorKey: 'key',
+      header: 'Key'
    },
    {
       accessorKey: 'description',

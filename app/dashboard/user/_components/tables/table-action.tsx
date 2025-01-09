@@ -1,27 +1,18 @@
 'use client';
 
-import { DataTable } from '@/components/ui/table/data-table';
+import { Location, Role } from '@prisma/client';
+
+import { useTableFilters } from './use-table-filters';
 import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
-import { Employee } from '@/constants/data';
-import { columns } from './columns';
-import { useTableFilters } from './use-table-filters';
-import { Location, Role, User } from '@prisma/client';
 
 interface TableProps {
-   data: User[];
-   totalData: number;
    locations: Location[];
    roles: Role[];
 }
 
-export default function Table({
-   data,
-   totalData,
-   locations,
-   roles
-}: TableProps) {
+export function TableAction({ locations, roles }: TableProps) {
    const LOCATION_OPTIONS = locations.map((location) => ({
       value: location.id,
       label: location.name
@@ -71,7 +62,6 @@ export default function Table({
                onReset={resetFilters}
             />
          </div>
-         <DataTable columns={columns} data={data} totalItems={totalData} />
       </div>
    );
 }

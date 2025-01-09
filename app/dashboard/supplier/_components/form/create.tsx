@@ -1,15 +1,14 @@
 'use client';
 
 import * as z from 'zod';
-import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { createBuyerSchema } from '@/lib/schemas/buyer';
-import { createBuyer } from '@/actions/buyer/create';
+import { createSupplier } from '@/actions/supplier/create';
+import { createSupplierSchema } from '@/lib/schemas/supplier';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -25,8 +24,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { createSupplierSchema } from '@/lib/schemas/supplier';
-import { createSupplier } from '@/actions/supplier/create';
 
 export function CreateForm() {
    const router = useRouter();
@@ -72,7 +69,7 @@ export function CreateForm() {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Tambah Pemasok

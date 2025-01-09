@@ -12,7 +12,9 @@ import {
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 export function UserNav() {
+   const router = useRouter();
    const { data: session } = useSession();
    if (session) {
       return (
@@ -44,23 +46,32 @@ export function UserNav() {
                </DropdownMenuLabel>
                <DropdownMenuSeparator />
                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                     Profile
-                     <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                     Billing
+                  <DropdownMenuItem onClick={() => router.push('/dashboard')}>
+                     Beranda
                      <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                     Settings
-                     <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                  <DropdownMenuItem
+                     onClick={() => router.push('/dashboard/personal')}
+                  >
+                     Info Pribadi
+                     <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>New Team</DropdownMenuItem>
+                  <DropdownMenuItem
+                     onClick={() => router.push('/dashboard/change-password')}
+                  >
+                     Ganti Password
+                     <DropdownMenuShortcut>⌘G</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                     onClick={() => router.push('/dashboard/kanban')}
+                  >
+                     Papan Catatan
+                     <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
+                  </DropdownMenuItem>
                </DropdownMenuGroup>
                <DropdownMenuSeparator />
-               <DropdownMenuItem onClick={() => signOut()}>
-                  Log out
+               <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>
+                  Keluar
                   <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                </DropdownMenuItem>
             </DropdownMenuContent>

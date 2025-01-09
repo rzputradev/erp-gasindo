@@ -1,16 +1,10 @@
-import Link from 'next/link';
+import { LocationType, Prisma } from '@prisma/client';
 
-import { cn } from '@/lib/utils';
-import { Plus } from 'lucide-react';
-import { searchLocationParamsCache } from '@/lib/params/location';
-import { Location, LocationType, Prisma } from '@prisma/client';
-import { Table } from './tables';
 import { db } from '@/lib/db';
+import { searchLocationParamsCache } from '@/lib/params/location';
 
-import PageContainer from '@/components/layout/page-container';
-import { buttonVariants } from '@/components/ui/button';
-import { Heading } from '@/components/ui/heading';
-import { Separator } from '@/components/ui/separator';
+import { DataTable } from '@/components/ui/table/data-table';
+import { columns } from './tables/columns';
 
 type LocationListingPage = {};
 
@@ -43,26 +37,6 @@ export async function ListingPage({}: LocationListingPage) {
       db.location.findMany(filters),
       db.location.count({ where: filters.where })
    ]);
-   const locations: Location[] = data;
 
-   return (
-      <PageContainer scrollable>
-         <div className="space-y-4">
-            <div className="flex items-start justify-between">
-               <Heading
-                  title={`Lokasi (${totalData})`}
-                  description="Kelola lokasi"
-               />
-               <Link
-                  href={'/dashboard/location/create'}
-                  className={cn(buttonVariants({ variant: 'default' }))}
-               >
-                  <Plus className="mr-2 h-4 w-4" /> Tambah
-               </Link>
-            </div>
-            <Separator />
-            <Table data={locations} totalData={totalData} />
-         </div>
-      </PageContainer>
-   );
+   return <DataTable columns={columns} data={data} totalItems={totalData} />;
 }

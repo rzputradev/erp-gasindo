@@ -6,12 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
-import { useRouter } from 'next/navigation';
-
 import { Item, ItemType, UnitType } from '@prisma/client';
 import { FormError } from '@/components/form-error';
-import { updatePermissionSchema } from '@/lib/schemas/permission';
-import { updatePermission } from '@/actions/permission/update';
+
+import { updateItem } from '@/actions/item/update';
+import { updateItemSchema } from '@/lib/schemas/item';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -27,8 +26,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormSuccess } from '@/components/form-success';
-import { updateItemSchema } from '@/lib/schemas/item';
-import { updateItem } from '@/actions/item/update';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
    Select,
@@ -89,7 +86,7 @@ export function UpdateForm({ data, itemTypes }: UpdateFormProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Perbaharui Item

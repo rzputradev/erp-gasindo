@@ -1,14 +1,10 @@
-import PageContainer from '@/components/layout/page-container';
-import { buttonVariants } from '@/components/ui/button';
-import { Heading } from '@/components/ui/heading';
-import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
-import { Plus } from 'lucide-react';
-import Link from 'next/link';
-import { Table } from './tables';
+import { Prisma } from '@prisma/client';
+
 import { db } from '@/lib/db';
-import { Buyer, Prisma } from '@prisma/client';
 import { searchBaseParamsCache } from '@/lib/params/base';
+
+import { columns } from './tables/columns';
+import { DataTable } from '@/components/ui/table/data-table';
 
 export async function ListingPage() {
    const page = searchBaseParamsCache.get('page');
@@ -35,26 +31,6 @@ export async function ListingPage() {
       db.buyer.findMany(filters),
       db.buyer.count({ where: filters.where })
    ]);
-   const datas: Buyer[] = data;
 
-   return (
-      <PageContainer scrollable>
-         <div className="space-y-4">
-            <div className="flex items-start justify-between">
-               <Heading
-                  title={`Pembeli (${totalData})`}
-                  description="Kelola data pembeli"
-               />
-               <Link
-                  href={'/dashboard/buyer/create'}
-                  className={cn(buttonVariants({ variant: 'default' }))}
-               >
-                  <Plus className="mr-2 h-4 w-4" /> Tambah
-               </Link>
-            </div>
-            <Separator />
-            <Table data={datas} totalData={totalData} />
-         </div>
-      </PageContainer>
-   );
+   return <DataTable columns={columns} data={data} totalItems={totalData} />;
 }

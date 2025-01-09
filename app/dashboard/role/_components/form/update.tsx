@@ -3,7 +3,11 @@
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { startTransition, useState } from 'react';
+import { Permission, Role, RolePermission } from '@prisma/client';
 
+import { updateRoleSchema } from '@/lib/schemas/role';
 import { updateRole } from '@/actions/role/update';
 
 import { Button } from '@/components/ui/button';
@@ -19,16 +23,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-
-import { updateRoleSchema } from '@/lib/schemas/role';
-import { Permission, Role, RolePermission } from '@prisma/client';
-
-import { startTransition, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Switch } from '@/components/ui/switch';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { toast } from 'sonner';
 
 interface UpdateFormProps {
    data: Role & {
@@ -38,7 +35,6 @@ interface UpdateFormProps {
 }
 
 export function UpdateForm({ data, allPermissions }: UpdateFormProps) {
-   const router = useRouter();
    const [isPending, setIspending] = useState(false);
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);

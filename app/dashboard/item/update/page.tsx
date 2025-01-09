@@ -4,6 +4,8 @@ import { UpdateForm } from '../_components/form/update';
 import { notFound } from 'next/navigation';
 import { SearchParams } from 'nuqs';
 import { Item, ItemType } from '@prisma/client';
+import { Suspense } from 'react';
+import FormCardSkeleton from '@/components/form-card-skeleton';
 
 export const metadata = {
    title: 'Dashboard : Perbaharui Lokasi'
@@ -30,8 +32,12 @@ export default async function Page(props: pageProps) {
    }
 
    return (
-      <PageContainer>
-         <UpdateForm data={data} itemTypes={itemTypes} />
+      <PageContainer scrollable>
+         <div className="flex-1 space-y-4">
+            <Suspense fallback={<FormCardSkeleton />}>
+               <UpdateForm data={data} itemTypes={itemTypes} />
+            </Suspense>
+         </div>
       </PageContainer>
    );
 }

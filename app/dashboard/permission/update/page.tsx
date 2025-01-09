@@ -1,11 +1,15 @@
-import PageContainer from '@/components/layout/page-container';
-import { db } from '@/lib/db';
-import { UpdateForm } from '../_components/form/update';
 import { notFound } from 'next/navigation';
 import { SearchParams } from 'nuqs';
+import { Suspense } from 'react';
+
+import { db } from '@/lib/db';
+
+import { UpdateForm } from '../_components/form/update';
+import PageContainer from '@/components/layout/page-container';
+import FormCardSkeleton from '@/components/form-card-skeleton';
 
 export const metadata = {
-   title: 'Dashboard : Perbaharui Lokasi'
+   title: 'Dashboard : Perbaharui Izin'
 };
 
 type pageProps = {
@@ -26,8 +30,12 @@ export default async function Page(props: pageProps) {
    }
 
    return (
-      <PageContainer>
-         <UpdateForm data={data} />
+      <PageContainer scrollable>
+         <div className="flex-1 space-y-4">
+            <Suspense fallback={<FormCardSkeleton />}>
+               <UpdateForm data={data} />
+            </Suspense>
+         </div>
       </PageContainer>
    );
 }

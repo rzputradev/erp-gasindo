@@ -6,9 +6,9 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { ItemType, UnitType } from '@prisma/client';
 
-import { createPermissionSchema } from '@/lib/schemas/permission';
-import { createPersmission } from '@/actions/permission/create';
+import { createItem } from '@/actions/item/create';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -27,7 +27,6 @@ import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { createItemSchema } from '@/lib/schemas/item';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ItemType, UnitType } from '@prisma/client';
 import {
    Select,
    SelectContent,
@@ -35,7 +34,6 @@ import {
    SelectTrigger,
    SelectValue
 } from '@/components/ui/select';
-import { createItem } from '@/actions/item/create';
 
 interface CreateFormProps {
    itemTypes: ItemType[];
@@ -87,7 +85,7 @@ export function CreateForm({ itemTypes }: CreateFormProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Tambah Item

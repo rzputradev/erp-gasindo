@@ -234,9 +234,8 @@ model Order {
 model VehicleType {
    id             String          @id @default(cuid())
    name           String
+   key            String          @unique
    description    String?
-   loadingCost    Float?
-   unloadingCost  Float?
    incomingScales IncomingScale[]
 
    createdAt DateTime @default(now())

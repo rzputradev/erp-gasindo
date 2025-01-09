@@ -1,16 +1,14 @@
 'use client';
 
 import * as z from 'zod';
-import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { VehicleType } from '@prisma/client';
 
-import { ItemType, VehicleType } from '@prisma/client';
-import { FormError } from '@/components/form-error';
-import { updatePermissionSchema } from '@/lib/schemas/permission';
+import { updateVehicleTypeSchema } from '@/lib/schemas/vehicle-type';
+import { updateVehicleType } from '@/actions/vehicle-type/update';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,9 +22,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { updateVehicleTypeSchema } from '@/lib/schemas/vehicle-type';
-import { updateVehicleType } from '@/actions/vehicle-type/update';
 
 interface UpdateFormProps {
    data: VehicleType;
@@ -42,9 +39,8 @@ export function UpdateForm({ data }: UpdateFormProps) {
       defaultValues: {
          id: data.id,
          name: data.name,
-         description: data.description || '',
-         loadingCost: data.loadingCost || 0,
-         unloadingCost: data.unloadingCost || 0
+         key: data.key,
+         description: data.description || ''
       }
    });
 
@@ -75,7 +71,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Perbaharui Tipe Kendaraan
@@ -108,6 +104,25 @@ export function UpdateForm({ data }: UpdateFormProps) {
                      />
 
                      <FormField
+                        control={form.control}
+                        name="key"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Key</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    placeholder="Masukkan key"
+                                    type="text"
+                                    disabled={isPending}
+                                    {...field}
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+
+                     {/* <FormField
                         control={form.control}
                         name="loadingCost"
                         render={({ field }) => (
@@ -143,7 +158,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
                               <FormMessage />
                            </FormItem>
                         )}
-                     />
+                     /> */}
                   </div>
 
                   <FormField

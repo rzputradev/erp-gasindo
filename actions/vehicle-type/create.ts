@@ -17,15 +17,14 @@ export async function createVehicleType(
          createVehicleTypeSchema.safeParse(values);
       if (!success) return { error: 'Data tidak valid' };
 
-      const { name, description, loadingCost, unloadingCost } = parsedValues;
+      const { name, description, key } = parsedValues;
 
       await db.$transaction(async (tx) => {
          await tx.vehicleType.create({
             data: {
                name,
                description,
-               loadingCost,
-               unloadingCost
+               key
             }
          });
       });

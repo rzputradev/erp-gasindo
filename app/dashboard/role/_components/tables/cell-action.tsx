@@ -4,7 +4,9 @@ import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
 import { toast } from 'sonner';
-import { Location, Role } from '@prisma/client';
+import { Role } from '@prisma/client';
+
+import { deleteRole } from '@/actions/role/delete';
 
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
@@ -15,7 +17,6 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { deleteRole } from '@/actions/role/delete';
 
 interface CellActionProps {
    data: Role;

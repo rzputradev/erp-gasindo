@@ -1,8 +1,9 @@
 'use client';
 
-import { searchItemParams } from '@/lib/params/item';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
+
+import { searchItemParams } from '@/lib/params/item';
 
 export function useLocationTableFilters() {
    const [searchQuery, setSearchQuery] = useQueryState(

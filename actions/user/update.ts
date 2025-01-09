@@ -15,7 +15,7 @@ export async function updateUser(values: z.infer<typeof updateUserSchema>) {
 
       const { success, data: parsedValues } =
          updateUserSchema.safeParse(values);
-      if (!success) return { error: 'Data tidak valid', details: parsedValues };
+      if (!success) return { error: 'Data tidak valid' };
 
       const {
          id,

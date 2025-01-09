@@ -16,7 +16,6 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { deleteItemType } from '@/actions/item-type/delete';
 import { deleteVehicleType } from '@/actions/vehicle-type/delete';
 
 interface CellActionProps {

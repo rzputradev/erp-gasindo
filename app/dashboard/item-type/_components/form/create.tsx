@@ -7,11 +7,13 @@ import { toast } from 'sonner';
 import { startTransition, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { createItemTypeSchema } from '@/lib/schemas/item-type';
+import { createItemType } from '@/actions/item-type/create';
+
 import { Button } from '@/components/ui/button';
 import {
    Form,
    FormControl,
-   FormDescription,
    FormField,
    FormItem,
    FormLabel,
@@ -22,8 +24,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { createItemTypeSchema } from '@/lib/schemas/item-type';
-import { createItemType } from '@/actions/item-type/create';
 
 export function CreateForm() {
    const router = useRouter();
@@ -67,7 +67,7 @@ export function CreateForm() {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Tambah Tipe Item

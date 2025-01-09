@@ -37,7 +37,9 @@ import {
    Shield,
    Bold,
    Bolt,
-   Scale
+   Scale,
+   UserRoundCog,
+   KeyRound
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -95,5 +97,7 @@ export const Icons = {
    shieldCheck: ShieldCheck,
    shield: Shield,
    bold: Bolt,
-   scale: Scale
+   scale: Scale,
+   userRoundCog: UserRoundCog,
+   keyRound: KeyRound
 };

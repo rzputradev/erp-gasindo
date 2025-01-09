@@ -4,8 +4,9 @@ import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { toast } from 'sonner';
-
 import { Transporter } from '@prisma/client';
+
+import { deleteTransporter } from '@/actions/transporter/delete';
 
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
@@ -16,9 +17,6 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { deleteItemType } from '@/actions/item-type/delete';
-import { deleteVehicleType } from '@/actions/vehicle-type/delete';
-import { deleteTransporter } from '@/actions/transporter/delete';
 
 interface CellActionProps {
    data: Transporter;

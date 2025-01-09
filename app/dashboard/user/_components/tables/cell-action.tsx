@@ -1,5 +1,13 @@
 'use client';
+
+import { User } from '@prisma/client';
+import { toast } from 'sonner';
+import { startTransition, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+
 import { deleteUser } from '@/actions/user/delete';
+
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,11 +17,6 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { User } from '@prisma/client';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { startTransition, useState } from 'react';
-import { toast } from 'sonner';
 
 interface CellActionProps {
    data: User;

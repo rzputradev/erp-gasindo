@@ -1,26 +1,17 @@
 'use client';
 
-import { DataTable } from '@/components/ui/table/data-table';
+import { useTableFilters } from './use-table-filters';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
-import { columns } from './columns';
-import { useLocationTableFilters } from './use-table-filters';
-import { Permission } from '@prisma/client';
 
-export function Table({
-   data,
-   totalData
-}: {
-   data: Permission[];
-   totalData: number;
-}) {
+export function TableAction() {
    const {
       isAnyFilterActive,
       resetFilters,
       searchQuery,
       setPage,
       setSearchQuery
-   } = useLocationTableFilters();
+   } = useTableFilters();
 
    return (
       <div className="space-y-4">
@@ -36,7 +27,6 @@ export function Table({
                onReset={resetFilters}
             />
          </div>
-         <DataTable columns={columns} data={data} totalItems={totalData} />
       </div>
    );
 }

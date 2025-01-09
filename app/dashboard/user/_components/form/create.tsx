@@ -6,13 +6,17 @@ import { useForm } from 'react-hook-form';
 import { startTransition, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Gender, Location, Role, UserStatus } from '@prisma/client';
+import { toast } from 'sonner';
 
 import { createUserSchema } from '@/lib/schemas/user';
+import { createUser } from '@/actions/user/create';
+import { FileUploader } from '@/components/file-uploader';
 
 import { Button } from '@/components/ui/button';
 import {
    Form,
    FormControl,
+   FormDescription,
    FormField,
    FormItem,
    FormLabel,
@@ -28,9 +32,6 @@ import {
 } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { FileUploader } from '@/components/file-uploader';
-import { createUser } from '@/actions/user/create';
-import { toast } from 'sonner';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 
@@ -55,7 +56,7 @@ export function CreateForm({ locations, roles }: CreateFormProps) {
          roleId: '',
          password: '',
          confirm_password: '',
-         status: undefined,
+         status: UserStatus.ACTIVE,
          gender: undefined
       }
    });
@@ -64,7 +65,6 @@ export function CreateForm({ locations, roles }: CreateFormProps) {
       setIspending(true);
       setError(undefined);
       setSuccess(undefined);
-      console.log(values);
       startTransition(() => {
          createUser(values)
             .then((res) => {
@@ -87,7 +87,7 @@ export function CreateForm({ locations, roles }: CreateFormProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Tambah Pengguna
@@ -238,24 +238,6 @@ export function CreateForm({ locations, roles }: CreateFormProps) {
 
                      <FormField
                         control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Password</FormLabel>
-                              <FormControl>
-                                 <Input
-                                    type="password"
-                                    placeholder="******"
-                                    {...field}
-                                 />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
                         name="status"
                         render={({ field }) => (
                            <FormItem>
@@ -282,6 +264,32 @@ export function CreateForm({ locations, roles }: CreateFormProps) {
                                     </SelectItem>
                                  </SelectContent>
                               </Select>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                     <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Password</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    type="password"
+                                    placeholder="******"
+                                    {...field}
+                                 />
+                              </FormControl>
+                              <FormDescription>
+                                 Gunakan minimal 6 karakter. Jangan gunakan kata
+                                 sandi dari situs lain, atau sesuatu yang
+                                 terlalu mudah dipahami seperti nama hewan
+                                 peliharaan Anda
+                              </FormDescription>
                               <FormMessage />
                            </FormItem>
                         )}

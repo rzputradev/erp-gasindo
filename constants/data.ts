@@ -123,136 +123,167 @@ export type Product = {
 
 export const navItems: NavItem[] = [
    {
-      title: 'Dashboard',
+      title: 'Beranda',
       url: '/dashboard/overview',
       icon: 'dashboard',
       isActive: false,
-      shortcut: ['d', 'd'],
-      items: [] // Empty array as there are no child items for Dashboard
+      shortcut: ['b', 'b'],
+      items: []
    },
    {
       title: 'Pengguna',
       url: '/dashboard/user',
-      shortcut: ['u', 'u'],
-      icon: 'user'
+      icon: 'user',
+      isActive: false,
+      shortcut: ['p', 'p'],
+      items: []
    },
    {
       title: 'Timbangan',
-      url: '/dashboard/scale',
+      url: '#',
       icon: 'scale',
-      shortcut: ['s', 's'],
-      isActive: false,
+      isActive: true,
+      shortcut: ['t', 't'],
       items: [
          {
             title: 'Barang masuk',
             url: '/dashboard/scale-in',
             icon: 'scale',
-            shortcut: ['s', 's']
+            isActive: false,
+            shortcut: ['b', 'm'],
+            items: []
          },
          {
             title: 'Barang Keluar',
             url: '/dashboard/scale-in',
             icon: 'scale',
-            shortcut: ['s', 's']
+            isActive: false,
+            shortcut: ['b', 'k'],
+            items: []
          }
       ]
    },
    {
       title: 'Hak Akses',
-      url: '#', // Placeholder as there is no direct link for the parent
+      url: '#',
       icon: 'shieldCheck',
       isActive: true,
+      shortcut: ['h', 'a'],
       items: [
          {
             title: 'Izin',
+            url: '/dashboard/permission',
+            icon: 'shieldCheck',
             shortcut: ['r', 'r'],
-            url: '/dashboard/permission'
-            // icon: 'login'
+            isActive: true,
+            items: []
          },
          {
             title: 'Role',
+            url: '/dashboard/role',
+            icon: 'shieldCheck',
+            isActive: true,
             shortcut: ['r', 'r'],
-            url: '/dashboard/role'
-            // icon: 'login'
+            items: []
          }
       ]
    },
    {
       title: 'Konfigurasi',
-      url: '#', // Placeholder as there is no direct link for the parent
+      url: '#',
       icon: 'bold',
       isActive: false,
+      shortcut: ['k', 'k'],
       items: [
          {
             title: 'Lokasi',
+            url: '/dashboard/location',
+            icon: 'bold',
+            isActive: true,
             shortcut: ['l', 'l'],
-            url: '/dashboard/location'
-            // icon: 'login'
+            items: []
          },
          {
             title: 'Tipe Item',
+            url: '/dashboard/item-type',
+            icon: 'bold',
+            isActive: true,
             shortcut: ['t', 'i'],
-            url: '/dashboard/item-type'
-            // icon: 'login'
+            items: []
          },
          {
             title: 'Item',
+            url: '/dashboard/item',
+            icon: 'bold',
+            isActive: true,
             shortcut: ['i', 'i'],
-            url: '/dashboard/item'
-            // icon: 'login'
+            items: []
          },
          {
             title: 'Pembeli',
+            url: '/dashboard/buyer',
+            icon: 'bold',
+            isActive: true,
             shortcut: ['p', 'i'],
-            url: '/dashboard/buyer'
-            // icon: 'login'
+            items: []
          },
          {
             title: 'Pemasok',
+            url: '/dashboard/supplier',
+            icon: 'bold',
+            isActive: true,
             shortcut: ['p', 'k'],
-            url: '/dashboard/supplier'
-            // icon: 'login'
+            items: []
          },
          {
             title: 'Tipe Kendaraan',
-            shortcut: ['t', 'p'],
-            url: '/dashboard/vehicle-type'
-            // icon: 'login'
+            url: '/dashboard/vehicle-type',
+            icon: 'bold',
+            isActive: true,
+            shortcut: ['t', 'k'],
+            items: []
          },
          {
             title: 'Pengangkutan',
-            shortcut: ['p', 'p'],
-            url: '/dashboard/transporter'
-            // icon: 'login'
+            url: '/dashboard/transporter',
+            icon: 'bold',
+            isActive: true,
+            shortcut: ['p', 'n'],
+            items: []
          }
       ]
    },
    {
-      title: 'Account',
-      url: '#', // Placeholder as there is no direct link for the parent
-      icon: 'billing',
+      title: 'Kanban',
+      url: '/dashboard/kanban',
+      icon: 'kanban',
+      shortcut: ['k', 'k'],
       isActive: false,
+      items: []
+   },
+   {
+      title: 'Pengaturan',
+      url: '#',
+      icon: 'settings',
+      isActive: false,
+      shortcut: ['p', 's'],
       items: [
          {
-            title: 'Profile',
-            url: '/dashboard/profile',
-            icon: 'userPen',
-            shortcut: ['m', 'm']
+            title: 'Info Pribadi',
+            url: '/dashboard/personal',
+            icon: 'userRoundCog',
+            shortcut: ['i', 'p'],
+            isActive: true,
+            items: []
          },
          {
             title: 'Ganti Password',
-            shortcut: ['l', 'l'],
-            url: '/',
-            icon: 'login'
+            shortcut: ['g', 'p'],
+            url: '/dashboard/change-password',
+            icon: 'keyRound',
+            isActive: true,
+            items: []
          }
       ]
    }
-   // {
-   //   title: 'Kanban',
-   //   url: '/dashboard/kanban',
-   //   icon: 'kanban',
-   //   shortcut: ['k', 'k'],
-   //   isActive: false,
-   //   items: [] // No child items
-   // }
 ];

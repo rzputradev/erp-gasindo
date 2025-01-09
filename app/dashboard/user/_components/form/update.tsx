@@ -4,14 +4,20 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { startTransition, useState } from 'react';
+import { signOut } from 'next-auth/react';
 import { Gender, Location, Role, User, UserStatus } from '@prisma/client';
+import { toast } from 'sonner';
 
 import { updateUserSchema } from '@/lib/schemas/user';
+import { FileUploader } from '@/components/file-uploader';
+import { useCurrentUser } from '@/hooks/use-current-user';
+import { updateUser } from '@/actions/user/update';
 
 import { Button } from '@/components/ui/button';
 import {
    Form,
    FormControl,
+   FormDescription,
    FormField,
    FormItem,
    FormLabel,
@@ -27,11 +33,8 @@ import {
 } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { FileUploader } from '@/components/file-uploader';
-import { updateUser } from '@/actions/user/update';
 import { FormSuccess } from '@/components/form-success';
 import { FormError } from '@/components/form-error';
-import { toast } from 'sonner';
 
 interface UpdateFormProps {
    data: User;
@@ -40,6 +43,7 @@ interface UpdateFormProps {
 }
 
 export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
+   const user = useCurrentUser();
    const [isPending, setIspending] = useState(false);
    const [error, setError] = useState<string | undefined>(undefined);
    const [success, setSuccess] = useState<string | undefined>(undefined);
@@ -55,7 +59,7 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
          roleId: data.roleId || '',
          password: undefined,
          confirm_password: undefined,
-         status: data.status || undefined,
+         status: data.status || UserStatus.ACTIVE,
          gender: data.gender || undefined
       }
    });
@@ -74,8 +78,12 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                   form.reset();
                }
                if (res?.success) {
+                  form.setValue('image', null);
                   setSuccess(res.success);
                   toast.success(res.success);
+                  if (values.id === user?.id) {
+                     signOut();
+                  }
                }
             })
             .catch((e) => {
@@ -87,7 +95,7 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Update Pengguna
@@ -117,6 +125,7 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                                     maxFiles={1}
                                     maxSize={1 * 1024 * 1024}
                                     multiple={false}
+                                    disabled={isPending}
                                  />
                               </FormControl>
                               <FormMessage />
@@ -134,6 +143,7 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                               <FormControl>
                                  <Input
                                     placeholder="Masukkan nama pengguna"
+                                    disabled={isPending}
                                     {...field}
                                  />
                               </FormControl>
@@ -190,6 +200,7 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                                  <Input
                                     type="email"
                                     placeholder="Masukkan alamat email"
+                                    disabled={isPending}
                                     {...field}
                                  />
                               </FormControl>
@@ -238,24 +249,6 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
 
                      <FormField
                         control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Password</FormLabel>
-                              <FormControl>
-                                 <Input
-                                    type="password"
-                                    placeholder="******"
-                                    {...field}
-                                 />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
                         name="status"
                         render={({ field }) => (
                            <FormItem>
@@ -282,6 +275,36 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                                     </SelectItem>
                                  </SelectContent>
                               </Select>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                     <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Password</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    type="password"
+                                    placeholder="******"
+                                    {...field}
+                                 />
+                              </FormControl>
+                              <FormDescription>
+                                 <p className="font-semibold">
+                                    {' '}
+                                    Kekuatan kata sandi:
+                                 </p>
+                                 Gunakan minimal 6 karakter. Jangan gunakan kata
+                                 sandi dari situs lain, atau sesuatu yang
+                                 terlalu mudah dipahami seperti nama hewan
+                                 peliharaan Anda
+                              </FormDescription>
                               <FormMessage />
                            </FormItem>
                         )}
@@ -317,6 +340,7 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                                  onValueChange={field.onChange}
                                  value={field.value}
                                  className="flex space-x-4"
+                                 disabled={isPending}
                               >
                                  <FormItem className="flex items-center space-x-2 space-y-0">
                                     <FormControl>
@@ -344,7 +368,9 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                   <FormSuccess message={success} />
                   <FormError message={error} />
 
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit" disabled={isPending}>
+                     Submit
+                  </Button>
                </form>
             </Form>
          </CardContent>

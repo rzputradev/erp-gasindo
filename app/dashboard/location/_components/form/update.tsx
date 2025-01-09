@@ -1,12 +1,10 @@
 'use client';
 
 import * as z from 'zod';
-import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useState, startTransition } from 'react';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 import { updateLocationSchema } from '@/lib/schemas/location';
 import { Location, LocationType } from '@prisma/client';
@@ -81,7 +79,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Perbaharui Lokasi
