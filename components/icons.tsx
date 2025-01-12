@@ -39,7 +39,21 @@ import {
    Bolt,
    Scale,
    UserRoundCog,
-   KeyRound
+   KeyRound,
+   TicketPlus,
+   TicketMinus,
+   Fingerprint,
+   IdCard,
+   MapPinned,
+   LibraryBig,
+   Package,
+   HandCoins,
+   PackageCheck,
+   PackageMinus,
+   Car,
+   Bus,
+   Wrench,
+   PackagePlus
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -99,5 +113,19 @@ export const Icons = {
    bold: Bolt,
    scale: Scale,
    userRoundCog: UserRoundCog,
-   keyRound: KeyRound
+   keyRound: KeyRound,
+   ticketPlus: TicketPlus,
+   ticketMinus: TicketMinus,
+   fingerprint: Fingerprint,
+   idCard: IdCard,
+   mapPinned: MapPinned,
+   libraryBig: LibraryBig,
+   handCoins: HandCoins,
+   package: Package,
+   packageCheck: PackageCheck,
+   packageMinus: PackageMinus,
+   packagePlus: PackagePlus,
+   car: Car,
+   bus: Bus,
+   wrench: Wrench
 };

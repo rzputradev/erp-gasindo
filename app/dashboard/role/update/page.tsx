@@ -28,7 +28,9 @@ export default async function Page(props: pageProps) {
       where: { id: id as string },
       include: { permissions: true }
    });
-   const permissions: Permission[] = await db.permission.findMany();
+   const permissions: Permission[] = await db.permission.findMany({
+      orderBy: { name: 'asc' }
+   });
 
    if (!data) {
       return notFound();

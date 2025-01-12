@@ -51,16 +51,16 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
    // Permission
    '/dashboard/role': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Role', link: '/dashboard/role' }
+      { title: 'Peran', link: '/dashboard/role' }
    ],
    '/dashboard/role/create': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Role', link: '/dashboard/role' },
+      { title: 'Peran', link: '/dashboard/role' },
       { title: 'Tambah', link: '/dashboard/role/create' }
    ],
    '/dashboard/role/update': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Role', link: '/dashboard/role' },
+      { title: 'Peran', link: '/dashboard/role' },
       { title: 'Perbaharui', link: '/dashboard/role/update' }
    ],
 

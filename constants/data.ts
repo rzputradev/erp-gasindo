@@ -136,6 +136,7 @@ export const navItems: NavItem[] = [
       icon: 'user',
       isActive: false,
       shortcut: ['p', 'p'],
+      permission: 'user:read',
       items: []
    },
    {
@@ -146,19 +147,21 @@ export const navItems: NavItem[] = [
       shortcut: ['t', 't'],
       items: [
          {
-            title: 'Barang masuk',
+            title: 'Barang Masuk',
             url: '/dashboard/scale-in',
-            icon: 'scale',
+            icon: 'ticketPlus',
             isActive: false,
             shortcut: ['b', 'm'],
+            permission: 'incoming-scale:read',
             items: []
          },
          {
             title: 'Barang Keluar',
             url: '/dashboard/scale-in',
-            icon: 'scale',
+            icon: 'ticketMinus',
             isActive: false,
             shortcut: ['b', 'k'],
+            permission: 'outgoing-scale:read',
             items: []
          }
       ]
@@ -173,17 +176,19 @@ export const navItems: NavItem[] = [
          {
             title: 'Izin',
             url: '/dashboard/permission',
-            icon: 'shieldCheck',
+            icon: 'fingerprint',
             shortcut: ['r', 'r'],
             isActive: true,
+            permission: 'permission:read',
             items: []
          },
          {
-            title: 'Role',
+            title: 'Peran',
             url: '/dashboard/role',
-            icon: 'shieldCheck',
+            icon: 'idCard',
             isActive: true,
             shortcut: ['r', 'r'],
+            permission: 'role:read',
             items: []
          }
       ]
@@ -191,64 +196,71 @@ export const navItems: NavItem[] = [
    {
       title: 'Konfigurasi',
       url: '#',
-      icon: 'bold',
+      icon: 'wrench',
       isActive: false,
       shortcut: ['k', 'k'],
       items: [
          {
             title: 'Lokasi',
             url: '/dashboard/location',
-            icon: 'bold',
+            icon: 'mapPinned',
             isActive: true,
             shortcut: ['l', 'l'],
+            permission: 'location:read',
             items: []
          },
          {
             title: 'Tipe Item',
             url: '/dashboard/item-type',
-            icon: 'bold',
+            icon: 'libraryBig',
             isActive: true,
             shortcut: ['t', 'i'],
+            permission: 'item-type:read',
             items: []
          },
          {
             title: 'Item',
             url: '/dashboard/item',
-            icon: 'bold',
+            icon: 'package',
             isActive: true,
             shortcut: ['i', 'i'],
+            permission: 'item:read',
             items: []
          },
          {
             title: 'Pembeli',
             url: '/dashboard/buyer',
-            icon: 'bold',
+            icon: 'handCoins',
             isActive: true,
             shortcut: ['p', 'i'],
+            permission: 'buyer:read',
             items: []
          },
          {
             title: 'Pemasok',
             url: '/dashboard/supplier',
-            icon: 'bold',
+            icon: 'packagePlus',
             isActive: true,
             shortcut: ['p', 'k'],
+            permission: 'supplier:read',
             items: []
          },
          {
             title: 'Tipe Kendaraan',
             url: '/dashboard/vehicle-type',
-            icon: 'bold',
+            icon: 'car',
             isActive: true,
             shortcut: ['t', 'k'],
+            permission: 'vehicle-type:read',
             items: []
          },
          {
             title: 'Pengangkutan',
             url: '/dashboard/transporter',
-            icon: 'bold',
+            icon: 'bus',
             isActive: true,
             shortcut: ['p', 'n'],
+            permission: 'transporter:read',
             items: []
          }
       ]

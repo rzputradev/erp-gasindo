@@ -13,7 +13,7 @@ export const metadata = {
 
 export default async function Page() {
    const permissions: Permission[] = await db.permission.findMany({
-      orderBy: { key: 'asc' }
+      orderBy: { name: 'asc' }
    });
 
    return (

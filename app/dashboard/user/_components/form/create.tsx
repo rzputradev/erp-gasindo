@@ -284,12 +284,17 @@ export function CreateForm({ locations, roles }: CreateFormProps) {
                                     {...field}
                                  />
                               </FormControl>
-                              <FormDescription>
-                                 Gunakan minimal 6 karakter. Jangan gunakan kata
-                                 sandi dari situs lain, atau sesuatu yang
-                                 terlalu mudah dipahami seperti nama hewan
-                                 peliharaan Anda
-                              </FormDescription>
+                              <div>
+                                 <FormDescription className="font-semibold">
+                                    Kekuatan password:
+                                 </FormDescription>
+                                 <FormDescription>
+                                    Gunakan minimal 6 karakter. Jangan gunakan
+                                    kata sandi dari situs lain, atau sesuatu
+                                    yang terlalu mudah dipahami seperti nama
+                                    hewan peliharaan Anda
+                                 </FormDescription>
+                              </div>
                               <FormMessage />
                            </FormItem>
                         )}

@@ -173,7 +173,7 @@ export function CreateForm({ permissions }: CreateFormProps) {
                                                 <FormLabel>
                                                    {permission.name}
                                                 </FormLabel>
-                                                <FormDescription className="truncate">
+                                                <FormDescription className="line-clamp-1">
                                                    {permission.description}
                                                 </FormDescription>
                                              </div>

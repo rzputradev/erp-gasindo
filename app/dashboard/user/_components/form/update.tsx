@@ -295,16 +295,17 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                                     {...field}
                                  />
                               </FormControl>
-                              <FormDescription>
-                                 <p className="font-semibold">
-                                    {' '}
-                                    Kekuatan kata sandi:
-                                 </p>
-                                 Gunakan minimal 6 karakter. Jangan gunakan kata
-                                 sandi dari situs lain, atau sesuatu yang
-                                 terlalu mudah dipahami seperti nama hewan
-                                 peliharaan Anda
-                              </FormDescription>
+                              <div>
+                                 <FormDescription className="font-semibold">
+                                    Kekuatan password:
+                                 </FormDescription>
+                                 <FormDescription>
+                                    Gunakan minimal 6 karakter. Jangan gunakan
+                                    kata sandi dari situs lain, atau sesuatu
+                                    yang terlalu mudah dipahami seperti nama
+                                    hewan peliharaan Anda
+                                 </FormDescription>
+                              </div>
                               <FormMessage />
                            </FormItem>
                         )}

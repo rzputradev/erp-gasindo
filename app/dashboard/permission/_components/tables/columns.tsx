@@ -15,7 +15,8 @@ export const columns: ColumnDef<Permission>[] = [
    },
    {
       accessorKey: 'name',
-      header: 'Nama'
+      header: 'Nama',
+      cell: ({ row }) => <p className="line-clamp-1">{row.original.name}</p>
    },
    {
       accessorKey: 'key',
@@ -23,7 +24,10 @@ export const columns: ColumnDef<Permission>[] = [
    },
    {
       accessorKey: 'description',
-      header: 'Keterangan'
+      header: 'Keterangan',
+      cell: ({ row }) => (
+         <p className="line-clamp-1 max-w-xl">{row.original.description}</p>
+      )
    },
    {
       id: 'actions',
