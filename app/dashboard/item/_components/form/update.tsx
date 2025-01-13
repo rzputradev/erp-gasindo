@@ -78,9 +78,10 @@ export function UpdateForm({ data, itemTypes }: UpdateFormProps) {
                }
             })
             .catch((e) => {
-               form.reset();
                console.log(e);
-               toast.error('Something went wrong!');
+               form.reset();
+               setIspending(false);
+               toast.error('Terjadi kesalahan tak terduga');
             });
       });
    }
@@ -152,6 +153,9 @@ export function UpdateForm({ data, itemTypes }: UpdateFormProps) {
                                        <SelectValue placeholder="Pilih tipe item" />
                                     </SelectTrigger>
                                     <SelectContent>
+                                       <SelectItem key="none" value="none">
+                                          Tidak ada
+                                       </SelectItem>
                                        {itemTypes.length > 0 ? (
                                           itemTypes.map((itemType) => (
                                              <SelectItem
@@ -219,6 +223,7 @@ export function UpdateForm({ data, itemTypes }: UpdateFormProps) {
                                  <Checkbox
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
+                                    disabled={isPending}
                                  />
                               </FormControl>
                               <div className="space-y-1 leading-none">
@@ -244,6 +249,7 @@ export function UpdateForm({ data, itemTypes }: UpdateFormProps) {
                                  <Checkbox
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
+                                    disabled={isPending}
                                  />
                               </FormControl>
                               <div className="space-y-1 leading-none">

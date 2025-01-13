@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { updateSupplierSchema } from '@/lib/schemas/supplier';
@@ -10,12 +10,12 @@ export async function updateSupplier(
    values: z.infer<typeof updateSupplierSchema>
 ) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'User is not authenticated' };
+      const access = await checkPermissions(['supplier:update']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          updateSupplierSchema.safeParse(values);
-      if (!success) return { error: 'Invalid fields' };
+      if (!success) return { error: 'Data tidak valid' };
 
       const { id, name, key, phone, address } = parsedValues;
 
@@ -28,11 +28,11 @@ export async function updateSupplier(
 
       revalidatePath(`/dashboard/supplier/update`);
 
-      return { success: 'Data updated successfully' };
+      return { success: 'Data berhasil diperbaharui' };
    } catch (error) {
       console.error(error);
       return {
-         error: 'An unexpected error occurred'
+         error: 'Terjadi kesalahan tak terduga'
       };
    }
 }

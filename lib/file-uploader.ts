@@ -69,8 +69,13 @@ export async function deleteImage(relativePath: string): Promise<void> {
       // Check if the file exists before attempting to delete
       await fs.access(filePath);
       await fs.unlink(filePath);
-   } catch (error) {
-      console.error('Error deleting image:', error);
-      throw new Error('Failed to delete image.');
+   } catch (error: any) {
+      if (error.code === 'ENOENT') {
+         // File not found, skip error
+         console.log('File not found, skipping deletion.');
+      } else {
+         console.error('Error deleting image:', error);
+         throw new Error('Failed to delete image.');
+      }
    }
 }

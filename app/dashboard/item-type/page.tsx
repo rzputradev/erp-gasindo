@@ -2,7 +2,9 @@ import { SearchParams } from 'nuqs/server';
 import React, { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import { unauthorized } from 'next/navigation';
 
+import { checkPermissions } from '@/data/user';
 import { searchBaseParamsCache, serialize } from '@/lib/params/base';
 import { cn } from '@/lib/utils';
 
@@ -27,6 +29,10 @@ export default async function Page(props: pageProps) {
    const searchParams = await props.searchParams;
    searchBaseParamsCache.parse(searchParams);
 
+   const readAccess = await checkPermissions(['item-type:read']);
+   const createAccess = await checkPermissions(['item-type:create']);
+   if (!readAccess) return unauthorized();
+
    const key = serialize({ ...searchParams });
 
    return (
@@ -37,12 +43,14 @@ export default async function Page(props: pageProps) {
                   title={`Tipe Item`}
                   description="Kelola data tipe item"
                />
-               <Link
-                  href={'/dashboard/item-type/create'}
-                  className={cn(buttonVariants({ variant: 'default' }))}
-               >
-                  <Plus className="mr-2 h-4 w-4" /> Tambah
-               </Link>
+               {createAccess && (
+                  <Link
+                     href={'/dashboard/item-type/create'}
+                     className={cn(buttonVariants({ variant: 'default' }))}
+                  >
+                     <Plus className="mr-2 h-4 w-4" /> Tambah
+                  </Link>
+               )}
             </div>
             <Separator />
             <TableAction />

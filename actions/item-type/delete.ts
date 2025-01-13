@@ -1,13 +1,14 @@
 'use server';
 
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+
+import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
 
 export async function deleteItemType(id: string) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'Pengguna tidak diautentikasi' };
+      const access = await checkPermissions(['item-type:delete']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       if (!id) return { error: 'Id diperlukan' };
 

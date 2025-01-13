@@ -2,7 +2,9 @@ import { SearchParams } from 'nuqs/server';
 import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
+import { unauthorized } from 'next/navigation';
 
+import { checkPermissions } from '@/data/user';
 import { cn } from '@/lib/utils';
 import { searchLocationParamsCache, serialize } from '@/lib/params/location';
 
@@ -26,6 +28,10 @@ export default async function Page(props: pageProps) {
    const searchParams = await props.searchParams;
    searchLocationParamsCache.parse(searchParams);
 
+   const createAccess = await checkPermissions(['location:create']);
+   const readAccess = await checkPermissions(['location:read']);
+   if (!readAccess) return unauthorized();
+
    const key = serialize({ ...searchParams });
 
    return (
@@ -33,12 +39,14 @@ export default async function Page(props: pageProps) {
          <div className="space-y-4">
             <div className="flex items-start justify-between">
                <Heading title={`Lokasi`} description="Kelola data lokasi" />
-               <Link
-                  href={'/dashboard/location/create'}
-                  className={cn(buttonVariants({ variant: 'default' }))}
-               >
-                  <Plus className="mr-2 h-4 w-4" /> Tambah
-               </Link>
+               {createAccess && (
+                  <Link
+                     href={'/dashboard/location/create'}
+                     className={cn(buttonVariants({ variant: 'default' }))}
+                  >
+                     <Plus className="mr-2 h-4 w-4" /> Tambah
+                  </Link>
+               )}
             </div>
             <Separator />
             <TableAction />

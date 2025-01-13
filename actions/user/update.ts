@@ -2,16 +2,17 @@
 
 import { z } from 'zod';
 import { hash } from 'bcryptjs';
-import { currentUser } from '@/data/user';
+import { revalidateTag } from 'next/cache';
+
+import { checkPermissions } from '@/data/user';
 import { db } from '@/lib/db';
 import { updateUserSchema } from '@/lib/schemas/user';
-import { revalidateTag } from 'next/cache';
 import { saveImage, deleteImage } from '@/lib/file-uploader';
 
 export async function updateUser(values: z.infer<typeof updateUserSchema>) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'Pengguna tidak ter authentikasi' };
+      const access = await checkPermissions(['user:update']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          updateUserSchema.safeParse(values);
@@ -31,40 +32,34 @@ export async function updateUser(values: z.infer<typeof updateUserSchema>) {
       } = parsedValues;
 
       if (password !== confirm_password) {
-         return { error: 'Password dan konfirmasi password tidak sama' };
+         return { error: 'Password tidak cocok' };
       }
 
-      // Fetch the existing user data
       const existingUser = await db.user.findUnique({ where: { id } });
       if (!existingUser) return { error: 'Pengguna tidak ditemukan' };
 
-      // Check if the email already exists (except for the current user)
       const existingEmail = await db.user.findUnique({ where: { email } });
       if (existingEmail && existingEmail.id !== id) {
          return { error: 'Email sudah digunakan' };
       }
 
-      // Handle image upload and replacement
-      let imageUrl = existingUser.image; // Current image URL
+      let imageUrl = existingUser.image;
       if (image) {
          try {
-            // If there is an existing image, delete it
             if (imageUrl) {
                await deleteImage(imageUrl);
             }
 
-            // Save the new image
             imageUrl = await saveImage(image);
          } catch (error) {
             console.error('Error handling image:', error);
-            return { error: 'Penggunggahan file gagal' };
+            return { error: 'Gagal mengunggah gambar' };
          }
       }
 
-      // Prepare update data
       const updateData: Record<string, unknown> = {
-         locationId: locationId || undefined,
-         roleId: roleId || undefined,
+         locationId: locationId === 'none' ? null : locationId || undefined,
+         roleId: roleId === 'none' ? null : roleId || undefined,
          name,
          email,
          gender,
@@ -72,23 +67,20 @@ export async function updateUser(values: z.infer<typeof updateUserSchema>) {
          image: imageUrl
       };
 
-      // Hash password if provided
       if (password) {
          updateData.password = await hash(password, 10);
       }
 
-      // Update the user in the database
       await db.user.update({
          where: { id },
          data: updateData
       });
 
-      // Revalidate the path
       revalidateTag(`/dashboard/user/update`);
 
-      return { success: 'Data sukses di update' };
+      return { success: 'Data barhasil diperbaharui' };
    } catch (error) {
       console.error(error);
-      return { error: 'An unexpected error occurred' };
+      return { error: 'Terjadi kesalahan tak terduga' };
    }
 }

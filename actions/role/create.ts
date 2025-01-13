@@ -1,24 +1,24 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
-import { createRoleSchema } from '@/lib/schemas/role';
 import { revalidatePath } from 'next/cache';
+import { createRoleSchema } from '@/lib/schemas/role';
+
+import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
 
 export async function createRole(values: z.infer<typeof createRoleSchema>) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'User is not authenticated' };
+      const access = await checkPermissions(['role:create']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          createRoleSchema.safeParse(values);
-      if (!success) return { error: 'Invalid fields' };
+      if (!success) return { error: 'Data tidak valid' };
 
       const { name, key, description, permissions } = parsedValues;
 
       await db.$transaction(async (tx) => {
-         // Create the Role
          const role = await tx.role.create({
             data: {
                name,
@@ -27,7 +27,6 @@ export async function createRole(values: z.infer<typeof createRoleSchema>) {
             }
          });
 
-         // Associate Permissions with the Role
          if (permissions && permissions.length > 0) {
             await tx.rolePermission.createMany({
                data: permissions.map((permissionId) => ({
@@ -40,11 +39,11 @@ export async function createRole(values: z.infer<typeof createRoleSchema>) {
 
       revalidatePath(`/dashboard/role`);
 
-      return { success: 'Data saved successfully' };
+      return { success: 'Data berhasil disimpan' };
    } catch (error) {
       console.error(error);
       return {
-         error: 'An unexpected error occurred'
+         error: 'Terjadi kesalahan tak terduga'
       };
    }
 }

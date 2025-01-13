@@ -1,21 +1,22 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
-import { createLocationSchema } from '@/lib/schemas/location';
 import { revalidatePath } from 'next/cache';
+
+import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
+import { createLocationSchema } from '@/lib/schemas/location';
 
 export async function createLocation(
    values: z.infer<typeof createLocationSchema>
 ) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'User is not authenticated' };
+      const access = await checkPermissions(['location:create']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          createLocationSchema.safeParse(values);
-      if (!success) return { error: 'Invalid fields' };
+      if (!success) return { error: 'Data tidak valid' };
 
       const { name, key, type, address } = parsedValues;
 
@@ -32,11 +33,11 @@ export async function createLocation(
 
       revalidatePath('/dashboard/location');
 
-      return { success: 'Data saved successfully' };
+      return { success: 'Data berhasil disimpan' };
    } catch (error) {
       console.error(error);
       return {
-         error: 'An unexpected error occurred'
+         error: 'Terjadi kesalahan tak terduga'
       };
    }
 }

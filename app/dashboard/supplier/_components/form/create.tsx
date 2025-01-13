@@ -63,7 +63,8 @@ export function CreateForm() {
             .catch((e) => {
                console.log(e);
                form.reset();
-               toast.error('Something went wrong!');
+               setIspending(false);
+               toast.error('Terjadi kesalahan tak terduga');
             });
       });
    }

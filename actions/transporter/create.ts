@@ -1,21 +1,22 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+
+import { db } from '@/lib/db';
 import { createTransporterSchema } from '@/lib/schemas/transporter';
+import { checkPermissions } from '@/data/user';
 
 export async function createTransporter(
    values: z.infer<typeof createTransporterSchema>
 ) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'User is not authenticated' };
+      const access = await checkPermissions(['transporter:create']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          createTransporterSchema.safeParse(values);
-      if (!success) return { error: 'Invalid fields' };
+      if (!success) return { error: 'Data tidak valid' };
 
       const { name, key, locationId, address, phone } = parsedValues;
 
@@ -33,11 +34,11 @@ export async function createTransporter(
 
       revalidatePath('/dashboard/transporter');
 
-      return { success: 'Data saved successfully' };
+      return { success: 'Data berhasil disimpan' };
    } catch (error) {
       console.error(error);
       return {
-         error: 'An unexpected error occurred'
+         error: 'Terjadi kesalahan tak terduga'
       };
    }
 }

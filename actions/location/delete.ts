@@ -1,15 +1,16 @@
 'use server';
 
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+
+import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
 
 export async function deleteLocation(id: string) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'User is not authenticated' };
+      const access = await checkPermissions(['location:delete']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
-      if (!id) return { error: 'Id is required' };
+      if (!id) return { error: 'Id diperlukan' };
 
       await db.$transaction(async (tx) => {
          await tx.location.delete({
@@ -18,11 +19,11 @@ export async function deleteLocation(id: string) {
       });
 
       revalidatePath(`/dashboard/location`);
-      return { success: 'Data deleted successfully' };
+      return { success: 'Data berhasil dihapus' };
    } catch (error) {
       console.error(error);
       return {
-         error: 'An unexpected error occurred'
+         error: 'Terjadi kesalahan tak terduga'
       };
    }
 }

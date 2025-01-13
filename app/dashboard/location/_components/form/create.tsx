@@ -68,7 +68,12 @@ export function CreateForm() {
                   router.push('/dashboard/location');
                }
             })
-            .catch(() => toast.error('Something went wrong!'));
+            .catch((e) => {
+               console.log(e);
+               form.reset();
+               setIspending(false);
+               toast.error('Terjadi kesalahan tak terduga');
+            });
       });
    }
 

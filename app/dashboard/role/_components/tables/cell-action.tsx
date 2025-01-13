@@ -1,6 +1,6 @@
 'use client';
 
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, MoreHorizontal, ReceiptText, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
 import { toast } from 'sonner';
@@ -17,6 +17,7 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useCheckPermissions } from '@/hooks/use-user';
 
 interface CellActionProps {
    data: Role;
@@ -26,6 +27,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
    const [loading, setLoading] = useState(false);
    const [open, setOpen] = useState(false);
    const router = useRouter();
+
+   const updateAccess = useCheckPermissions(['role:update']);
+   const deleteAccess = useCheckPermissions(['role:delete']);
 
    const onConfirm = async () => {
       setLoading(true);
@@ -69,17 +73,31 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                <DropdownMenuItem
                   className="flex items-center space-x-2"
                   onClick={() =>
-                     router.push(`/dashboard/role/update?id=${data.id}`)
+                     router.push(`/dashboard/role/read?id=${data.id}`)
                   }
                >
-                  <Edit className="size-4" /> <span>Update</span>
+                  <ReceiptText className="size-4" /> <span>Rincian</span>
                </DropdownMenuItem>
-               <DropdownMenuItem
-                  className="flex items-center space-x-2"
-                  onClick={() => setOpen(true)}
-               >
-                  <Trash className="size-4" /> <span>Delete</span>
-               </DropdownMenuItem>
+
+               {updateAccess && (
+                  <DropdownMenuItem
+                     className="flex items-center space-x-2"
+                     onClick={() =>
+                        router.push(`/dashboard/role/update?id=${data.id}`)
+                     }
+                  >
+                     <Edit className="size-4" /> <span>Perbaharui</span>
+                  </DropdownMenuItem>
+               )}
+
+               {deleteAccess && (
+                  <DropdownMenuItem
+                     className="flex items-center space-x-2"
+                     onClick={() => setOpen(true)}
+                  >
+                     <Trash className="size-4" /> <span>Delete</span>
+                  </DropdownMenuItem>
+               )}
             </DropdownMenuContent>
          </DropdownMenu>
       </>

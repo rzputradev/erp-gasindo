@@ -68,7 +68,9 @@ export function CreateForm({ permissions }: CreateFormProps) {
             })
             .catch((e) => {
                console.log(e);
-               toast.error('Something went wrong!');
+               form.reset();
+               setIspending(false);
+               toast.error('Terjadi kesalahan tak terduga');
             });
       });
    }
@@ -157,7 +159,7 @@ export function CreateForm({ permissions }: CreateFormProps) {
                                  Pilih izin yang akan diberikan pada role ini
                               </FormDescription>
                            </div>
-                           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                               {permissions.map((permission) => (
                                  <FormField
                                     key={permission.id}
@@ -174,7 +176,7 @@ export function CreateForm({ permissions }: CreateFormProps) {
                                                    {permission.name}
                                                 </FormLabel>
                                                 <FormDescription className="line-clamp-1">
-                                                   {permission.description}
+                                                   {permission.key}
                                                 </FormDescription>
                                              </div>
                                              <FormControl>

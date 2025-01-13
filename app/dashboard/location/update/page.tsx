@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, unauthorized } from 'next/navigation';
 import { SearchParams } from 'nuqs';
 import { Suspense } from 'react';
 
@@ -7,6 +7,7 @@ import { db } from '@/lib/db';
 import { UpdateForm } from '../_components/form/update';
 import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
+import { checkPermissions } from '@/data/user';
 
 export const metadata = {
    title: 'Dashboard : Perbaharui Lokasi'
@@ -18,6 +19,9 @@ type pageProps = {
 
 export default async function Page(props: pageProps) {
    const { id } = await props.searchParams;
+
+   const access = await checkPermissions(['location:update']);
+   if (!access) return unauthorized();
 
    if (!id) {
       return notFound();

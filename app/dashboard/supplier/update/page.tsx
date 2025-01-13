@@ -1,8 +1,9 @@
-import { notFound } from 'next/navigation';
+import { notFound, unauthorized } from 'next/navigation';
 import { SearchParams } from 'nuqs';
 import { Suspense } from 'react';
 
 import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
 
 import { UpdateForm } from '../_components/form/update';
 import PageContainer from '@/components/layout/page-container';
@@ -18,6 +19,9 @@ type pageProps = {
 
 export default async function Page(props: pageProps) {
    const { id } = await props.searchParams;
+
+   const access = await checkPermissions(['supplier:update']);
+   if (!access) return unauthorized();
 
    if (!id) {
       return notFound();

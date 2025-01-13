@@ -9,7 +9,14 @@ export const columns: ColumnDef<Role>[] = [
    {
       id: 'rowNumber',
       header: 'No',
-      cell: ({ row }) => row.index + 1 + `.`,
+      cell: ({ row, table }) => {
+         // Access pagination state
+         const pageIndex = table.getState().pagination.pageIndex;
+         const pageSize = table.getState().pagination.pageSize;
+
+         // Calculate the row number based on pagination
+         return pageIndex * pageSize + row.index + 1 + '.';
+      },
       enableSorting: false,
       enableHiding: false
    },

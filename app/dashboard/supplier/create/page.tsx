@@ -1,4 +1,7 @@
 import { Suspense } from 'react';
+import { unauthorized } from 'next/navigation';
+
+import { checkPermissions } from '@/data/user';
 
 import { CreateForm } from '../_components/form/create';
 import PageContainer from '@/components/layout/page-container';
@@ -9,6 +12,9 @@ export const metadata = {
 };
 
 export default async function Page() {
+   const access = await checkPermissions(['supplier:create']);
+   if (!access) return unauthorized();
+
    return (
       <PageContainer scrollable>
          <div className="flex-1 space-y-4">

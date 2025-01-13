@@ -9,9 +9,9 @@ import { Gender, Location, Role, User, UserStatus } from '@prisma/client';
 import { toast } from 'sonner';
 
 import { updateUserSchema } from '@/lib/schemas/user';
-import { FileUploader } from '@/components/file-uploader';
-import { useCurrentUser } from '@/hooks/use-current-user';
 import { updateUser } from '@/actions/user/update';
+import { FileUploader } from '@/components/file-uploader';
+import { useCurrentUser } from '@/hooks/use-user';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -55,7 +55,7 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
          name: data.name || '',
          email: data.email || '',
          image: undefined,
-         locationId: data.locationId || '',
+         locationId: data.locationId || undefined,
          roleId: data.roleId || '',
          password: undefined,
          confirm_password: undefined,
@@ -88,6 +88,7 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
             })
             .catch((e) => {
                form.reset();
+               setIspending(false);
                console.log(e);
                toast.error('Something went wrong!');
             });
@@ -168,6 +169,9 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                                        <SelectValue placeholder="Pilih lokasi" />
                                     </SelectTrigger>
                                     <SelectContent>
+                                       <SelectItem key="none" value="none">
+                                          Tidak ada
+                                       </SelectItem>
                                        {locations.length > 0 ? (
                                           locations.map((location) => (
                                              <SelectItem
@@ -225,6 +229,9 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                                        <SelectValue placeholder="Pilih Role" />
                                     </SelectTrigger>
                                     <SelectContent>
+                                       <SelectItem key="none" value="none">
+                                          Tidak ada
+                                       </SelectItem>
                                        {roles.length > 0 ? (
                                           roles.map((role) => (
                                              <SelectItem

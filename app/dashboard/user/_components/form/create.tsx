@@ -81,7 +81,9 @@ export function CreateForm({ locations, roles }: CreateFormProps) {
             })
             .catch((e) => {
                console.log(e);
-               toast.error('Something went wrong!');
+               form.reset();
+               setIspending(false);
+               toast.error('Terjadi kesalahan tak terduga');
             });
       });
    }

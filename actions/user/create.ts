@@ -2,21 +2,21 @@
 
 import { z } from 'zod';
 import { hash } from 'bcryptjs';
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
-import { createUserSchema } from '@/lib/schemas/user';
 import { revalidatePath } from 'next/cache';
+
+import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
+import { createUserSchema } from '@/lib/schemas/user';
 import { saveImage } from '@/lib/file-uploader';
-// import { saveImage } from "@/lib/image-uploader"; // Import saveImage utility
 
 export async function createUser(values: z.infer<typeof createUserSchema>) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'User is not authenticated' };
+      const access = await checkPermissions(['user:create']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          createUserSchema.safeParse(values);
-      if (!success) return { error: 'Invalid fields', details: parsedValues };
+      if (!success) return { error: 'Data tidak valid' };
 
       const {
          name,
@@ -32,21 +32,21 @@ export async function createUser(values: z.infer<typeof createUserSchema>) {
 
       const existingEmail = await db.user.findUnique({ where: { email } });
 
-      if (existingEmail) return { error: 'Email already exist' };
+      if (existingEmail) return { error: 'Email sudah ada' };
 
-      if (password !== confirm_password) {
-         return { error: 'Passwords do not match' };
+      if (!password || password !== confirm_password) {
+         return { error: 'Password tidak cocok' };
       }
 
-      const hashedPassword = await hash(password!, 10);
+      const hashedPassword = await hash(password, 10);
 
       let imageUrl = null;
       if (image) {
          try {
             imageUrl =
-               typeof image === 'string' ? image : await saveImage(image); // Process if not already a URL
+               typeof image === 'string' ? image : await saveImage(image);
          } catch (error) {
-            return { error: 'Image upload failed' };
+            return { error: 'Pengunggahan gambar gagal' };
          }
       }
 
@@ -66,11 +66,11 @@ export async function createUser(values: z.infer<typeof createUserSchema>) {
 
       revalidatePath(`/dashboard/user`);
 
-      return { success: 'User created successfully' };
+      return { success: 'Data berhasil disimpan' };
    } catch (error) {
       console.error(error);
       return {
-         error: 'An unexpected error occurred'
+         error: 'Terjadi kesalahan tak terduga'
       };
    }
 }

@@ -73,9 +73,10 @@ export function UpdateForm({ data, locations }: UpdateFormProps) {
                }
             })
             .catch((e) => {
-               form.reset();
                console.log(e);
-               toast.error('Something went wrong!');
+               form.reset();
+               setIspending(false);
+               toast.error('Terjadi kesalahan tak terduga');
             });
       });
    }

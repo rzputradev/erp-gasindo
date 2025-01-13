@@ -1,4 +1,14 @@
 'use client';
+
+import * as React from 'react';
+import { navItems } from '@/constants/data';
+import { ChevronRight, ChevronsUpDown, GalleryVerticalEnd } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { NavItem } from '@/types';
+import { User } from 'next-auth';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
    Collapsible,
@@ -30,16 +40,8 @@ import {
    SidebarMenuSubItem,
    SidebarRail
 } from '@/components/ui/sidebar';
-import { navItems } from '@/constants/data';
-import { ChevronRight, ChevronsUpDown, GalleryVerticalEnd } from 'lucide-react';
-import { signOut, useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { notFound, usePathname, useRouter } from 'next/navigation';
-import * as React from 'react';
 import { Icons } from '../icons';
 import { Logo } from '../logo';
-import { useCurrentUser } from '@/hooks/use-current-user';
-import { NavItem } from '@/types';
 
 export const company = {
    name: 'PT Garuda Sakti',
@@ -47,15 +49,9 @@ export const company = {
    plan: 'Nusantara Indonesia'
 };
 
-export default function AppSidebar() {
-   const user = useCurrentUser();
+export default function AppSidebar({ user }: { user: User }) {
    const pathname = usePathname();
    const router = useRouter();
-   const { status } = useSession();
-
-   if (status === 'loading') {
-      return <div>Loading...</div>;
-   }
 
    return (
       <Sidebar collapsible="icon">
@@ -72,7 +68,7 @@ export default function AppSidebar() {
          </SidebarHeader>
          <SidebarContent className="overflow-x-hidden">
             <SidebarGroup>
-               <SidebarGroupLabel>Manu Applikasi</SidebarGroupLabel>
+               <SidebarGroupLabel>Applikasi</SidebarGroupLabel>
                <SidebarMenu>
                   {navItems.map((item: NavItem) => {
                      const Icon = item.icon ? Icons[item.icon] : Icons.logo;
@@ -219,7 +215,11 @@ export default function AppSidebar() {
                            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                               <Avatar className="h-8 w-8 rounded-lg">
                                  <AvatarImage
-                                    src={`/api/images${user?.image ?? ''}`}
+                                    src={
+                                       user.image
+                                          ? `/api/images${user.image}`
+                                          : undefined
+                                    }
                                     alt={user?.name || ''}
                                  />
                                  <AvatarFallback className="rounded-lg">

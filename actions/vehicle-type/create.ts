@@ -1,17 +1,18 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+
+import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
 import { createVehicleTypeSchema } from '@/lib/schemas/vehicle-type';
 
 export async function createVehicleType(
    values: z.infer<typeof createVehicleTypeSchema>
 ) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'Pengguna tidak diautentikasi' };
+      const access = await checkPermissions(['vehicle-type:read']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          createVehicleTypeSchema.safeParse(values);
