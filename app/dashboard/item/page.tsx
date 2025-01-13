@@ -3,10 +3,12 @@ import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { ItemType } from '@prisma/client';
+import { unauthorized } from 'next/navigation';
 
 import { db } from '@/lib/db';
 import { cn } from '@/lib/utils';
 import { searchItemParamsCache, serialize } from '@/lib/params/item';
+import { checkPermissions } from '@/data/user';
 
 import { ListingPage } from './_components/listing-page';
 import { TableAction } from './_components/tables/table-action';
@@ -28,6 +30,10 @@ export default async function Page(props: pageProps) {
    const searchParams = await props.searchParams;
    searchItemParamsCache.parse(searchParams);
 
+   const readAccess = await checkPermissions(['item:read']);
+   const createAccess = await checkPermissions(['item:create']);
+   if (!readAccess) return unauthorized();
+
    const key = serialize({ ...searchParams });
 
    const itemTypes: ItemType[] = await db.itemType.findMany();
@@ -37,12 +43,14 @@ export default async function Page(props: pageProps) {
          <div className="space-y-4">
             <div className="flex items-start justify-between">
                <Heading title={`Item`} description="Kelola data item" />
-               <Link
-                  href={'/dashboard/item/create'}
-                  className={cn(buttonVariants({ variant: 'default' }))}
-               >
-                  <Plus className="mr-2 h-4 w-4" /> Tambah
-               </Link>
+               {createAccess && (
+                  <Link
+                     href={'/dashboard/item/create'}
+                     className={cn(buttonVariants({ variant: 'default' }))}
+                  >
+                     <Plus className="mr-2 h-4 w-4" /> Tambah
+                  </Link>
+               )}
             </div>
             <Separator />
             <TableAction itemTypes={itemTypes} />

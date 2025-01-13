@@ -1,6 +1,9 @@
 import { db } from '@/lib/db';
 import { Location, Role } from '@prisma/client';
 import { Suspense } from 'react';
+import { unauthorized } from 'next/navigation';
+
+import { checkPermissions } from '@/data/user';
 
 import { CreateForm } from '../_components/form/create';
 import PageContainer from '@/components/layout/page-container';
@@ -11,6 +14,9 @@ export const metadata = {
 };
 
 export default async function Page() {
+   const access = await checkPermissions(['user:create']);
+   if (!access) return unauthorized();
+
    const locations: Location[] = await db.location.findMany();
    const roles: Role[] = await db.role.findMany();
 

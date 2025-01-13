@@ -1,15 +1,15 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { updateItemSchema } from '@/lib/schemas/item';
 
 export async function updateItem(values: z.infer<typeof updateItemSchema>) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'Pengguna tidak diautentikasi' };
+      const access = await checkPermissions(['item:update']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          updateItemSchema.safeParse(values);
@@ -34,7 +34,7 @@ export async function updateItem(values: z.infer<typeof updateItemSchema>) {
                key,
                description,
                unit,
-               typeId,
+               typeId: typeId === 'none' ? null : typeId || undefined,
                isSalable,
                isWeighted
             }

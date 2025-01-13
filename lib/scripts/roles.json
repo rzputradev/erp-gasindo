@@ -16,7 +16,6 @@
          "role:create",
          "role:update",
          "role:delete",
-         "location:multy",
          "location:read",
          "location:create",
          "location:update",

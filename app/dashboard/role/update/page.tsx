@@ -1,16 +1,17 @@
-import { notFound } from 'next/navigation';
+import { notFound, unauthorized } from 'next/navigation';
 import { Permission } from '@prisma/client';
 import { SearchParams } from 'nuqs';
 import { Suspense } from 'react';
 
 import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
 
 import { UpdateForm } from '../_components/form/update';
 import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
 
 export const metadata = {
-   title: 'Dashboard : Perbaharui Lokasi'
+   title: 'Dashboard : Perbaharui Peran'
 };
 
 type pageProps = {
@@ -20,6 +21,9 @@ type pageProps = {
 export default async function Page(props: pageProps) {
    const { id } = await props.searchParams;
 
+   const access = await checkPermissions(['role:update']);
+   if (!access) return unauthorized();
+
    if (!id) {
       return notFound();
    }
@@ -28,8 +32,9 @@ export default async function Page(props: pageProps) {
       where: { id: id as string },
       include: { permissions: true }
    });
+
    const permissions: Permission[] = await db.permission.findMany({
-      orderBy: { name: 'asc' }
+      orderBy: { key: 'asc' }
    });
 
    if (!data) {

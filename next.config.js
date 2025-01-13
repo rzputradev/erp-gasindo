@@ -11,7 +11,8 @@ const nextConfig = {
    experimental: {
       serverActions: {
          bodySizeLimit: '2mb'
-      }
+      },
+      authInterrupts: true
    },
    transpilePackages: ['geist']
 };

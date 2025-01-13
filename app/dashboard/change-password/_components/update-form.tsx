@@ -4,9 +4,12 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { startTransition, useState } from 'react';
-import { Gender, Location, Role, User, UserStatus } from '@prisma/client';
+import { User } from '@prisma/client';
+import { toast } from 'sonner';
+import { signOut, useSession } from 'next-auth/react';
+import { changePasswordSchema } from '@/lib/schemas/setting';
 
-import { updateUserSchema } from '@/lib/schemas/user';
+import { changePassword } from '@/actions/setting/change-password';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -20,33 +23,14 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
-   Select,
-   SelectContent,
-   SelectItem,
-   SelectTrigger,
-   SelectValue
-} from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import {
    Card,
    CardHeader,
    CardTitle,
    CardContent,
    CardDescription
 } from '@/components/ui/card';
-import { FileUploader } from '@/components/file-uploader';
-import { updateUser } from '@/actions/user/update';
 import { FormSuccess } from '@/components/form-success';
 import { FormError } from '@/components/form-error';
-import { toast } from 'sonner';
-import { auth } from '@/auth';
-import { signOut, useSession } from 'next-auth/react';
-import {
-   changePasswordSchema,
-   updatePersonalSchema
-} from '@/lib/schemas/setting';
-import { updatePersonal } from '@/actions/setting/personal';
-import { changePassword } from '@/actions/setting/change-password';
 
 interface UpdateFormProps {
    data: User;

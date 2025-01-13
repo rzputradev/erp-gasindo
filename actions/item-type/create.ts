@@ -1,17 +1,18 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+
+import { db } from '@/lib/db';
 import { createItemTypeSchema } from '@/lib/schemas/item-type';
+import { checkPermissions } from '@/data/user';
 
 export async function createItemType(
    values: z.infer<typeof createItemTypeSchema>
 ) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'Pengguna tidak diautentikasi' };
+      const access = await checkPermissions(['item-type:create']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          createItemTypeSchema.safeParse(values);

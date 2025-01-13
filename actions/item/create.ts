@@ -1,19 +1,20 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { createItemSchema } from '@/lib/schemas/item';
 
+import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
+
 export async function createItem(values: z.infer<typeof createItemSchema>) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'Pengguna tidak diautentikasi' };
+      const access = await checkPermissions(['item:create']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          createItemSchema.safeParse(values);
-      if (!success) return { error: 'Invalid fields' };
+      if (!success) return { error: 'Data tidak valid' };
 
       const { name, typeId, key, description, isWeighted, isSalable, unit } =
          parsedValues;

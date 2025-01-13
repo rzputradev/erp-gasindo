@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, MoreHorizontal, ReceiptText, Trash } from 'lucide-react';
 import { toast } from 'sonner';
 import { Supplier } from '@prisma/client';
 
@@ -17,6 +17,7 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useCheckPermissions } from '@/hooks/use-user';
 
 interface CellActionProps {
    data: Supplier;
@@ -26,6 +27,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
    const [loading, setLoading] = useState(false);
    const [open, setOpen] = useState(false);
    const router = useRouter();
+
+   const updateAccess = useCheckPermissions(['supplier:update']);
+   const deleteAccess = useCheckPermissions(['supplier:delete']);
 
    const onConfirm = async () => {
       setLoading(true);
@@ -69,19 +73,34 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                <DropdownMenuItem
                   className="flex items-center space-x-2"
                   onClick={() =>
-                     router.push(`/dashboard/supplier/update?id=${data.id}`)
+                     router.push(`/dashboard/supplier/read?id=${data.id}`)
                   }
                   disabled={loading}
                >
-                  <Edit className="size-4" /> <span>Update</span>
+                  <ReceiptText className="size-4" /> <span>Rincian</span>
                </DropdownMenuItem>
-               <DropdownMenuItem
-                  className="flex items-center space-x-2"
-                  onClick={() => setOpen(true)}
-                  disabled={loading}
-               >
-                  <Trash className="size-4" /> <span>Delete</span>
-               </DropdownMenuItem>
+
+               {updateAccess && (
+                  <DropdownMenuItem
+                     className="flex items-center space-x-2"
+                     onClick={() =>
+                        router.push(`/dashboard/supplier/update?id=${data.id}`)
+                     }
+                     disabled={loading}
+                  >
+                     <Edit className="size-4" /> <span>Perbaharui</span>
+                  </DropdownMenuItem>
+               )}
+
+               {deleteAccess && (
+                  <DropdownMenuItem
+                     className="flex items-center space-x-2"
+                     onClick={() => setOpen(true)}
+                     disabled={loading}
+                  >
+                     <Trash className="size-4" /> <span>Hapus</span>
+                  </DropdownMenuItem>
+               )}
             </DropdownMenuContent>
          </DropdownMenu>
       </>

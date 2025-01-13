@@ -40,6 +40,11 @@
       "description": "Memungkinkan pengguna untuk menghapus data timbangan barang masuk dari sistem."
    },
    {
+      "key": "incoming-scale:multi-location",
+      "name": "Mengelota data timbangan barang masuk banyak lokasi",
+      "description": "Memungkinkan pengguna untuk mengelola data timbangan barang masuk dari sistem banyak lokasi."
+   },
+   {
       "key": "outgoing-scale:read",
       "name": "Melihat data timbangan barang keluar",
       "description": "Memungkinkan pengguna untuk melihat data timbangan barang keluar tanpa kemampuan untuk mengubah atau menghapusnya."
@@ -58,6 +63,11 @@
       "key": "outgoing-scale:delete",
       "name": "Menghapus data timbangan barang keluar",
       "description": "Memungkinkan pengguna untuk menghapus data timbangan barang keluar dari sistem."
+   },
+   {
+      "key": "outgoing-scale:multi-location",
+      "name": "Mengelota data timbangan barang keluar di banyak lokasi",
+      "description": "Memungkinkan pengguna untuk mengelola data timbangan barang keluar dari sistem di banyak lokasi."
    },
    {
       "key": "permission:read",
@@ -98,11 +108,6 @@
       "key": "role:delete",
       "name": "Menghapus data role",
       "description": "Memungkinkan pengguna untuk menghapus role dari sistem."
-   },
-   {
-      "key": "location:multy",
-      "name": "Mengakses banyak data lokasi",
-      "description": "Memungkinkan pengguna untuk mengakses banyak data lokasi."
    },
    {
       "key": "location:read",

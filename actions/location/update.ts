@@ -1,21 +1,22 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
+import { revalidateTag } from 'next/cache';
 import { updateLocationSchema } from '@/lib/schemas/location';
-import { revalidatePath, revalidateTag } from 'next/cache';
+
+import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
 
 export async function updateLocation(
    values: z.infer<typeof updateLocationSchema>
 ) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'User is not authenticated' };
+      const access = await checkPermissions(['location:update']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          updateLocationSchema.safeParse(values);
-      if (!success) return { error: 'Invalid fields' };
+      if (!success) return { error: 'Data tidak valid' };
 
       const { id, name, key, type, address } = parsedValues;
 
@@ -28,11 +29,11 @@ export async function updateLocation(
 
       revalidateTag(`/dashboard/location/update`);
 
-      return { success: 'Data updated successfully' };
+      return { success: 'Data berhasil diperbaharui' };
    } catch (error) {
       console.error(error);
       return {
-         error: 'An unexpected error occurred'
+         error: 'Terjadi kesalahan tak terduga'
       };
    }
 }

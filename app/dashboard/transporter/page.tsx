@@ -4,12 +4,14 @@ import { db } from '@/lib/db';
 import { LocationType } from '@prisma/client';
 import { SearchParams } from 'nuqs/server';
 import React, { Suspense } from 'react';
+import { unauthorized } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 import {
    searchTransporterParamsCache,
    serialize
 } from '@/lib/params/transporter';
+import { checkPermissions } from '@/data/user';
 
 import { ListingPage } from './_components/listing-page';
 import PageContainer from '@/components/layout/page-container';
@@ -31,6 +33,10 @@ export default async function Page(props: pageProps) {
    const searchParams = await props.searchParams;
    searchTransporterParamsCache.parse(searchParams);
 
+   const readAccess = await checkPermissions(['transporter:read']);
+   const createAccess = await checkPermissions(['transporter:create']);
+   if (!readAccess) return unauthorized();
+
    const key = serialize({ ...searchParams });
 
    const locations = await db.location.findMany({
@@ -45,12 +51,14 @@ export default async function Page(props: pageProps) {
                   title={`Pengangkutan`}
                   description="Kelola data pengangkutan"
                />
-               <Link
-                  href={'/dashboard/transporter/create'}
-                  className={cn(buttonVariants({ variant: 'default' }))}
-               >
-                  <Plus className="mr-2 h-4 w-4" /> Tambah
-               </Link>
+               {createAccess && (
+                  <Link
+                     href={'/dashboard/transporter/create'}
+                     className={cn(buttonVariants({ variant: 'default' }))}
+                  >
+                     <Plus className="mr-2 h-4 w-4" /> Tambah
+                  </Link>
+               )}
             </div>
             <Separator />
             <TableAction locations={locations} />

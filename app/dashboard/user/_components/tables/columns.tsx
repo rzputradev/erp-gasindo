@@ -10,6 +10,20 @@ import { Badge } from '@/components/ui/badge';
 
 export const columns: ColumnDef<User>[] = [
    {
+      id: 'rowNumber',
+      header: 'No',
+      cell: ({ row, table }) => {
+         // Access pagination state
+         const pageIndex = table.getState().pagination.pageIndex;
+         const pageSize = table.getState().pagination.pageSize;
+
+         // Calculate the row number based on pagination
+         return pageIndex * pageSize + row.index + 1 + '.';
+      },
+      enableSorting: false,
+      enableHiding: false
+   },
+   {
       id: 'select',
       header: 'Pengguna',
       cell: ({ row }) => (

@@ -3,7 +3,9 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { Location, Role } from '@prisma/client';
+import { unauthorized } from 'next/navigation';
 
+import { checkPermissions } from '@/data/user';
 import { cn } from '@/lib/utils';
 import { db } from '@/lib/db';
 import { searchUserParamsCache, serialize } from '@/lib/params/user';
@@ -28,6 +30,10 @@ export default async function Page(props: pageProps) {
    const searchParams = await props.searchParams;
    searchUserParamsCache.parse(searchParams);
 
+   const readAccess = await checkPermissions(['user:read']);
+   const createAccess = await checkPermissions(['user:create']);
+   if (!readAccess) return unauthorized();
+
    const key = serialize({ ...searchParams });
 
    const locations: Location[] = await db.location.findMany();
@@ -41,12 +47,14 @@ export default async function Page(props: pageProps) {
                   title={`Pengguna`}
                   description="Kelola data pengguna dan hak akses"
                />
-               <Link
-                  href={'/dashboard/user/create'}
-                  className={cn(buttonVariants({ variant: 'default' }))}
-               >
-                  <Plus className="mr-2 h-4 w-4" /> Tambah
-               </Link>
+               {createAccess && (
+                  <Link
+                     href={'/dashboard/user/create'}
+                     className={cn(buttonVariants({ variant: 'default' }))}
+                  >
+                     <Plus className="mr-2 h-4 w-4" /> Tambah
+                  </Link>
+               )}
             </div>
             <Separator />
             <TableAction locations={locations} roles={roles} />

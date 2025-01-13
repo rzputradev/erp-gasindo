@@ -1,21 +1,22 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
+import { revalidatePath } from 'next/cache';
+
 import { db } from '@/lib/db';
 import { createPermissionSchema } from '@/lib/schemas/permission';
-import { revalidatePath } from 'next/cache';
+import { checkPermissions } from '@/data/user';
 
 export async function createPersmission(
    values: z.infer<typeof createPermissionSchema>
 ) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'User is not authenticated' };
+      const access = await checkPermissions(['permission:create']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          createPermissionSchema.safeParse(values);
-      if (!success) return { error: 'Invalid fields' };
+      if (!success) return { error: 'Data tidak valid' };
 
       const { name, key, description } = parsedValues;
 
@@ -31,11 +32,11 @@ export async function createPersmission(
 
       revalidatePath('/dashboard/permission');
 
-      return { success: 'Data saved successfully' };
+      return { success: 'Data berhasil disimpan' };
    } catch (error) {
       console.error(error);
       return {
-         error: 'An unexpected error occurred'
+         error: 'Terjadi kesalahan tak terduga'
       };
    }
 }

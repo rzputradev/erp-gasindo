@@ -1,21 +1,22 @@
 'use server';
 
 import { z } from 'zod';
-import { currentUser } from '@/data/user';
-import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+
+import { db } from '@/lib/db';
+import { checkPermissions } from '@/data/user';
 import { createSupplierSchema } from '@/lib/schemas/supplier';
 
 export async function createSupplier(
    values: z.infer<typeof createSupplierSchema>
 ) {
    try {
-      const user = await currentUser();
-      if (!user) return { error: 'User is not authenticated' };
+      const access = await checkPermissions(['supplier:create']);
+      if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
          createSupplierSchema.safeParse(values);
-      if (!success) return { error: 'Invalid fields' };
+      if (!success) return { error: 'Data tidak valid' };
 
       const { name, key, phone, address } = parsedValues;
 
@@ -32,11 +33,11 @@ export async function createSupplier(
 
       revalidatePath(`/dashboard/supplier`);
 
-      return { success: 'Data created successfully' };
+      return { success: 'Data berhasil disimpan' };
    } catch (error) {
       console.error(error);
       return {
-         error: 'An unexpected error occurred'
+         error: 'Terjadi kesalahan tak terduga'
       };
    }
 }

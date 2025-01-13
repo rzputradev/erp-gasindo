@@ -31,6 +31,11 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Pengguna', link: '/dashboard/user' },
       { title: 'Perbaharui', link: '/dashboard/user/update' }
    ],
+   '/dashboard/user/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Pengguna', link: '/dashboard/user' },
+      { title: 'Rincian', link: '/dashboard/user/read' }
+   ],
 
    // Permission
    '/dashboard/permission': [
@@ -46,6 +51,11 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Beranda', link: '/dashboard' },
       { title: 'Izin', link: '/dashboard/permission' },
       { title: 'Perbaharui', link: '/dashboard/permission/update' }
+   ],
+   '/dashboard/permission/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Izin', link: '/dashboard/permission' },
+      { title: 'Rincian', link: '/dashboard/permission/read' }
    ],
 
    // Permission
@@ -63,6 +73,11 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Peran', link: '/dashboard/role' },
       { title: 'Perbaharui', link: '/dashboard/role/update' }
    ],
+   '/dashboard/role/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Peran', link: '/dashboard/role' },
+      { title: 'Rincian', link: '/dashboard/role/read' }
+   ],
 
    // Location
    '/dashboard/location': [
@@ -78,6 +93,11 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Beranda', link: '/dashboard' },
       { title: 'Lokasi', link: '/dashboard/location' },
       { title: 'Perbaharui', link: '/dashboard/location/update' }
+   ],
+   '/dashboard/location/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Lokasi', link: '/dashboard/location' },
+      { title: 'Rincian', link: '/dashboard/location/read' }
    ],
 
    // Item Type
@@ -95,6 +115,11 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Tipe Item', link: '/dashboard/item-type' },
       { title: 'Perbaharui', link: '/dashboard/item-type/update' }
    ],
+   '/dashboard/item-type/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Tipe Item', link: '/dashboard/item-type' },
+      { title: 'Rincian', link: '/dashboard/item-type/read' }
+   ],
 
    // Item
    '/dashboard/item': [
@@ -110,6 +135,11 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Beranda', link: '/dashboard' },
       { title: 'Item', link: '/dashboard/item' },
       { title: 'Perbaharui', link: '/dashboard/item/update' }
+   ],
+   '/dashboard/item/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Item', link: '/dashboard/item' },
+      { title: 'Rincian', link: '/dashboard/item/read' }
    ],
 
    // Buyer
@@ -127,6 +157,11 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Pembeli', link: '/dashboard/buyer' },
       { title: 'Perbaharui', link: '/dashboard/buyer/update' }
    ],
+   '/dashboard/buyer/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Pembeli', link: '/dashboard/buyer' },
+      { title: 'Rincian', link: '/dashboard/buyer/read' }
+   ],
 
    // Supplier
    '/dashboard/supplier': [
@@ -142,6 +177,11 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Beranda', link: '/dashboard' },
       { title: 'Pemasok', link: '/dashboard/supplier' },
       { title: 'Perbaharui', link: '/dashboard/supplier/update' }
+   ],
+   '/dashboard/supplier/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Pemasok', link: '/dashboard/supplier' },
+      { title: 'Rincian', link: '/dashboard/supplier/read' }
    ],
 
    // Vehicle Type
@@ -159,6 +199,11 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Tipe Kendaraan', link: '/dashboard/vehicle-type' },
       { title: 'Perbaharui', link: '/dashboard/vehicle-type/update' }
    ],
+   '/dashboard/vehicle-type/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Tipe Kendaraan', link: '/dashboard/vehicle-type' },
+      { title: 'Rincian', link: '/dashboard/vehicle-type/read' }
+   ],
 
    // Transporter
    '/dashboard/transporter': [
@@ -174,6 +219,11 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Beranda', link: '/dashboard' },
       { title: 'Pengangkutan', link: '/dashboard/transporter' },
       { title: 'Perbaharui', link: '/dashboard/transporter/update' }
+   ],
+   '/dashboard/transporter/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Pengangkutan', link: '/dashboard/transporter' },
+      { title: 'Rincian', link: '/dashboard/transporter/read' }
    ],
 
    // Setting

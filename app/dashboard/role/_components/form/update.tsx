@@ -72,6 +72,7 @@ export function UpdateForm({ data, allPermissions }: UpdateFormProps) {
             .catch((e) => {
                console.log(e);
                form.reset();
+               setIspending(false);
                toast.error('Terjadi kesalahan tak terduga');
             });
       });
@@ -161,7 +162,7 @@ export function UpdateForm({ data, allPermissions }: UpdateFormProps) {
                                  Pilih izin yang akan diberikan pada role ini
                               </FormDescription>
                            </div>
-                           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                               {allPermissions?.map((permission) => (
                                  <FormField
                                     key={permission.id}
@@ -178,7 +179,7 @@ export function UpdateForm({ data, allPermissions }: UpdateFormProps) {
                                                    {permission.name}
                                                 </FormLabel>
                                                 <FormDescription className="line-clamp-1">
-                                                   {permission.description}
+                                                   {permission.key}
                                                 </FormDescription>
                                              </div>
                                              <FormControl>
