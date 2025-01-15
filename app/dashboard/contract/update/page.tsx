@@ -1,17 +1,16 @@
 import { notFound, unauthorized } from 'next/navigation';
 import { SearchParams } from 'nuqs';
-import { Item, ItemCategory } from '@prisma/client';
 import { Suspense } from 'react';
 
 import { db } from '@/lib/db';
 import { checkPermissions } from '@/data/user';
 
-import { ViewDetail } from '../_components/view-detail';
+import { UpdateForm } from '../_components/form/update';
 import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
 
 export const metadata = {
-   title: 'Dashboard : Rincian Item'
+   title: 'Dashboard : Perbaharui Pembeli'
 };
 
 type pageProps = {
@@ -21,17 +20,14 @@ type pageProps = {
 export default async function Page(props: pageProps) {
    const { id } = await props.searchParams;
 
-   const access = await checkPermissions(['item:read']);
+   const access = await checkPermissions(['buyer:update']);
    if (!access) return unauthorized();
 
    if (!id) {
       return notFound();
    }
 
-   const data: Item | null = await db.item.findUnique({
-      where: { id: id as string }
-   });
-   const itemTypes: ItemCategory[] = await db.itemCategory.findMany();
+   const data = await db.buyer.findUnique({ where: { id: id as string } });
 
    if (!data) {
       return notFound();
@@ -41,7 +37,7 @@ export default async function Page(props: pageProps) {
       <PageContainer scrollable>
          <div className="flex-1 space-y-4">
             <Suspense fallback={<FormCardSkeleton />}>
-               <ViewDetail data={data} itemTypes={itemTypes} />
+               <UpdateForm data={data} />
             </Suspense>
          </div>
       </PageContainer>

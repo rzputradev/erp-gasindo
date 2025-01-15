@@ -1,31 +1,28 @@
 'use server';
 
 import { z } from 'zod';
-import { checkPermissions, currentUser } from '@/data/user';
+import { checkPermissions } from '@/data/user';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import { updateItemSchema } from '@/lib/schemas/item';
+import { updateItemTypeSchema } from '@/lib/schemas/item-type';
 
-export async function updateItem(values: z.infer<typeof updateItemSchema>) {
+export async function updateItemCategory(
+   values: z.infer<typeof updateItemTypeSchema>
+) {
    try {
-      const access = await checkPermissions(['item:update']);
+      const access = await checkPermissions(['item-type:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
-         updateItemSchema.safeParse(values);
+         updateItemTypeSchema.safeParse(values);
       if (!success) return { error: 'Data tidak valid' };
 
-      const { id, name, key, description, unit } = parsedValues;
+      const { id, name, key, description } = parsedValues;
 
       await db.$transaction(async (tx) => {
-         await tx.item.update({
+         await tx.itemCategory.update({
             where: { id },
-            data: {
-               name,
-               key,
-               description,
-               unit
-            }
+            data: { name, key, description }
          });
       });
 

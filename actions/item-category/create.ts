@@ -2,34 +2,35 @@
 
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
-import { createItemSchema } from '@/lib/schemas/item';
 
 import { db } from '@/lib/db';
+import { createItemTypeSchema } from '@/lib/schemas/item-type';
 import { checkPermissions } from '@/data/user';
 
-export async function createItem(values: z.infer<typeof createItemSchema>) {
+export async function createItemCategory(
+   values: z.infer<typeof createItemTypeSchema>
+) {
    try {
-      const access = await checkPermissions(['item:create']);
+      const access = await checkPermissions(['item-type:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
-         createItemSchema.safeParse(values);
+         createItemTypeSchema.safeParse(values);
       if (!success) return { error: 'Data tidak valid' };
 
-      const { name, key, description, unit } = parsedValues;
+      const { name, key, description } = parsedValues;
 
       await db.$transaction(async (tx) => {
-         await tx.item.create({
+         await tx.itemCategory.create({
             data: {
                name,
                key,
-               description,
-               unit
+               description
             }
          });
       });
 
-      revalidatePath('/dashboard/item');
+      revalidatePath('/dashboard/item-type');
 
       return { success: 'Data berhasil disimpan' };
    } catch (error) {

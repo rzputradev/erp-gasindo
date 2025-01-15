@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { Item, ItemType, UnitType } from '@prisma/client';
+import { Item, ItemCategory, UnitType } from '@prisma/client';
 
 import {
    Form,
@@ -24,7 +24,7 @@ import {
 
 interface ViewDetailProps {
    data: Item;
-   itemTypes: ItemType[];
+   itemTypes: ItemCategory[];
 }
 
 export function ViewDetail({ data, itemTypes }: ViewDetailProps) {
@@ -54,7 +54,7 @@ export function ViewDetail({ data, itemTypes }: ViewDetailProps) {
                      </FormControl>
                   </FormItem>
 
-                  <FormItem>
+                  {/* <FormItem>
                      <FormLabel>Tipe Item</FormLabel>
                      <FormControl>
                         <Select value={data.typeId || undefined} disabled>
@@ -79,7 +79,7 @@ export function ViewDetail({ data, itemTypes }: ViewDetailProps) {
                            </SelectContent>
                         </Select>
                      </FormControl>
-                  </FormItem>
+                  </FormItem> */}
 
                   <FormItem>
                      <FormLabel>Satuan Item</FormLabel>

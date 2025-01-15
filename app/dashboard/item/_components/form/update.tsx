@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
-import { Item, ItemType, UnitType } from '@prisma/client';
+import { Item, ItemCategory, UnitType } from '@prisma/client';
 import { FormError } from '@/components/form-error';
 
 import { updateItem } from '@/actions/item/update';
@@ -37,10 +37,10 @@ import {
 
 interface UpdateFormProps {
    data: Item;
-   itemTypes: ItemType[];
+   itemCategories: ItemCategory[];
 }
 
-export function UpdateForm({ data, itemTypes }: UpdateFormProps) {
+export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
    const [isPending, setIspending] = useState<boolean>(false);
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
@@ -53,7 +53,6 @@ export function UpdateForm({ data, itemTypes }: UpdateFormProps) {
          key: data.key,
          description: data.description || '',
          unit: data.unit,
-         typeId: data.typeId || undefined,
          isWeighted: data.isWeighted,
          isSalable: data.isSalable
       }
@@ -156,8 +155,8 @@ export function UpdateForm({ data, itemTypes }: UpdateFormProps) {
                                        <SelectItem key="none" value="none">
                                           Tidak ada
                                        </SelectItem>
-                                       {itemTypes.length > 0 ? (
-                                          itemTypes.map((itemType) => (
+                                       {itemCategories.length > 0 ? (
+                                          itemCategories.map((itemType) => (
                                              <SelectItem
                                                 key={itemType.id}
                                                 value={itemType.id}

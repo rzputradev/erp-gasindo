@@ -2,50 +2,62 @@ import { SearchParams } from 'nuqs/server';
 import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { ItemCategory } from '@prisma/client';
-import { unauthorized } from 'next/navigation';
 
-import { db } from '@/lib/db';
-import { cn } from '@/lib/utils';
-import { searchItemParamsCache, serialize } from '@/lib/params/item';
+import { searchContractParamsCache, serialize } from '@/lib/params/contract';
 import { checkPermissions } from '@/data/user';
+import { cn } from '@/lib/utils';
 
-import { ListingPage } from './_components/listing-page';
 import { TableAction } from './_components/tables/table-action';
+import { ListingPage } from './_components/listing-page';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading';
 import { buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
+import { unauthorized } from 'next/navigation';
+import { Buyer, Item, Location } from '@prisma/client';
+import { db } from '@/lib/db';
 
 type pageProps = {
    searchParams: Promise<SearchParams>;
 };
 
 export const metadata = {
-   title: 'Dashboard : Item'
+   title: 'Dashboard : Kontrak'
 };
 
 export default async function Page(props: pageProps) {
    const searchParams = await props.searchParams;
-   searchItemParamsCache.parse(searchParams);
+   searchContractParamsCache.parse(searchParams);
 
-   const readAccess = await checkPermissions(['item:read']);
-   const createAccess = await checkPermissions(['item:create']);
+   const readAccess = await checkPermissions(['contract:read']);
+   const createAccess = await checkPermissions(['contract:create']);
    if (!readAccess) return unauthorized();
 
    const key = serialize({ ...searchParams });
 
-   const itemTypes: ItemCategory[] = await db.itemCategory.findMany();
+   const locations: Location[] = await db.location.findMany({
+      where: { type: 'MILL' }
+   });
+   const buyers: Buyer[] = await db.buyer.findMany();
+   const items: Item[] = await db.item.findMany({
+      where: {
+         categories: {
+            some: {
+               key: 'CMDT'
+            }
+         }
+      }
+   });
 
    return (
       <PageContainer scrollable>
          <div className="space-y-4">
             <div className="flex items-start justify-between">
-               <Heading title={`Item`} description="Kelola data item" />
+               <Heading title={`Kontrak`} description="Kelola data kontrak" />
                {createAccess && (
                   <Link
-                     href={'/dashboard/item/create'}
+                     href={'/dashboard/contract/create'}
                      className={cn(buttonVariants({ variant: 'default' }))}
                   >
                      <Plus className="mr-2 h-4 w-4" /> Tambah
@@ -53,7 +65,7 @@ export default async function Page(props: pageProps) {
                )}
             </div>
             <Separator />
-            <TableAction itemTypes={itemTypes} />
+            <TableAction locations={locations} buyers={buyers} items={items} />
             <Suspense
                key={key}
                fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
