@@ -36,26 +36,30 @@ enum UnitType {
 
 enum ContractStatus {
    CREATED
-   APPROVED
    ACTIVE
-   EXPIRED
    CANCELED
-   COMPLETED
+   CLOSED
 }
 
 enum OrderStatus {
    CREATED
-   LOADING
-   CANCELED
+   ONLOAD
    COMPLETED
 }
 
-enum TransactionType {
-   DEBIT
-   CREDIT
+enum VehicleType {
+   COLD_DEASEL_D
+   COLD_DEASEL
+   TRONTON
+   PICKUP
 }
 
-enum IncomingScaleType {
+enum Transporter {
+   SELLER
+   BUYER
+}
+
+enum SupplierItemType {
    WEIGH
    REWEIGH
    OTHERS
@@ -69,14 +73,10 @@ model Location {
    type    LocationType?
    address String
 
-   users          User[]
-   items          SupplierItem[]
-   stocks         Stock[]
-   transactions   Transaction[]
-   contracts      Contract[]
-   incomingScales IncomingScale[]
-   outgoingScales OutgoingScale[]
-   transporters   Transporter[]
+   users     User[]
+   items     SupplierItem[]
+   stocks    Stock[]
+   contracts Contract[]
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
@@ -98,7 +98,6 @@ model Stock {
 
 model Item {
    id          String   @id @default(cuid())
-   typeId      String?
    name        String
    description String?
    key         String   @unique
@@ -110,22 +109,26 @@ model Item {
    contracts     Contract[]
    stocks        Stock[]
 
-   itemType ItemType? @relation(fields: [typeId], references: [id], onDelete: SetNull)
+   categories ItemCategory[] @relation("ItemCategories")
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
+
+   @@index([key])
 }
 
-model ItemType {
+model ItemCategory {
    id          String  @id @default(cuid())
    name        String
    key         String  @unique
    description String?
 
-   items Item[]
+   items Item[] @relation("ItemCategories")
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
+
+   @@index([key])
 }
 
 // Supplier Models
@@ -139,38 +142,27 @@ model Supplier {
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
+
+   @@index([key])
 }
 
 model SupplierItem {
-   id             String          @id @default(cuid())
+   id             String           @id @default(cuid())
    supplierId     String?
    itemId         String?
    locationId     String?
-   priceHistories PriceHistory[]
+   price          Int
+   type           SupplierItemType @default(WEIGH)
    incomingScales IncomingScale[]
 
+   location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
    supplier Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
    item     Item?     @relation(fields: [itemId], references: [id], onDelete: SetNull)
-   location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
 
    @@unique([supplierId, itemId, locationId])
-}
-
-model PriceHistory {
-   id             String          @id @default(cuid())
-   itemId         String?
-   price          Float
-   validFrom      DateTime        @default(now())
-   validTo        DateTime?
-   incomingScales IncomingScale[]
-
-   item SupplierItem? @relation(fields: [itemId], references: [id], onDelete: SetNull)
-
-   createdAt DateTime @default(now())
-   updatedAt DateTime @updatedAt
 }
 
 // Buyer Models
@@ -185,6 +177,8 @@ model Buyer {
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
+
+   @@index([key])
 }
 
 model Contract {
@@ -194,15 +188,13 @@ model Contract {
    locationId     String?
    status         ContractStatus @default(CREATED)
    contractNo     String
-   unitPrice      Float
+   price          Float
    vat            Float?
    totalQty       Int
    remainingQty   Int
    tolerance      Float?
    toleranceWeigh Int?
    terms          String?
-   startDate      DateTime       @default(now())
-   endDate        DateTime?
    orders         Order[]
 
    buyer    Buyer?    @relation(fields: [buyerId], references: [id], onDelete: SetNull)
@@ -231,133 +223,66 @@ model Order {
    updatedAt DateTime @updatedAt
 }
 
-model VehicleType {
-   id             String          @id @default(cuid())
-   name           String
-   key            String          @unique
-   description    String?
-   incomingScales IncomingScale[]
-
-   createdAt DateTime @default(now())
-   updatedAt DateTime @updatedAt
-}
-
-model Transporter {
-   id             String          @id @default(cuid())
-   locationId     String?
-   name           String
-   key            String          @unique
-   phone          String?         @unique
-   address        String?
-   outgoingScales OutgoingScale[]
-
-   location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
-
-   createdAt DateTime @default(now())
-   updatedAt DateTime @updatedAt
-}
-
 model IncomingScale {
-   id            String            @id @default(cuid())
-   queueNo       Int               @unique @default(autoincrement())
-   locationId    String?
-   operatorId    String?
-   vehicleTypeId String?
-   itemId        String?
-   priceId       String?
-   driver        String
-   plateNo       String
-   licenseNo     String
-   origin        String
-   entryTime     DateTime          @default(now())
-   exitTime      DateTime?
-   weightIn      Int
-   weightOut     Int?
-   type          IncomingScaleType @default(WEIGH)
-   sorting       Float?            @default(0)
-   oer           Float?            @default(0)
-   waybillNo     String?
-   note          String?
+   id          String       @id @default(cuid())
+   queueNo     String       @unique
+   vehicleType VehicleType?
+   itemId      String?
+   price       Int
+   driver      String
+   plateNo     String
+   licenseNo   String
+   origin      String
+   entryTime   DateTime     @default(now())
+   exitTime    DateTime?
+   weightIn    Int
+   weightOut   Int?
+   quality     Float?       @default(0)
+   waybillNo   String?
+   note        String?
 
-   operator User?         @relation(fields: [operatorId], references: [id], onDelete: SetNull)
-   item     SupplierItem? @relation(fields: [itemId], references: [id], onDelete: SetNull)
-   price    PriceHistory? @relation(fields: [priceId], references: [id], onDelete: SetNull)
-   vehicle  VehicleType?  @relation(fields: [vehicleTypeId], references: [id], onDelete: SetNull)
-   location Location?     @relation(fields: [locationId], references: [id], onDelete: SetNull)
+   item SupplierItem? @relation(fields: [itemId], references: [id], onDelete: SetNull)
 
-   createdAt DateTime @default(now())
-   updatedAt DateTime @updatedAt
+   createdAt  DateTime @default(now())
+   updatedAt  DateTime @updatedAt
+   locationId String?
 
-   @@index([locationId, operatorId, queueNo, plateNo, exitTime, itemId])
+   @@index([queueNo, plateNo, exitTime, itemId])
 }
 
 model OutgoingScale {
-   id            String    @id @default(cuid())
-   queueNo       Int       @unique @default(autoincrement())
-   locationId    String?
-   operatorId    String?
-   transporterId String?
-   orderId       String?
-   splitOrderNo  String?
-   driver        String
-   plateNo       String
-   licenseNo     String
-   entryTime     DateTime  @default(now())
-   exitTime      DateTime?
-   weightIn      Int
-   weightOut     Int?
-   sealStartNo   String?
-   sealEndNo     String?
-   poNo          String?
-   sto           Float?
-   so            Float?
-   ffa           Float?
-   moist         Float?
-   broken        Float?
-   dirty         Float?
-   fiber         Float?
-   note          String?
+   id           String       @id @default(cuid())
+   queueNo      String       @unique
+   transporter  Transporter?
+   orderId      String?
+   splitOrderId String?      @unique
+   driver       String
+   plateNo      String
+   licenseNo    String
+   entryTime    DateTime     @default(now())
+   exitTime     DateTime?
+   weightIn     Int
+   weightOut    Int?
+   seal         String?
+   poNo         String?
+   sto          Float?
+   so           Float?
+   ffa          Float?
+   moist        Float?
+   broken       Float?
+   dirty        Float?
+   fiber        Float?
+   note         String?
 
-   order       Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
-   operator    User?        @relation(fields: [operatorId], references: [id], onDelete: SetNull)
-   location    Location?    @relation(fields: [locationId], references: [id], onDelete: SetNull)
-   transporter Transporter? @relation(fields: [transporterId], references: [id], onDelete: SetNull)
+   splitOrder OutgoingScale? @relation("SplitRelation")
+   mainOrder  OutgoingScale? @relation("SplitRelation", fields: [splitOrderId], references: [id], onDelete: SetNull)
+
+   order Order? @relation(fields: [orderId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
 
-   @@index([operatorId, queueNo, plateNo, exitTime])
-}
-
-// Transaction Model
-model TransactionCategory {
-   id          String  @id @default(cuid())
-   name        String  @unique
-   description String?
-
-   transactions Transaction[]
-
-   createdAt DateTime @default(now())
-   updatedAt DateTime @updatedAt
-}
-
-model Transaction {
-   id              String          @id @default(cuid())
-   transactionNo   String?         @unique
-   locationId      String?
-   categoryId      String?
-   transactionType TransactionType
-   amount          Float
-   description     String?
-   transactionDate DateTime        @default(now())
-
-   location Location?            @relation(fields: [locationId], references: [id], onDelete: SetNull)
-   category TransactionCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-
-   createdAt DateTime @default(now())
-   updatedAt DateTime @updatedAt
-
-   @@index([transactionType, categoryId, locationId])
+   @@index([queueNo, orderId, splitOrderId])
 }
 
 // User Model
@@ -375,14 +300,14 @@ model User {
    accounts       Account[]
    sessions       Session[]
    authenticators Authenticator[]
-   incomingScales IncomingScale[]
-   outgoingScales OutgoingScale[]
 
    role     Role?     @relation(fields: [roleId], references: [id], onDelete: SetDefault)
    location Location? @relation(fields: [locationId], references: [id], onDelete: SetDefault)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
+
+   @@index([roleId, locationId])
 }
 
 model Role {
@@ -408,6 +333,8 @@ model Permission {
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
+
+   @@index([key])
 }
 
 model RolePermission {
@@ -421,8 +348,8 @@ model RolePermission {
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
 
-   @@unique([roleId, permissionId]) // Prevent duplicate Role-Permission pairs
-   @@index([roleId, permissionId]) // Optimize join queries
+   @@unique([roleId, permissionId])
+   @@index([roleId, permissionId])
 }
 
 model Account {

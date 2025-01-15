@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { ItemType } from '@prisma/client';
+import { ItemCategory } from '@prisma/client';
 import { unauthorized } from 'next/navigation';
 
 import { db } from '@/lib/db';
@@ -14,7 +14,7 @@ export const metadata = {
 };
 
 export default async function Page() {
-   const itemTypes: ItemType[] = await db.itemType.findMany();
+   const itemTypes: ItemCategory[] = await db.itemCategory.findMany();
 
    const access = await checkPermissions(['item:create']);
    if (!access) return unauthorized();
@@ -23,7 +23,7 @@ export default async function Page() {
       <PageContainer scrollable>
          <div className="flex-1 space-y-4">
             <Suspense fallback={<FormCardSkeleton />}>
-               <CreateForm itemTypes={itemTypes} />
+               <CreateForm itemCategories={itemTypes} />
             </Suspense>
          </div>
       </PageContainer>

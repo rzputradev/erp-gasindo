@@ -101,24 +101,24 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
    ],
 
    // Item Type
-   '/dashboard/item-type': [
+   '/dashboard/item-category': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Tipe Item', link: '/dashboard/item-type' }
+      { title: 'Tipe Item', link: '/dashboard/item-category' }
    ],
-   '/dashboard/item-type/create': [
+   '/dashboard/item-category/create': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Tipe Item', link: '/dashboard/item-type' },
-      { title: 'Tambah', link: '/dashboard/item-type/create' }
+      { title: 'Kategori Item', link: '/dashboard/item-category' },
+      { title: 'Tambah', link: '/dashboard/item-category/create' }
    ],
-   '/dashboard/item-type/update': [
+   '/dashboard/item-category/update': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Tipe Item', link: '/dashboard/item-type' },
-      { title: 'Perbaharui', link: '/dashboard/item-type/update' }
+      { title: 'Kategori Item', link: '/dashboard/item-category' },
+      { title: 'Perbaharui', link: '/dashboard/item-category/update' }
    ],
-   '/dashboard/item-type/read': [
+   '/dashboard/item-category/read': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Tipe Item', link: '/dashboard/item-type' },
-      { title: 'Rincian', link: '/dashboard/item-type/read' }
+      { title: 'Kategori Item', link: '/dashboard/item-category' },
+      { title: 'Rincian', link: '/dashboard/item-category/read' }
    ],
 
    // Item

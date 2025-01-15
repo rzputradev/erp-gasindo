@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { ItemType, UnitType } from '@prisma/client';
+import { ItemCategory, UnitType } from '@prisma/client';
 
 import { createItem } from '@/actions/item/create';
 
@@ -36,10 +36,10 @@ import {
 } from '@/components/ui/select';
 
 interface CreateFormProps {
-   itemTypes: ItemType[];
+   itemCategories: ItemCategory[];
 }
 
-export function CreateForm({ itemTypes }: CreateFormProps) {
+export function CreateForm({ itemCategories }: CreateFormProps) {
    const router = useRouter();
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
@@ -153,8 +153,8 @@ export function CreateForm({ itemTypes }: CreateFormProps) {
                                        <SelectValue placeholder="Pilih tipe item" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                       {itemTypes.length > 0 ? (
-                                          itemTypes.map((itemType) => (
+                                       {itemCategories.length > 0 ? (
+                                          itemCategories.map((itemType) => (
                                              <SelectItem
                                                 key={itemType.id}
                                                 value={itemType.id}

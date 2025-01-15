@@ -1,35 +1,40 @@
 'use client';
 
-import { Location, Role } from '@prisma/client';
-
-import { useTableFilters } from './use-table-filters';
 import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
+import { useTableFilters } from './use-table-filters';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
+import { Buyer, Item, Location } from '@prisma/client';
 
 interface TableActionsProps {
    locations: Location[];
-   roles: Role[];
+   buyers: Buyer[];
+   items: Item[];
 }
 
-export function TableAction({ locations, roles }: TableActionsProps) {
+export function TableAction({ locations, buyers, items }: TableActionsProps) {
    const LOCATION_OPTIONS = locations.map((location) => ({
       value: location.id,
       label: location.name
    }));
-   const ROLES_OPTIONS = roles.map((role) => ({
-      value: role.id,
-      label: role.name
+   const BUYER_OPTIONS = buyers.map((buyer) => ({
+      value: buyer.id,
+      label: buyer.name
    }));
-
+   const ITEM_OPTIONS = items.map((item) => ({
+      value: item.id,
+      label: item.name
+   }));
    const {
-      locationFilter,
-      setLocationFilter,
-      roleFilter,
-      setRoleFilter,
       isAnyFilterActive,
       resetFilters,
       searchQuery,
+      locationFilter,
+      setLocationFilter,
+      buyerFilter,
+      setBuyerFilter,
+      itemFilter,
+      setItemFilter,
       setPage,
       setSearchQuery
    } = useTableFilters();
@@ -45,20 +50,27 @@ export function TableAction({ locations, roles }: TableActionsProps) {
             />
             <DataTableFilterBox
                filterKey="location"
-               title="Lokasi Kerja"
+               title="Lokasi"
                options={LOCATION_OPTIONS}
                setFilterValue={setLocationFilter}
                filterValue={locationFilter}
             />
             <DataTableFilterBox
-               filterKey="role"
-               title="Role"
-               options={ROLES_OPTIONS}
-               setFilterValue={setRoleFilter}
-               filterValue={roleFilter}
+               filterKey="buyer"
+               title="Pembeli"
+               options={BUYER_OPTIONS}
+               setFilterValue={setBuyerFilter}
+               filterValue={buyerFilter}
+            />
+            <DataTableFilterBox
+               filterKey="item"
+               title="Produk"
+               options={ITEM_OPTIONS}
+               setFilterValue={setItemFilter}
+               filterValue={itemFilter}
             />
             <DataTableResetFilter
-               isFilterActive={!!isAnyFilterActive}
+               isFilterActive={isAnyFilterActive}
                onReset={resetFilters}
             />
          </div>

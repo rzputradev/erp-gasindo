@@ -1,6 +1,6 @@
 'use client';
 
-import { ItemType } from '@prisma/client';
+import { ItemCategory } from '@prisma/client';
 
 import { useLocationTableFilters } from './use-table-filters';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
@@ -8,7 +8,7 @@ import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-fil
 import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
 
 interface TableActionProps {
-   itemTypes: ItemType[];
+   itemTypes: ItemCategory[];
 }
 
 export function TableAction({ itemTypes }: TableActionProps) {

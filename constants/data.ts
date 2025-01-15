@@ -140,6 +140,15 @@ export const navItems: NavItem[] = [
       items: []
    },
    {
+      title: 'Kontrak',
+      url: '/dashboard/contract',
+      icon: 'filePen',
+      isActive: false,
+      shortcut: ['K', 'K'],
+      permission: 'contract:read',
+      items: []
+   },
+   {
       title: 'Timbangan',
       url: '#',
       icon: 'scale',
