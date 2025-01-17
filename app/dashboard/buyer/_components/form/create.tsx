@@ -24,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
+import { Save } from 'lucide-react';
 
 export function CreateForm() {
    const router = useRouter();
@@ -92,7 +93,7 @@ export function CreateForm() {
                               <FormLabel>Nama</FormLabel>
                               <FormControl>
                                  <Input
-                                    placeholder="Masukkan nama pembeli"
+                                    placeholder="Masukkan nama"
                                     type="text"
                                     disabled={isPending}
                                     {...field}
@@ -107,11 +108,11 @@ export function CreateForm() {
                         name="key"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Key</FormLabel>
+                              <FormLabel>Kode</FormLabel>
                               <FormControl>
                                  <Input
                                     type="text"
-                                    placeholder="Masukkan key"
+                                    placeholder="Masukkan kode"
                                     disabled={isPending}
                                     {...field}
                                  />
@@ -167,7 +168,7 @@ export function CreateForm() {
                            <FormLabel>Alamat</FormLabel>
                            <FormControl>
                               <Textarea
-                                 placeholder="Masukkan alamat lengkap"
+                                 placeholder="Masukkan alamat"
                                  className="resize-none"
                                  disabled={isPending}
                                  {...field}
@@ -181,8 +182,14 @@ export function CreateForm() {
                   <FormSuccess message={success} />
                   <FormError message={error} />
 
-                  <Button type="submit" disabled={isPending}>
-                     Submit
+                  <Button
+                     type="submit"
+                     disabled={isPending}
+                     size={'sm'}
+                     className="flex items-center"
+                  >
+                     <Save />
+                     Simpan
                   </Button>
                </form>
             </Form>

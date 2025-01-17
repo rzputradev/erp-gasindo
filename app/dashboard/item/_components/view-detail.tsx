@@ -21,9 +21,11 @@ import {
    SelectTrigger,
    SelectValue
 } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Check, X } from 'lucide-react';
 
 interface ViewDetailProps {
-   data: Item;
+   data: Item & { categories?: ItemCategory[] };
    itemTypes: ItemCategory[];
 }
 
@@ -54,35 +56,8 @@ export function ViewDetail({ data, itemTypes }: ViewDetailProps) {
                      </FormControl>
                   </FormItem>
 
-                  {/* <FormItem>
-                     <FormLabel>Tipe Item</FormLabel>
-                     <FormControl>
-                        <Select value={data.typeId || undefined} disabled>
-                           <SelectTrigger>
-                              <SelectValue placeholder="Pilih tipe item" />
-                           </SelectTrigger>
-                           <SelectContent>
-                              {itemTypes.length > 0 ? (
-                                 itemTypes.map((itemType) => (
-                                    <SelectItem
-                                       key={itemType.id}
-                                       value={itemType.id}
-                                    >
-                                       {itemType.name}
-                                    </SelectItem>
-                                 ))
-                              ) : (
-                                 <div className="px-4 py-2 text-sm text-gray-500">
-                                    Tidak ada tipe item yang tersedia
-                                 </div>
-                              )}
-                           </SelectContent>
-                        </Select>
-                     </FormControl>
-                  </FormItem> */}
-
                   <FormItem>
-                     <FormLabel>Satuan Item</FormLabel>
+                     <FormLabel>Satuan</FormLabel>
                      <Select defaultValue={data.unit} disabled>
                         <FormControl>
                            <SelectTrigger>
@@ -98,30 +73,28 @@ export function ViewDetail({ data, itemTypes }: ViewDetailProps) {
                      </Select>
                   </FormItem>
 
-                  <FormItem className="flex flex-row items-start space-x-4 space-y-0 rounded-md border p-4 shadow-sm">
+                  <FormItem>
+                     <FormLabel>Kategori</FormLabel>
                      <FormControl>
-                        <Checkbox checked={data.isWeighted} disabled />
+                        <div className="flex flex-wrap gap-2">
+                           {data.categories && data.categories.length > 0 ? (
+                              data.categories.map((category) => (
+                                 <Badge
+                                    key={category.id}
+                                    variant="outline"
+                                    className="flex cursor-not-allowed items-center space-x-2 text-sm font-normal text-muted-foreground"
+                                 >
+                                    <span>{category?.name}</span>
+                                    <Check className="size-3 text-green-500" />
+                                 </Badge>
+                              ))
+                           ) : (
+                              <span className="text-sm text-gray-500">
+                                 Tidak ada kategori yang terkait
+                              </span>
+                           )}
+                        </div>
                      </FormControl>
-                     <div className="space-y-1 leading-none">
-                        <FormLabel>Apakah item melewati timbangan?</FormLabel>
-                        <FormDescription>
-                           Pilih opsi ini jika item harus ditimbang sebelum
-                           diproses atau dijual.
-                        </FormDescription>
-                     </div>
-                  </FormItem>
-
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
-                     <FormControl>
-                        <Checkbox checked={data.isSalable} disabled />
-                     </FormControl>
-                     <div className="space-y-1 leading-none">
-                        <FormLabel>Apakah item dapat dijual?</FormLabel>
-                        <FormDescription>
-                           Pilih opsi ini jika item tersedia untuk dijual kepada
-                           pembeli.
-                        </FormDescription>
-                     </div>
                   </FormItem>
 
                   <FormItem className="col-span-2">

@@ -11,7 +11,7 @@ export async function createItemCategory(
    values: z.infer<typeof createItemTypeSchema>
 ) {
    try {
-      const access = await checkPermissions(['item-type:create']);
+      const access = await checkPermissions(['item-category:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

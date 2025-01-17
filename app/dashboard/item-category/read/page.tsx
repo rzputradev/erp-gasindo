@@ -10,7 +10,7 @@ import FormCardSkeleton from '@/components/form-card-skeleton';
 import { ViewDetail } from '../_components/view-detail';
 
 export const metadata = {
-   title: 'Dashboard : Rincian Tipe Item'
+   title: 'Dashboard : Rincian Kategori Barang'
 };
 
 type pageProps = {
@@ -20,7 +20,7 @@ type pageProps = {
 export default async function Page(props: pageProps) {
    const { id } = await props.searchParams;
 
-   const access = await checkPermissions(['item-type:read']);
+   const access = await checkPermissions(['item-category:read']);
    if (!access) return unauthorized();
 
    if (!id) {

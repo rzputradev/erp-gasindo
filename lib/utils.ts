@@ -62,3 +62,7 @@ export const monthToRoman: { [key: number]: string } = {
    10: 'XI',
    11: 'XII'
 };
+
+export function formatNumber(number: number) {
+   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}

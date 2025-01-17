@@ -5,10 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Buyer, ContractStatus, Item, Location } from '@prisma/client';
+import { Save } from 'lucide-react';
 
-import { createBuyerSchema } from '@/lib/schemas/buyer';
-import { createBuyer } from '@/actions/buyer/create';
+import { createContract } from '@/actions/contract/create';
+import { createContractSchema } from '@/lib/schemas/contract';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +26,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { createContractSchema } from '@/lib/schemas/contract';
 import {
    Select,
    SelectContent,
@@ -32,8 +33,6 @@ import {
    SelectTrigger,
    SelectValue
 } from '@/components/ui/select';
-import { Buyer, ContractStatus, Item, Location } from '@prisma/client';
-import { createContract } from '@/actions/contract/create';
 
 interface CreateFromProps {
    locations: Location[];
@@ -43,21 +42,23 @@ interface CreateFromProps {
 
 export function CreateForm({ locations, buyers, items }: CreateFromProps) {
    const router = useRouter();
+   const params = useSearchParams();
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
    const [isPending, setIspending] = useState<boolean>(false);
 
+   const buyerId = params.get('buyerId');
+
    const form = useForm<z.infer<typeof createContractSchema>>({
       resolver: zodResolver(createContractSchema),
       defaultValues: {
-         buyerId: '',
+         buyerId: buyerId || '',
          itemId: '',
          locationId: '',
          price: 0,
          vat: 0,
          tolerance: 0,
-         totalQty: 0,
-         status: ContractStatus.CREATED,
+         quantity: 0,
          terms: ''
       }
    });
@@ -223,30 +224,11 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
                         name="price"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Harga</FormLabel>
+                              <FormLabel>Harga (Rp)</FormLabel>
                               <FormControl>
                                  <Input
                                     type="number"
                                     placeholder="Masukkan harga satuan"
-                                    disabled={isPending}
-                                    {...field}
-                                 />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="tolerance"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Toleransi (%)</FormLabel>
-                              <FormControl>
-                                 <Input
-                                    type="number"
-                                    placeholder="Masukkan toleransi pengambilan"
                                     disabled={isPending}
                                     {...field}
                                  />
@@ -277,14 +259,14 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
 
                      <FormField
                         control={form.control}
-                        name="totalQty"
+                        name="quantity"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Total (Kg)</FormLabel>
+                              <FormLabel>Kuantitas (Kg)</FormLabel>
                               <FormControl>
                                  <Input
-                                    type="text"
-                                    placeholder="Masukkan total pembelian"
+                                    type="number"
+                                    placeholder="Masukkan kuantitas"
                                     disabled={isPending}
                                     {...field}
                                  />
@@ -296,35 +278,18 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
 
                      <FormField
                         control={form.control}
-                        name="status"
+                        name="tolerance"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Status Kontrak</FormLabel>
-                              <Select
-                                 onValueChange={field.onChange}
-                                 defaultValue={field.value}
-                                 disabled={isPending}
-                              >
-                                 <FormControl>
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih Status" />
-                                    </SelectTrigger>
-                                 </FormControl>
-                                 <SelectContent>
-                                    <SelectItem value={ContractStatus.CREATED}>
-                                       Dibuat
-                                    </SelectItem>
-                                    <SelectItem value={ContractStatus.ACTIVE}>
-                                       Aktif
-                                    </SelectItem>
-                                    <SelectItem value={ContractStatus.CANCELED}>
-                                       Di Batalkan
-                                    </SelectItem>
-                                    <SelectItem value={ContractStatus.CLOSED}>
-                                       Selesai
-                                    </SelectItem>
-                                 </SelectContent>
-                              </Select>
+                              <FormLabel>Toleransi (%)</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    type="number"
+                                    placeholder="Masukkan toleransi kuantitas"
+                                    disabled={isPending}
+                                    {...field}
+                                 />
+                              </FormControl>
                               <FormMessage />
                            </FormItem>
                         )}
@@ -353,8 +318,14 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
                   <FormSuccess message={success} />
                   <FormError message={error} />
 
-                  <Button type="submit" disabled={isPending}>
-                     Submit
+                  <Button
+                     type="submit"
+                     disabled={isPending}
+                     size={'sm'}
+                     className="flex items-center"
+                  >
+                     <Save />
+                     Simpan
                   </Button>
                </form>
             </Form>

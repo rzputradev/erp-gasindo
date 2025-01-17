@@ -19,7 +19,15 @@
          "location:read",
          "location:create",
          "location:update",
-         "location:delete"
+         "location:delete",
+         "item:read",
+         "item:create",
+         "item:update",
+         "item:delete",
+         "item-type:read",
+         "item-type:create",
+         "item-type:update",
+         "item-type:delete"
       ]
    }
 ]

@@ -54,7 +54,11 @@ import {
    Bus,
    Wrench,
    PackagePlus,
-   FilePen
+   FilePen,
+   List,
+   LayoutList,
+   ChartBarStacked,
+   Wallet
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -129,5 +133,9 @@ export const Icons = {
    car: Car,
    bus: Bus,
    wrench: Wrench,
-   filePen: FilePen
+   filePen: FilePen,
+   list: List,
+   layoutList: LayoutList,
+   chartBarStacked: ChartBarStacked,
+   walet: Wallet
 };

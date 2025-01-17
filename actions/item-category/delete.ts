@@ -7,7 +7,7 @@ import { checkPermissions } from '@/data/user';
 
 export async function deleteItemCategory(id: string) {
    try {
-      const access = await checkPermissions(['item-type:delete']);
+      const access = await checkPermissions(['item-category:delete']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       if (!id) return { error: 'Id diperlukan' };

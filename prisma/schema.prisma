@@ -102,8 +102,6 @@ model Item {
    description String?
    key         String   @unique
    unit        UnitType
-   isWeighted  Boolean  @default(false)
-   isSalable   Boolean  @default(false)
 
    supplierItems SupplierItem[]
    contracts     Contract[]
@@ -190,8 +188,9 @@ model Contract {
    contractNo     String
    price          Float
    vat            Float?
-   totalQty       Int
+   quantity       Int
    remainingQty   Int
+   topUpQty       Int?
    tolerance      Float?
    toleranceWeigh Int?
    terms          String?
@@ -212,8 +211,9 @@ model Order {
    id             String          @id @default(cuid())
    orderNo        String          @unique
    contractId     String?
-   totalQty       Int
+   quantity       Int
    remainingQty   Int
+   topUpQty       Int?
    status         OrderStatus     @default(CREATED)
    outgoingScales OutgoingScale[]
 
@@ -224,22 +224,23 @@ model Order {
 }
 
 model IncomingScale {
-   id          String       @id @default(cuid())
-   queueNo     String       @unique
-   vehicleType VehicleType?
-   itemId      String?
-   price       Int
-   driver      String
-   plateNo     String
-   licenseNo   String
-   origin      String
-   entryTime   DateTime     @default(now())
-   exitTime    DateTime?
-   weightIn    Int
-   weightOut   Int?
-   quality     Float?       @default(0)
-   waybillNo   String?
-   note        String?
+   id           String       @id @default(cuid())
+   queueNo      String       @unique
+   vehicleType  VehicleType?
+   itemId       String?
+   price        Int
+   driver       String
+   plateNo      String
+   licenseNo    String
+   origin       String
+   entryTime    DateTime     @default(now())
+   weighingTime DateTime?
+   exitTime     DateTime?
+   weightIn     Int
+   weightOut    Int?
+   quality      Float?       @default(0)
+   waybillNo    String?
+   note         String?
 
    item SupplierItem? @relation(fields: [itemId], references: [id], onDelete: SetNull)
 
@@ -255,11 +256,12 @@ model OutgoingScale {
    queueNo      String       @unique
    transporter  Transporter?
    orderId      String?
-   splitOrderId String?      @unique
+   splitId      String?      @unique
    driver       String
    plateNo      String
    licenseNo    String
    entryTime    DateTime     @default(now())
+   weighingTime DateTime?
    exitTime     DateTime?
    weightIn     Int
    weightOut    Int?
@@ -275,14 +277,14 @@ model OutgoingScale {
    note         String?
 
    splitOrder OutgoingScale? @relation("SplitRelation")
-   mainOrder  OutgoingScale? @relation("SplitRelation", fields: [splitOrderId], references: [id], onDelete: SetNull)
+   mainOrder  OutgoingScale? @relation("SplitRelation", fields: [splitId], references: [id], onDelete: SetNull)
 
    order Order? @relation(fields: [orderId], references: [id], onDelete: SetNull)
 
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
 
-   @@index([queueNo, orderId, splitOrderId])
+   @@index([queueNo, orderId, splitId])
 }
 
 // User Model

@@ -14,7 +14,7 @@ import { ListingPage } from './_components/listing-page';
 import { TableAction } from './_components/tables/table-action';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 
@@ -23,7 +23,7 @@ type pageProps = {
 };
 
 export const metadata = {
-   title: 'Dashboard : Item'
+   title: 'Dashboard : Barang'
 };
 
 export default async function Page(props: pageProps) {
@@ -36,24 +36,23 @@ export default async function Page(props: pageProps) {
 
    const key = serialize({ ...searchParams });
 
-   const itemTypes: ItemCategory[] = await db.itemCategory.findMany();
+   const itemCategories: ItemCategory[] = await db.itemCategory.findMany();
 
    return (
       <PageContainer scrollable>
          <div className="space-y-4">
             <div className="flex items-start justify-between">
-               <Heading title={`Item`} description="Kelola data item" />
+               <Heading title={`Barang`} description="Kelola data barang" />
                {createAccess && (
-                  <Link
-                     href={'/dashboard/item/create'}
-                     className={cn(buttonVariants({ variant: 'default' }))}
-                  >
-                     <Plus className="mr-2 h-4 w-4" /> Tambah
+                  <Link href={'/dashboard/item/create'}>
+                     <Button size={'sm'} className="flex items-center">
+                        <Plus className="size 4" /> Tambah
+                     </Button>
                   </Link>
                )}
             </div>
             <Separator />
-            <TableAction itemTypes={itemTypes} />
+            <TableAction itemCategories={itemCategories} />
             <Suspense
                key={key}
                fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}

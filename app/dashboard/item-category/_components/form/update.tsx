@@ -75,7 +75,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
       <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
-               Perbaharui Tipe Item
+               Perbaharui Kategori Barang
             </CardTitle>
          </CardHeader>
          <CardContent>
@@ -93,7 +93,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
                               <FormLabel>Nama</FormLabel>
                               <FormControl>
                                  <Input
-                                    placeholder="Masukkan nama izin"
+                                    placeholder="Masukkan nama"
                                     type="text"
                                     disabled={isPending}
                                     {...field}

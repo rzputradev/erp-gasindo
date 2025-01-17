@@ -6,6 +6,8 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
 import { Buyer } from '@prisma/client';
+import { Save } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { updateBuyer } from '@/actions/buyer/update';
 import { updateBuyerSchema } from '@/lib/schemas/buyer';
@@ -30,6 +32,7 @@ interface UpdateFormProps {
 }
 
 export function UpdateForm({ data }: UpdateFormProps) {
+   const router = useRouter();
    const [isPending, setIspending] = useState<boolean>(false);
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
@@ -62,6 +65,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
+                  router.push(`/dashboard/buyer/read?id=${data.id}`);
                }
             })
             .catch((e) => {
@@ -95,7 +99,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
                               <FormLabel>Nama</FormLabel>
                               <FormControl>
                                  <Input
-                                    placeholder="Masukkan nama pembeli"
+                                    placeholder="Masukkan nama"
                                     type="text"
                                     disabled={isPending}
                                     {...field}
@@ -170,7 +174,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
                            <FormLabel>Alamat</FormLabel>
                            <FormControl>
                               <Textarea
-                                 placeholder="Masukkan alamat lengkap"
+                                 placeholder="Masukkan alamat"
                                  className="resize-none"
                                  disabled={isPending}
                                  {...field}
@@ -184,8 +188,14 @@ export function UpdateForm({ data }: UpdateFormProps) {
                   <FormSuccess message={success} />
                   <FormError message={error} />
 
-                  <Button type="submit" disabled={isPending}>
-                     Submit
+                  <Button
+                     type="submit"
+                     disabled={isPending}
+                     size={'sm'}
+                     className="flex items-center"
+                  >
+                     <Save />
+                     Simpan
                   </Button>
                </form>
             </Form>

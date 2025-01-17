@@ -47,7 +47,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             })
             .catch((e) => {
                console.log(e);
-               toast.error('Something went wrong!');
+               toast.error('Terjadi kesalahan, silakan coba lagi');
             });
       });
    };

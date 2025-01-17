@@ -10,7 +10,7 @@ export async function updateItemCategory(
    values: z.infer<typeof updateItemTypeSchema>
 ) {
    try {
-      const access = await checkPermissions(['item-type:update']);
+      const access = await checkPermissions(['item-category:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

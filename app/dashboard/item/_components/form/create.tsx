@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/button';
 import {
    Form,
    FormControl,
-   FormDescription,
    FormField,
    FormItem,
    FormLabel,
@@ -26,7 +25,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { createItemSchema } from '@/lib/schemas/item';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
    Select,
    SelectContent,
@@ -34,6 +32,8 @@ import {
    SelectTrigger,
    SelectValue
 } from '@/components/ui/select';
+import { X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface CreateFormProps {
    itemCategories: ItemCategory[];
@@ -48,13 +48,11 @@ export function CreateForm({ itemCategories }: CreateFormProps) {
    const form = useForm<z.infer<typeof createItemSchema>>({
       resolver: zodResolver(createItemSchema),
       defaultValues: {
-         typeId: undefined,
          name: '',
          key: '',
-         unit: undefined,
+         unit: UnitType.KG,
          description: '',
-         isWeighted: false,
-         isSalable: false
+         categories: []
       }
    });
 
@@ -90,7 +88,7 @@ export function CreateForm({ itemCategories }: CreateFormProps) {
       <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
-               Tambah Item
+               Tambah Barang
             </CardTitle>
          </CardHeader>
          <CardContent>
@@ -123,52 +121,14 @@ export function CreateForm({ itemCategories }: CreateFormProps) {
                         name="key"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Key</FormLabel>
+                              <FormLabel>Kode</FormLabel>
                               <FormControl>
                                  <Input
                                     type="text"
-                                    placeholder="Masukkan key item"
+                                    placeholder="Masukkan kode"
                                     disabled={isPending}
                                     {...field}
                                  />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="typeId"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Tipe Item</FormLabel>
-                              <FormControl>
-                                 <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                    disabled={isPending}
-                                 >
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih tipe item" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                       {itemCategories.length > 0 ? (
-                                          itemCategories.map((itemType) => (
-                                             <SelectItem
-                                                key={itemType.id}
-                                                value={itemType.id}
-                                             >
-                                                {itemType.name}
-                                             </SelectItem>
-                                          ))
-                                       ) : (
-                                          <div className="px-4 py-2 text-sm text-gray-500">
-                                             Tidak ada tipe item yang tersedia
-                                          </div>
-                                       )}
-                                    </SelectContent>
-                                 </Select>
                               </FormControl>
                               <FormMessage />
                            </FormItem>
@@ -213,54 +173,83 @@ export function CreateForm({ itemCategories }: CreateFormProps) {
 
                      <FormField
                         control={form.control}
-                        name="isWeighted"
+                        name="categories"
                         render={({ field }) => (
-                           <FormItem className="flex flex-row items-start space-x-4 space-y-0 rounded-md border p-4 shadow-sm">
+                           <FormItem>
+                              <FormLabel>Kategori</FormLabel>
                               <FormControl>
-                                 <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={(checked) =>
-                                       field.onChange(!!checked)
-                                    }
+                                 <Select
+                                    value={
+                                       Array.isArray(field.value)
+                                          ? field.value[0]
+                                          : field.value || ''
+                                    } // Ensure value is an array
+                                    onValueChange={(value) => {
+                                       const selectedValues = field.value || [];
+                                       if (selectedValues.includes(value)) {
+                                          // Remove if already selected
+                                          field.onChange(
+                                             selectedValues.filter(
+                                                (v) => v !== value
+                                             )
+                                          );
+                                       } else {
+                                          // Add new value
+                                          field.onChange([
+                                             ...selectedValues,
+                                             value
+                                          ]);
+                                       }
+                                    }}
                                     disabled={isPending}
-                                 />
+                                 >
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Pilih kategori" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                       {itemCategories.length > 0 ? (
+                                          itemCategories.map((itemCategory) => (
+                                             <SelectItem
+                                                key={itemCategory.id}
+                                                value={itemCategory.id}
+                                             >
+                                                {itemCategory.name}
+                                             </SelectItem>
+                                          ))
+                                       ) : (
+                                          <div className="px-4 py-2 text-sm text-gray-500">
+                                             Tidak ada kategori yang tersedia
+                                          </div>
+                                       )}
+                                    </SelectContent>
+                                 </Select>
                               </FormControl>
-                              <div className="space-y-1 leading-none">
-                                 <FormLabel>
-                                    Apakah item melewati timbangan?
-                                 </FormLabel>
-                                 <FormDescription>
-                                    Pilih opsi ini jika item harus ditimbang
-                                    sebelum diproses atau dijual.
-                                 </FormDescription>
-                              </div>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
 
-                     <FormField
-                        control={form.control}
-                        name="isSalable"
-                        render={({ field }) => (
-                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
-                              <FormControl>
-                                 <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={(checked) =>
-                                       field.onChange(!!checked)
-                                    }
-                                    disabled={isPending}
-                                 />
-                              </FormControl>
-                              <div className="space-y-1 leading-none">
-                                 <FormLabel>
-                                    Apakah item dapat dijual?
-                                 </FormLabel>
-                                 <FormDescription>
-                                    Pilih opsi ini jika item tersedia untuk
-                                    dijual kepada pembeli.
-                                 </FormDescription>
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                 {field.value?.map((id) => {
+                                    const category = itemCategories.find(
+                                       (cat) => cat.id === id
+                                    );
+                                    return (
+                                       <Badge
+                                          variant={'secondary'}
+                                          key={id}
+                                          className="flex items-center space-x-2 text-sm font-normal"
+                                       >
+                                          <span>{category?.name}</span>
+                                          <X
+                                             className="size-3 text-red-500 hover:text-red-700"
+                                             onClick={() => {
+                                                field.onChange(
+                                                   field.value?.filter(
+                                                      (v) => v !== id
+                                                   )
+                                                );
+                                             }}
+                                          />
+                                       </Badge>
+                                    );
+                                 })}
                               </div>
                               <FormMessage />
                            </FormItem>

@@ -49,7 +49,7 @@ export const columns: ColumnDef<User>[] = [
       enableHiding: false
    },
    {
-      accessorKey: 'status',
+      // accessorKey: 'status',
       header: 'Status Akun',
       cell: ({ row }) => {
          const status = row.original.status;

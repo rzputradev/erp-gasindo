@@ -28,8 +28,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
    const [open, setOpen] = useState(false);
    const router = useRouter();
 
-   const updateAccess = useCheckPermissions(['item-type:update']);
-   const deleteAccess = useCheckPermissions(['item-type:delete']);
+   const updateAccess = useCheckPermissions(['item-category:update']);
+   const deleteAccess = useCheckPermissions(['item-category:delete']);
 
    const onConfirm = async () => {
       setLoading(true);
@@ -72,7 +72,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                <DropdownMenuItem
                   className="flex items-center space-x-2"
                   onClick={() =>
-                     router.push(`/dashboard/item-type/read?id=${data.id}`)
+                     router.push(`/dashboard/item-category/read?id=${data.id}`)
                   }
                >
                   <ReceiptText className="size-4" /> <p>Rincian</p>
@@ -82,7 +82,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                   <DropdownMenuItem
                      className="flex items-center space-x-2"
                      onClick={() =>
-                        router.push(`/dashboard/item-type/update?id=${data.id}`)
+                        router.push(
+                           `/dashboard/item-category/update?id=${data.id}`
+                        )
                      }
                   >
                      <Edit className="size-4" /> <p>Perbaharui</p>

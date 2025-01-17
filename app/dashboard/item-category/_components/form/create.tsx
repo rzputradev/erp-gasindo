@@ -56,7 +56,7 @@ export function CreateForm() {
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
-                  router.push('/dashboard/item-type');
+                  router.push('/dashboard/item-category');
                }
             })
             .catch((e) => {
@@ -72,7 +72,7 @@ export function CreateForm() {
       <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
-               Tambah Tipe Item
+               Tambah Kategori Barang
             </CardTitle>
          </CardHeader>
          <CardContent>
@@ -90,7 +90,7 @@ export function CreateForm() {
                               <FormLabel>Nama</FormLabel>
                               <FormControl>
                                  <Input
-                                    placeholder="Masukkan nama izin"
+                                    placeholder="Masukkan nama"
                                     type="text"
                                     disabled={isPending}
                                     {...field}
