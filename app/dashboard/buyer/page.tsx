@@ -11,7 +11,7 @@ import { TableAction } from './_components/tables/table-action';
 import { ListingPage } from './_components/listing-page';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 import { unauthorized } from 'next/navigation';
@@ -40,11 +40,10 @@ export default async function Page(props: pageProps) {
             <div className="flex items-start justify-between">
                <Heading title={`Pembeli`} description="Kelola data pembeli" />
                {createAccess && (
-                  <Link
-                     href={'/dashboard/buyer/create'}
-                     className={cn(buttonVariants({ variant: 'default' }))}
-                  >
-                     <Plus className="mr-2 h-4 w-4" /> Tambah
+                  <Link href={'/dashboard/buyer/create'}>
+                     <Button size={'sm'} className="flex items-center">
+                        <Plus className="size 4" /> Tambah
+                     </Button>
                   </Link>
                )}
             </div>

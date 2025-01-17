@@ -1,13 +1,12 @@
 'use client';
 
-import * as z from 'zod';
 import * as React from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+import { z } from 'zod';
 import { Item, ItemCategory, UnitType } from '@prisma/client';
-import { FormError } from '@/components/form-error';
 
 import { updateItem } from '@/actions/item/update';
 import { updateItemSchema } from '@/lib/schemas/item';
@@ -15,35 +14,36 @@ import { updateItemSchema } from '@/lib/schemas/item';
 import { Button } from '@/components/ui/button';
 import {
    Form,
-   FormControl,
-   FormDescription,
    FormField,
    FormItem,
    FormLabel,
+   FormControl,
    FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { FormSuccess } from '@/components/form-success';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
    Select,
-   SelectContent,
-   SelectItem,
    SelectTrigger,
-   SelectValue
+   SelectValue,
+   SelectContent,
+   SelectItem
 } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { X } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { FormSuccess } from '@/components/form-success';
+import { FormError } from '@/components/form-error';
 
 interface UpdateFormProps {
-   data: Item;
+   data: Item & { categories?: ItemCategory[] };
    itemCategories: ItemCategory[];
 }
 
 export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
-   const [isPending, setIspending] = useState<boolean>(false);
-   const [success, setSuccess] = useState<string | undefined>(undefined);
-   const [error, setError] = useState<string | undefined>(undefined);
+   const [isPending, setIsPending] = useState(false);
+   const [success, setSuccess] = useState<string | undefined>();
+   const [error, setError] = useState<string | undefined>();
 
    const form = useForm<z.infer<typeof updateItemSchema>>({
       resolver: zodResolver(updateItemSchema),
@@ -53,37 +53,35 @@ export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
          key: data.key,
          description: data.description || '',
          unit: data.unit,
-         isWeighted: data.isWeighted,
-         isSalable: data.isSalable
+         categories: data.categories?.map((cat) => cat.id) || []
       }
    });
 
-   function onSubmit(values: z.infer<typeof updateItemSchema>) {
-      setIspending(true);
+   const onSubmit = (values: z.infer<typeof updateItemSchema>) => {
+      setIsPending(true);
       setError(undefined);
       setSuccess(undefined);
+
       startTransition(() => {
          updateItem(values)
             .then((res) => {
-               setIspending(false);
+               setIsPending(false);
                if (res?.error) {
                   setError(res.error);
                   toast.error(res.error);
-                  form.reset();
                }
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
                }
             })
-            .catch((e) => {
-               console.log(e);
-               form.reset();
-               setIspending(false);
+            .catch(() => {
+               setIsPending(false);
+               setError('Terjadi kesalahan tak terduga');
                toast.error('Terjadi kesalahan tak terduga');
             });
       });
-   }
+   };
 
    return (
       <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
@@ -99,6 +97,7 @@ export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
                   className="space-y-8"
                >
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                     {/* Name Field */}
                      <FormField
                         control={form.control}
                         name="name"
@@ -108,25 +107,6 @@ export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
                               <FormControl>
                                  <Input
                                     placeholder="Masukkan nama item"
-                                    type="text"
-                                    disabled={isPending}
-                                    {...field}
-                                 />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-                     <FormField
-                        control={form.control}
-                        name="key"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Key</FormLabel>
-                              <FormControl>
-                                 <Input
-                                    type="text"
-                                    placeholder="Masukkan key"
                                     disabled={isPending}
                                     {...field}
                                  />
@@ -138,39 +118,16 @@ export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
 
                      <FormField
                         control={form.control}
-                        name="typeId"
+                        name="key"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Tipe Item</FormLabel>
+                              <FormLabel>Kode</FormLabel>
                               <FormControl>
-                                 <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
+                                 <Input
+                                    placeholder="Masukkan kode"
                                     disabled={isPending}
-                                 >
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih tipe item" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                       <SelectItem key="none" value="none">
-                                          Tidak ada
-                                       </SelectItem>
-                                       {itemCategories.length > 0 ? (
-                                          itemCategories.map((itemType) => (
-                                             <SelectItem
-                                                key={itemType.id}
-                                                value={itemType.id}
-                                             >
-                                                {itemType.name}
-                                             </SelectItem>
-                                          ))
-                                       ) : (
-                                          <div className="px-4 py-2 text-sm text-gray-500">
-                                             Tidak ada tipe item yang tersedia
-                                          </div>
-                                       )}
-                                    </SelectContent>
-                                 </Select>
+                                    {...field}
+                                 />
                               </FormControl>
                               <FormMessage />
                            </FormItem>
@@ -185,27 +142,18 @@ export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
                               <FormLabel>Satuan</FormLabel>
                               <Select
                                  onValueChange={field.onChange}
-                                 defaultValue={field.value}
+                                 value={field.value}
                                  disabled={isPending}
                               >
-                                 <FormControl>
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Satuan item" />
-                                    </SelectTrigger>
-                                 </FormControl>
+                                 <SelectTrigger>
+                                    <SelectValue placeholder="Pilih satuan" />
+                                 </SelectTrigger>
                                  <SelectContent>
-                                    <SelectItem value={UnitType.KG}>
-                                       Kilogram
-                                    </SelectItem>
-                                    <SelectItem value={UnitType.LTR}>
-                                       Liter
-                                    </SelectItem>
-                                    <SelectItem value={UnitType.PCS}>
-                                       Keping
-                                    </SelectItem>
-                                    <SelectItem value={UnitType.TON}>
-                                       Ton
-                                    </SelectItem>
+                                    {Object.values(UnitType).map((unit) => (
+                                       <SelectItem key={unit} value={unit}>
+                                          {unit}
+                                       </SelectItem>
+                                    ))}
                                  </SelectContent>
                               </Select>
                               <FormMessage />
@@ -215,50 +163,77 @@ export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
 
                      <FormField
                         control={form.control}
-                        name="isWeighted"
+                        name="categories"
                         render={({ field }) => (
-                           <FormItem className="flex flex-row items-start space-x-4 space-y-0 rounded-md border p-4 shadow-sm">
+                           <FormItem>
+                              <FormLabel>Kategori</FormLabel>
                               <FormControl>
-                                 <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
+                                 <Select
+                                    onValueChange={(value) => {
+                                       const selectedValues = field.value || [];
+                                       if (selectedValues.includes(value)) {
+                                          // Remove the category if already selected
+                                          field.onChange(
+                                             selectedValues.filter(
+                                                (v) => v !== value
+                                             )
+                                          );
+                                       } else {
+                                          // Add the category if not selected
+                                          field.onChange([
+                                             ...selectedValues,
+                                             value
+                                          ]);
+                                       }
+                                    }}
                                     disabled={isPending}
-                                 />
+                                 >
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Pilih kategori" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                       {itemCategories.length > 0 ? (
+                                          itemCategories.map((category) => (
+                                             <SelectItem
+                                                key={category.id}
+                                                value={category.id}
+                                             >
+                                                {category.name}
+                                             </SelectItem>
+                                          ))
+                                       ) : (
+                                          <div className="px-4 py-2 text-sm text-gray-500">
+                                             Tidak ada kategori yang tersedia
+                                          </div>
+                                       )}
+                                    </SelectContent>
+                                 </Select>
                               </FormControl>
-                              <div className="space-y-1 leading-none">
-                                 <FormLabel>
-                                    Apakah item melewati timbangan?
-                                 </FormLabel>
-                                 <FormDescription>
-                                    Pilih opsi ini jika item harus ditimbang
-                                    sebelum diproses atau dijual.
-                                 </FormDescription>
-                              </div>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="isSalable"
-                        render={({ field }) => (
-                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
-                              <FormControl>
-                                 <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                    disabled={isPending}
-                                 />
-                              </FormControl>
-                              <div className="space-y-1 leading-none">
-                                 <FormLabel>
-                                    Apakah item dapat dijual?
-                                 </FormLabel>
-                                 <FormDescription>
-                                    Pilih opsi ini jika item tersedia untuk
-                                    dijual kepada pembeli.
-                                 </FormDescription>
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                 {field.value?.map((id) => {
+                                    const category = itemCategories.find(
+                                       (cat) => cat.id === id
+                                    );
+                                    return (
+                                       <Badge
+                                          key={id}
+                                          variant="secondary"
+                                          className="flex items-center space-x-2 text-sm font-normal"
+                                       >
+                                          <span>{category?.name}</span>
+                                          <X
+                                             className="h-4 w-4 cursor-pointer text-red-500 hover:text-red-700"
+                                             onClick={() =>
+                                                field.onChange(
+                                                   field.value?.filter(
+                                                      (v) => v !== id
+                                                   )
+                                                )
+                                             }
+                                          />
+                                       </Badge>
+                                    );
+                                 })}
                               </div>
                               <FormMessage />
                            </FormItem>
@@ -274,8 +249,7 @@ export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
                            <FormLabel>Deskripsi</FormLabel>
                            <FormControl>
                               <Textarea
-                                 placeholder="Tulis deskipsi"
-                                 className="resize-none"
+                                 placeholder="Tulis deskripsi"
                                  disabled={isPending}
                                  {...field}
                               />

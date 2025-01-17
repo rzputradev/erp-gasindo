@@ -103,42 +103,42 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
    // Item Type
    '/dashboard/item-category': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Tipe Item', link: '/dashboard/item-category' }
+      { title: 'Tipe Barang', link: '/dashboard/item-category' }
    ],
    '/dashboard/item-category/create': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Kategori Item', link: '/dashboard/item-category' },
+      { title: 'Kategori Barang', link: '/dashboard/item-category' },
       { title: 'Tambah', link: '/dashboard/item-category/create' }
    ],
    '/dashboard/item-category/update': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Kategori Item', link: '/dashboard/item-category' },
+      { title: 'Kategori Barang', link: '/dashboard/item-category' },
       { title: 'Perbaharui', link: '/dashboard/item-category/update' }
    ],
    '/dashboard/item-category/read': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Kategori Item', link: '/dashboard/item-category' },
+      { title: 'Kategori Barang', link: '/dashboard/item-category' },
       { title: 'Rincian', link: '/dashboard/item-category/read' }
    ],
 
    // Item
    '/dashboard/item': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Item', link: '/dashboard/item' }
+      { title: 'Barang', link: '/dashboard/item' }
    ],
    '/dashboard/item/create': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Item', link: '/dashboard/item' },
+      { title: 'Barang', link: '/dashboard/item' },
       { title: 'Tambah', link: '/dashboard/item/create' }
    ],
    '/dashboard/item/update': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Item', link: '/dashboard/item' },
+      { title: 'Barang', link: '/dashboard/item' },
       { title: 'Perbaharui', link: '/dashboard/item/update' }
    ],
    '/dashboard/item/read': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Item', link: '/dashboard/item' },
+      { title: 'Barang', link: '/dashboard/item' },
       { title: 'Rincian', link: '/dashboard/item/read' }
    ],
 
@@ -224,6 +224,48 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Beranda', link: '/dashboard' },
       { title: 'Pengangkutan', link: '/dashboard/transporter' },
       { title: 'Rincian', link: '/dashboard/transporter/read' }
+   ],
+
+   // Contract
+   '/dashboard/contract': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Kontrak', link: '/dashboard/contract' }
+   ],
+   '/dashboard/contract/create': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Kontrak', link: '/dashboard/contract' },
+      { title: 'Tambah', link: '/dashboard/contract/create' }
+   ],
+   '/dashboard/contract/update': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Kontrak', link: '/dashboard/contract' },
+      { title: 'Perbaharui', link: '/dashboard/contract/update' }
+   ],
+   '/dashboard/contract/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Kontrak', link: '/dashboard/contract' },
+      { title: 'Rincian', link: '/dashboard/contract/read' }
+   ],
+
+   // Order
+   '/dashboard/order': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Pengambilan', link: '/dashboard/order' }
+   ],
+   '/dashboard/order/create': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Pengambilan', link: '/dashboard/order' },
+      { title: 'Tambah', link: '/dashboard/order/create' }
+   ],
+   '/dashboard/order/update': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Pengambilan', link: '/dashboard/order' },
+      { title: 'Perbaharui', link: '/dashboard/order/update' }
+   ],
+   '/dashboard/order/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Pengambilan', link: '/dashboard/order' },
+      { title: 'Rincian', link: '/dashboard/order/read' }
    ],
 
    // Setting

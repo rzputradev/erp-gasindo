@@ -2,13 +2,11 @@ import { UnitType } from '@prisma/client';
 import { z } from 'zod';
 
 const itemBaseSchema = z.object({
-   name: z.string().nonempty({ message: 'Nama item tidak boleh kosong' }),
+   name: z.string().nonempty({ message: 'Nama tidak boleh kosong' }),
    key: z.string().nonempty({ message: 'Key tidak boleh kosong' }),
    unit: z.nativeEnum(UnitType, { message: 'Satuan tidak boleh kosong' }),
-   typeId: z.string().optional(),
-   description: z.string().optional(),
-   isWeighted: z.boolean(),
-   isSalable: z.boolean()
+   categories: z.array(z.string()).optional(),
+   description: z.string().optional()
 });
 
 export const createItemSchema = itemBaseSchema;

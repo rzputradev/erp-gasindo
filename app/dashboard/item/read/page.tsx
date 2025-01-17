@@ -11,7 +11,7 @@ import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
 
 export const metadata = {
-   title: 'Dashboard : Rincian Item'
+   title: 'Dashboard : Rincian Barang'
 };
 
 type pageProps = {
@@ -29,7 +29,8 @@ export default async function Page(props: pageProps) {
    }
 
    const data: Item | null = await db.item.findUnique({
-      where: { id: id as string }
+      where: { id: id as string },
+      include: { categories: true }
    });
    const itemTypes: ItemCategory[] = await db.itemCategory.findMany();
 

@@ -10,7 +10,7 @@ import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
 
 export const metadata = {
-   title: 'Dashboard : Perbaharui Tipe Item'
+   title: 'Dashboard : Perbaharui Kategori Barang'
 };
 
 type pageProps = {
@@ -20,7 +20,7 @@ type pageProps = {
 export default async function Page(props: pageProps) {
    const { id } = await props.searchParams;
 
-   const access = await checkPermissions(['item-type:update']);
+   const access = await checkPermissions(['item-category:update']);
    if (!access) return unauthorized();
 
    if (!id) {

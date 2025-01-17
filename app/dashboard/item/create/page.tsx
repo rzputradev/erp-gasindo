@@ -10,7 +10,7 @@ import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
 
 export const metadata = {
-   title: 'Dashboard : Tambah Item'
+   title: 'Dashboard : Tambah Barang'
 };
 
 export default async function Page() {

@@ -8,21 +8,21 @@ import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-fil
 import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
 
 interface TableActionProps {
-   itemTypes: ItemCategory[];
+   itemCategories: ItemCategory[];
 }
 
-export function TableAction({ itemTypes }: TableActionProps) {
-   const ITEM_TYPE_OPTIONS = itemTypes.map((itemType) => ({
-      value: itemType.id,
-      label: itemType.name
+export function TableAction({ itemCategories }: TableActionProps) {
+   const ITEM_CATEGORY_OPTIONS = itemCategories.map((itemCategory) => ({
+      value: itemCategory.id,
+      label: itemCategory.name
    }));
 
    const {
       isAnyFilterActive,
       resetFilters,
       searchQuery,
-      itemTypeFilter,
-      setItemTypeFilter,
+      itemCategoryFilter,
+      setItemCategoryFilter,
       setPage,
       setSearchQuery
    } = useLocationTableFilters();
@@ -37,11 +37,11 @@ export function TableAction({ itemTypes }: TableActionProps) {
                setPage={setPage}
             />
             <DataTableFilterBox
-               filterKey="itemType"
-               title="Tipe Item"
-               options={ITEM_TYPE_OPTIONS}
-               setFilterValue={setItemTypeFilter}
-               filterValue={itemTypeFilter}
+               filterKey="itemCategory"
+               title="Kategori Barang"
+               options={ITEM_CATEGORY_OPTIONS}
+               setFilterValue={setItemCategoryFilter}
+               filterValue={itemCategoryFilter}
             />
             <DataTableResetFilter
                isFilterActive={isAnyFilterActive}

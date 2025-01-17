@@ -47,7 +47,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             })
             .catch((e) => {
                console.log(e);
-               toast.error('Something went wrong!');
+               toast.error('Terjadi kesalahan, silakan coba lagi');
             });
       });
    };
@@ -68,10 +68,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-               <DropdownMenuLabel>Actions</DropdownMenuLabel>
+               <DropdownMenuLabel>Aksi</DropdownMenuLabel>
 
                <DropdownMenuItem
-                  className="flex items-center space-x-2"
+                  className="flex cursor-pointer items-center gap-2"
                   onClick={() =>
                      router.push(`/dashboard/buyer/read?id=${data.id}`)
                   }
@@ -82,7 +82,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {updateAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() =>
                         router.push(`/dashboard/buyer/update?id=${data.id}`)
                      }
@@ -94,7 +94,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {deleteAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() => setOpen(true)}
                      disabled={loading}
                   >

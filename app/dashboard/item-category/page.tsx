@@ -22,15 +22,15 @@ type pageProps = {
 };
 
 export const metadata = {
-   title: 'Dashboard : Tipe Item'
+   title: 'Dashboard : Kategori Barang'
 };
 
 export default async function Page(props: pageProps) {
    const searchParams = await props.searchParams;
    searchBaseParamsCache.parse(searchParams);
 
-   const readAccess = await checkPermissions(['item-type:read']);
-   const createAccess = await checkPermissions(['item-type:create']);
+   const readAccess = await checkPermissions(['item-category:read']);
+   const createAccess = await checkPermissions(['item-category:create']);
    if (!readAccess) return unauthorized();
 
    const key = serialize({ ...searchParams });
@@ -40,12 +40,12 @@ export default async function Page(props: pageProps) {
          <div className="space-y-4">
             <div className="flex items-start justify-between">
                <Heading
-                  title={`Tipe Item`}
-                  description="Kelola data tipe item"
+                  title={`Kategori Barang`}
+                  description="Kelola data kategori barang"
                />
                {createAccess && (
                   <Link
-                     href={'/dashboard/item-type/create'}
+                     href={'/dashboard/item-category/create'}
                      className={cn(buttonVariants({ variant: 'default' }))}
                   >
                      <Plus className="mr-2 h-4 w-4" /> Tambah

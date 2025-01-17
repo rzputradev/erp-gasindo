@@ -140,13 +140,40 @@ export const navItems: NavItem[] = [
       items: []
    },
    {
-      title: 'Kontrak',
-      url: '/dashboard/contract',
-      icon: 'filePen',
-      isActive: false,
-      shortcut: ['K', 'K'],
-      permission: 'contract:read',
-      items: []
+      title: 'Penjualan',
+      url: '#',
+      icon: 'walet',
+      isActive: true,
+      shortcut: ['t', 't'],
+      items: [
+         {
+            title: 'Pembeli',
+            url: '/dashboard/buyer',
+            icon: 'handCoins',
+            isActive: true,
+            shortcut: ['p', 'i'],
+            permission: 'buyer:read',
+            items: []
+         },
+         {
+            title: 'Kontrak',
+            url: '/dashboard/contract',
+            icon: 'filePen',
+            isActive: false,
+            shortcut: ['K', 'K'],
+            permission: 'contract:read',
+            items: []
+         },
+         {
+            title: 'Pengambilan',
+            url: '/dashboard/scale-in',
+            icon: 'ticketMinus',
+            isActive: false,
+            shortcut: ['b', 'k'],
+            permission: 'order:read',
+            items: []
+         }
+      ]
    },
    {
       title: 'Timbangan',
@@ -176,28 +203,28 @@ export const navItems: NavItem[] = [
       ]
    },
    {
-      title: 'Hak Akses',
+      title: 'Barang',
       url: '#',
-      icon: 'shieldCheck',
-      isActive: true,
-      shortcut: ['h', 'a'],
+      icon: 'package',
+      isActive: false,
+      shortcut: ['k', 'k'],
       items: [
          {
-            title: 'Izin',
-            url: '/dashboard/permission',
-            icon: 'fingerprint',
-            shortcut: ['r', 'r'],
+            title: 'List Barang',
+            url: '/dashboard/item',
+            icon: 'layoutList',
             isActive: true,
-            permission: 'permission:read',
+            shortcut: ['t', 'i'],
+            permission: 'item:read',
             items: []
          },
          {
-            title: 'Peran',
-            url: '/dashboard/role',
-            icon: 'idCard',
+            title: 'Kategori Barang',
+            url: '/dashboard/item-category',
+            icon: 'libraryBig',
             isActive: true,
-            shortcut: ['r', 'r'],
-            permission: 'role:read',
+            shortcut: ['i', 'i'],
+            permission: 'item-category:read',
             items: []
          }
       ]
@@ -216,33 +243,6 @@ export const navItems: NavItem[] = [
             isActive: true,
             shortcut: ['l', 'l'],
             permission: 'location:read',
-            items: []
-         },
-         {
-            title: 'Tipe Item',
-            url: '/dashboard/item-type',
-            icon: 'libraryBig',
-            isActive: true,
-            shortcut: ['t', 'i'],
-            permission: 'item-type:read',
-            items: []
-         },
-         {
-            title: 'Item',
-            url: '/dashboard/item',
-            icon: 'package',
-            isActive: true,
-            shortcut: ['i', 'i'],
-            permission: 'item:read',
-            items: []
-         },
-         {
-            title: 'Pembeli',
-            url: '/dashboard/buyer',
-            icon: 'handCoins',
-            isActive: true,
-            shortcut: ['p', 'i'],
-            permission: 'buyer:read',
             items: []
          },
          {
@@ -281,6 +281,33 @@ export const navItems: NavItem[] = [
       shortcut: ['k', 'k'],
       isActive: false,
       items: []
+   },
+   {
+      title: 'Hak Akses',
+      url: '#',
+      icon: 'shieldCheck',
+      isActive: true,
+      shortcut: ['h', 'a'],
+      items: [
+         {
+            title: 'Izin',
+            url: '/dashboard/permission',
+            icon: 'fingerprint',
+            shortcut: ['r', 'r'],
+            isActive: true,
+            permission: 'permission:read',
+            items: []
+         },
+         {
+            title: 'Peran',
+            url: '/dashboard/role',
+            icon: 'idCard',
+            isActive: true,
+            shortcut: ['r', 'r'],
+            permission: 'role:read',
+            items: []
+         }
+      ]
    },
    {
       title: 'Pengaturan',

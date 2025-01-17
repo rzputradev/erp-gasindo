@@ -4,9 +4,7 @@ import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
 import { Edit, MoreHorizontal, ReceiptText, Trash, View } from 'lucide-react';
 import { toast } from 'sonner';
-import { Buyer, Contract } from '@prisma/client';
-
-import { deleteBuyer } from '@/actions/buyer/delete';
+import { Contract } from '@prisma/client';
 
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
@@ -18,6 +16,7 @@ import {
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useCheckPermissions } from '@/hooks/use-user';
+import { deleteContract } from '@/actions/contract/delete';
 
 interface CellActionProps {
    data: Contract;
@@ -34,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
    const onConfirm = async () => {
       setLoading(true);
       startTransition(() => {
-         deleteBuyer(data.id)
+         deleteContract(data.id)
             .then((res) => {
                if (res?.error) {
                   toast.error(res.error);
@@ -47,7 +46,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             })
             .catch((e) => {
                console.log(e);
-               toast.error('Something went wrong!');
+               toast.error('Terjadi kesalahan, silakan coba lagi');
             });
       });
    };
@@ -68,10 +67,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-               <DropdownMenuLabel>Actions</DropdownMenuLabel>
+               <DropdownMenuLabel>Aksi</DropdownMenuLabel>
 
                <DropdownMenuItem
-                  className="flex items-center space-x-2"
+                  className="flex cursor-pointer items-center gap-2"
                   onClick={() =>
                      router.push(`/dashboard/contract/read?id=${data.id}`)
                   }
@@ -82,7 +81,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {updateAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() =>
                         router.push(`/dashboard/contract/update?id=${data.id}`)
                      }
@@ -94,7 +93,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {deleteAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() => setOpen(true)}
                      disabled={loading}
                   >

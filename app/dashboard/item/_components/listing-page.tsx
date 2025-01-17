@@ -10,8 +10,10 @@ export async function ListingPage() {
    const page = searchItemParamsCache.get('page');
    const search = searchItemParamsCache.get('q');
    const pageLimit = searchItemParamsCache.get('limit');
-   const itemType = searchItemParamsCache.get('itemType');
-   const itemTypeArray = itemType ? (itemType.split('.') as string[]) : [];
+   const itemCategory = searchItemParamsCache.get('itemCategory');
+   const itemCategoryArray = itemCategory
+      ? (itemCategory.split('.') as string[])
+      : [];
 
    const filters: Prisma.ItemFindManyArgs = {
       skip: (page - 1) * pageLimit,
@@ -23,12 +25,17 @@ export async function ListingPage() {
                { key: { contains: search, mode: 'insensitive' } }
             ]
          }),
-         ...(itemTypeArray.length > 0 && {
-            typeId: {
-               in: itemTypeArray
+         ...(itemCategoryArray.length > 0 && {
+            categories: {
+               some: {
+                  id: {
+                     in: itemCategoryArray
+                  }
+               }
             }
          })
       },
+      include: { categories: true },
       orderBy: {
          createdAt: 'desc'
       }

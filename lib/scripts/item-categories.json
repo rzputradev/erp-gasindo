@@ -1,0 +1,12 @@
+[
+   {
+      "name": "Komoditas",
+      "key": "commodity",
+      "description": "Barang atau produk hasil olahan yang diperdagangkan di pasar."
+   },
+   {
+      "name": "Melewati Timbangan",
+      "key": "weighing",
+      "description": "Proses menimbang barang saat masuk atau keluar menggunakan timbangan untuk mengukur beratnya."
+   }
+]

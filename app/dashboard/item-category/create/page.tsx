@@ -8,11 +8,11 @@ import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
 
 export const metadata = {
-   title: 'Dashboard : Tambah Tipe Item'
+   title: 'Dashboard : Tambah Kategori Barang'
 };
 
 export default async function Page() {
-   const access = await checkPermissions(['item-type:create']);
+   const access = await checkPermissions(['item-category:create']);
    if (!access) return unauthorized();
 
    return (

@@ -25,7 +25,7 @@ export async function updateBuyer(values: z.infer<typeof updateBuyerSchema>) {
          });
       });
 
-      revalidatePath(`/dashboard/permission/update`);
+      revalidatePath(`/dashboard/buyer/update`);
 
       return { success: 'Data berhasil diperbaharui' };
    } catch (error) {

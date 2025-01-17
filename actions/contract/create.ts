@@ -41,11 +41,10 @@ export async function createContract(
          buyerId,
          itemId,
          locationId,
-         status,
          price,
          terms,
          tolerance,
-         totalQty,
+         quantity,
          vat
       } = parsedValues;
       const currentYear = new Date().getFullYear();
@@ -77,7 +76,9 @@ export async function createContract(
          location.key,
          item.key
       );
-      const toleranceWeigh = (totalQty ?? 0) * ((tolerance ?? 0) / 100);
+      const toleranceWeigh = (quantity ?? 0) * ((tolerance ?? 0) / 100);
+
+      const totalRemainingQuantity = toleranceWeigh + (quantity ?? 0);
 
       await db.$transaction(async (tx) => {
          await tx.contract.create({
@@ -86,12 +87,13 @@ export async function createContract(
                buyerId,
                itemId,
                contractNo,
-               price: price || 0,
                vat,
-               totalQty: totalQty || 0,
-               remainingQty: totalQty || 0,
+               price: price || 0,
+               quantity: quantity || 0,
+               remainingQty: totalRemainingQuantity,
                tolerance,
-               toleranceWeigh
+               toleranceWeigh,
+               terms
             }
          });
       });
