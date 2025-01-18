@@ -166,8 +166,8 @@ export const navItems: NavItem[] = [
          },
          {
             title: 'Pengambilan',
-            url: '/dashboard/scale-in',
-            icon: 'ticketMinus',
+            url: '/dashboard/order',
+            icon: 'truck',
             isActive: false,
             shortcut: ['b', 'k'],
             permission: 'order:read',

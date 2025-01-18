@@ -6,13 +6,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-   Buyer,
-   Contract,
-   ContractStatus,
-   Item,
-   Location
-} from '@prisma/client';
+import { Buyer, Contract, SalesStatus, Item, Location } from '@prisma/client';
 import { CircleFadingArrowUp, Save, Undo2 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -83,7 +77,7 @@ export function UpdateForm({
          remainingQty: data.remainingQty || 0,
          toleranceWeigh: data.toleranceWeigh || 0,
          topUpQty: data.topUpQty || 0,
-         status: data.status || ContractStatus.CREATED,
+         status: data.status || SalesStatus.PENDING,
          terms: data.terms || '',
          updateTolerance: false
       }
@@ -124,7 +118,7 @@ export function UpdateForm({
                <span className="text-left text-2xl font-bold">
                   Perbaharui Kontrak
                </span>
-               {topUpAccess && data.status === ContractStatus.ACTIVE && (
+               {topUpAccess && data.status === SalesStatus.ACTIVE && (
                   <TopUp id={data.id} />
                )}
             </CardTitle>
@@ -195,6 +189,44 @@ export function UpdateForm({
 
                      <FormField
                         control={form.control}
+                        name="itemId"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Produk</FormLabel>
+                              <FormControl>
+                                 <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    disabled={isPending}
+                                 >
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Pilih produk" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                       {items.length > 0 ? (
+                                          items.map((item) => (
+                                             <SelectItem
+                                                key={item.id}
+                                                value={item.id}
+                                             >
+                                                {item.name}
+                                             </SelectItem>
+                                          ))
+                                       ) : (
+                                          <div className="px-4 py-2 text-sm text-gray-500">
+                                             Tidak ada produk yang tersedia
+                                          </div>
+                                       )}
+                                    </SelectContent>
+                                 </Select>
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+
+                     <FormField
+                        control={form.control}
                         name="locationId"
                         render={({ field }) => (
                            <FormItem>
@@ -221,44 +253,6 @@ export function UpdateForm({
                                        ) : (
                                           <div className="px-4 py-2 text-sm text-gray-500">
                                              Tidak ada lokasi yang tersedia
-                                          </div>
-                                       )}
-                                    </SelectContent>
-                                 </Select>
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="itemId"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Produk</FormLabel>
-                              <FormControl>
-                                 <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                    disabled={isPending}
-                                 >
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih lokasi" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                       {items.length > 0 ? (
-                                          items.map((item) => (
-                                             <SelectItem
-                                                key={item.id}
-                                                value={item.id}
-                                             >
-                                                {item.name}
-                                             </SelectItem>
-                                          ))
-                                       ) : (
-                                          <div className="px-4 py-2 text-sm text-gray-500">
-                                             Tidak ada produk yang tersedia
                                           </div>
                                        )}
                                     </SelectContent>
@@ -414,7 +408,7 @@ export function UpdateForm({
                         name="remainingQty"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Sisa kuantitas (Kg)</FormLabel>
+                              <FormLabel>Sisa Kuantitas (Kg)</FormLabel>
                               <FormControl>
                                  <Input
                                     type="number"
@@ -445,17 +439,17 @@ export function UpdateForm({
                                     </SelectTrigger>
                                  </FormControl>
                                  <SelectContent>
-                                    <SelectItem value={ContractStatus.CREATED}>
-                                       Dibuat
+                                    <SelectItem value={SalesStatus.PENDING}>
+                                       Tertunda
                                     </SelectItem>
-                                    <SelectItem value={ContractStatus.ACTIVE}>
+                                    <SelectItem value={SalesStatus.ACTIVE}>
                                        Aktif
                                     </SelectItem>
-                                    <SelectItem value={ContractStatus.CANCELED}>
-                                       Di Batalkan
-                                    </SelectItem>
-                                    <SelectItem value={ContractStatus.CLOSED}>
+                                    <SelectItem value={SalesStatus.COMPLETED}>
                                        Selesai
+                                    </SelectItem>
+                                    <SelectItem value={SalesStatus.CANCELED}>
+                                       Di Batalkan
                                     </SelectItem>
                                  </SelectContent>
                               </Select>

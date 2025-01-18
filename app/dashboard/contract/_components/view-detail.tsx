@@ -4,13 +4,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-   Buyer,
-   Contract,
-   ContractStatus,
-   Item,
-   Location
-} from '@prisma/client';
+import { Buyer, Contract, SalesStatus, Item, Location } from '@prisma/client';
 import { Edit, MoreVertical, PlusCircle, Printer, Trash } from 'lucide-react';
 import Link from 'next/link';
 
@@ -81,12 +75,12 @@ export function ViewDetail({
                   <DropdownMenuContent align="end">
                      <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                      {createOrderAccess &&
-                        data.status === ContractStatus.ACTIVE && (
+                        data.status === SalesStatus.ACTIVE && (
                            <DropdownMenuItem
                               className="flex cursor-pointer items-center gap-2"
                               onClick={() =>
                                  router.push(
-                                    `/dashboard/order/create?buyerId=${data.id}`
+                                    `/dashboard/order/create?contractId=${data.id}`
                                  )
                               }
                            >
@@ -281,17 +275,17 @@ export function ViewDetail({
                                  </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                 <SelectItem value={ContractStatus.CREATED}>
-                                    Dibuat
+                                 <SelectItem value={SalesStatus.PENDING}>
+                                    Ditunda
                                  </SelectItem>
-                                 <SelectItem value={ContractStatus.ACTIVE}>
+                                 <SelectItem value={SalesStatus.ACTIVE}>
                                     Aktif
                                  </SelectItem>
-                                 <SelectItem value={ContractStatus.CANCELED}>
-                                    Di Batalkan
-                                 </SelectItem>
-                                 <SelectItem value={ContractStatus.CLOSED}>
+                                 <SelectItem value={SalesStatus.COMPLETED}>
                                     Selesai
+                                 </SelectItem>
+                                 <SelectItem value={SalesStatus.CANCELED}>
+                                    Di Batalkan
                                  </SelectItem>
                               </SelectContent>
                            </Select>

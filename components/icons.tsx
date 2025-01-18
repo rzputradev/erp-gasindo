@@ -58,7 +58,8 @@ import {
    List,
    LayoutList,
    ChartBarStacked,
-   Wallet
+   Wallet,
+   Truck
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -137,5 +138,6 @@ export const Icons = {
    list: List,
    layoutList: LayoutList,
    chartBarStacked: ChartBarStacked,
-   walet: Wallet
+   walet: Wallet,
+   truck: Truck
 };

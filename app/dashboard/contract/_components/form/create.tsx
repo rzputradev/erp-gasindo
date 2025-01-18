@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Buyer, ContractStatus, Item, Location } from '@prisma/client';
+import { Buyer, Item, Location } from '@prisma/client';
 import { Save } from 'lucide-react';
 
 import { createContract } from '@/actions/contract/create';
@@ -145,6 +145,44 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
 
                      <FormField
                         control={form.control}
+                        name="itemId"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Produk</FormLabel>
+                              <FormControl>
+                                 <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    disabled={isPending}
+                                 >
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Pilih produk" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                       {items.length > 0 ? (
+                                          items.map((item) => (
+                                             <SelectItem
+                                                key={item.id}
+                                                value={item.id}
+                                             >
+                                                {item.name}
+                                             </SelectItem>
+                                          ))
+                                       ) : (
+                                          <div className="px-4 py-2 text-sm text-gray-500">
+                                             Tidak ada produk yang tersedia
+                                          </div>
+                                       )}
+                                    </SelectContent>
+                                 </Select>
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+
+                     <FormField
+                        control={form.control}
                         name="locationId"
                         render={({ field }) => (
                            <FormItem>
@@ -171,44 +209,6 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
                                        ) : (
                                           <div className="px-4 py-2 text-sm text-gray-500">
                                              Tidak ada lokasi yang tersedia
-                                          </div>
-                                       )}
-                                    </SelectContent>
-                                 </Select>
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="itemId"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Produk</FormLabel>
-                              <FormControl>
-                                 <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                    disabled={isPending}
-                                 >
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih lokasi" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                       {items.length > 0 ? (
-                                          items.map((item) => (
-                                             <SelectItem
-                                                key={item.id}
-                                                value={item.id}
-                                             >
-                                                {item.name}
-                                             </SelectItem>
-                                          ))
-                                       ) : (
-                                          <div className="px-4 py-2 text-sm text-gray-500">
-                                             Tidak ada produk yang tersedia
                                           </div>
                                        )}
                                     </SelectContent>

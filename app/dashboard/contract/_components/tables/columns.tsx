@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Contract, ContractStatus } from '@prisma/client';
+import { Contract, SalesStatus } from '@prisma/client';
 
 import { CellAction } from './cell-action';
 import { formatNumber } from '@/lib/utils';
@@ -56,13 +56,13 @@ export const columns: ColumnDef<Contract>[] = [
       cell: ({ row }) => {
          const status = row.original.status;
 
-         if (status === ContractStatus.CREATED) {
-            return <Badge variant={'secondary'}>Dibuat</Badge>;
-         } else if (status === ContractStatus.ACTIVE) {
+         if (status === SalesStatus.PENDING) {
+            return <Badge variant={'secondary'}>Ditunda</Badge>;
+         } else if (status === SalesStatus.ACTIVE) {
             return <Badge variant={'default'}>Aktif</Badge>;
-         } else if (status === ContractStatus.CANCELED) {
+         } else if (status === SalesStatus.CANCELED) {
             return <Badge variant="destructive">Di Batalkan</Badge>;
-         } else if (status === ContractStatus.CLOSED) {
+         } else if (status === SalesStatus.COMPLETED) {
             return <Badge variant="outline">Selesai</Badge>;
          }
       }

@@ -1,13 +1,13 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Contract, ContractStatus } from '@prisma/client';
+import { Contract, Order, SalesStatus } from '@prisma/client';
 
 import { CellAction } from './cell-action';
 import { formatNumber } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 
-export const columns: ColumnDef<Contract>[] = [
+export const columns: ColumnDef<Order & { contract?: Contract }>[] = [
    {
       id: 'rowNumber',
       header: 'No',
@@ -23,18 +23,18 @@ export const columns: ColumnDef<Contract>[] = [
       enableHiding: false
    },
    {
-      accessorKey: 'contractNo',
+      accessorKey: 'orderNo',
+      header: 'Nomor Pengambilan'
+   },
+   {
+      // accessorKey: 'price',
+      accessorKey: 'contract.contractNo',
       header: 'Nomor Kontrak'
    },
    {
       // accessorKey: 'price',
-      header: 'Harga',
-      cell: ({ row }) => `Rp. ${formatNumber(row.original.price)}`
-   },
-   {
-      // accessorKey: 'totalQty',
       header: 'Kuantitas',
-      cell: ({ row }) => `${formatNumber(row.original.totalQty)} Kg`
+      cell: ({ row }) => `${formatNumber(row.original.quantity)} Kg`
    },
    {
       // accessorKey: 'remainingQty',
@@ -42,28 +42,19 @@ export const columns: ColumnDef<Contract>[] = [
       cell: ({ row }) => `${formatNumber(row.original.remainingQty)} Kg`
    },
    {
-      // accessorKey: 'toleranceWeigh',
-      header: 'Toleransi',
-      cell: ({ row }) => `${formatNumber(row.original.toleranceWeigh || 0)} Kg`
-   },
-   // {
-   //    accessorKey: 'location.name',
-   //    header: 'Lokasi Pengambilan'
-   // },
-   {
       // accessorKey: 'status',
       header: 'Status',
       cell: ({ row }) => {
          const status = row.original.status;
 
-         if (status === ContractStatus.CREATED) {
-            return <Badge variant={'secondary'}>Dibuat</Badge>;
-         } else if (status === ContractStatus.ACTIVE) {
-            return <Badge variant={'default'}>Aktif</Badge>;
-         } else if (status === ContractStatus.CANCELED) {
-            return <Badge variant="destructive">Di Batalkan</Badge>;
-         } else if (status === ContractStatus.CLOSED) {
+         if (status === SalesStatus.PENDING) {
+            return <Badge variant={'secondary'}>Ditunda</Badge>;
+         } else if (status === SalesStatus.ACTIVE) {
+            return <Badge variant={'default'}>Dalam Proses</Badge>;
+         } else if (status === SalesStatus.COMPLETED) {
             return <Badge variant="outline">Selesai</Badge>;
+         } else if (status === SalesStatus.CANCELED) {
+            return <Badge variant="destructive">Dibatalkan</Badge>;
          }
       }
    },

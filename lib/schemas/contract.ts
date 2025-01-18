@@ -1,4 +1,4 @@
-import { ContractStatus } from '@prisma/client';
+import { SalesStatus } from '@prisma/client';
 import { z } from 'zod';
 
 const contractBaseSchema = z.object({
@@ -8,28 +8,19 @@ const contractBaseSchema = z.object({
    terms: z.string().optional(),
    price: z.preprocess(
       (val) => (val !== '' ? Number(val) : 0),
-      z
-         .number()
-         .min(0, { message: 'Harga tidak boleh kurang dari 0' })
-         .optional()
+      z.number().min(0, { message: 'Harga tidak boleh kurang dari 0' })
    ),
    vat: z.preprocess(
       (val) => (val !== '' ? Number(val) : 0),
-      z.number().min(0, { message: 'PPN tidak boleh kurang dari 0' }).optional()
+      z.number().min(0, { message: 'PPN tidak boleh kurang dari 0' })
    ),
    tolerance: z.preprocess(
       (val) => (val !== '' ? Number(val) : 0),
-      z
-         .number()
-         .min(0, { message: 'Toleransi tidak boleh kurang dari 0' })
-         .optional()
+      z.number().min(0, { message: 'Toleransi tidak boleh kurang dari 0' })
    ),
    quantity: z.preprocess(
       (val) => (val !== '' ? Number(val) : 0),
-      z
-         .number()
-         .min(0, { message: 'Kuantitas tidak boleh kurang dari 0' })
-         .optional()
+      z.number().min(0, { message: 'Kuantitas tidak boleh kurang dari 0' })
    )
 });
 
@@ -40,7 +31,7 @@ export const updateContracSchema = contractBaseSchema.extend({
    contractNo: z
       .string()
       .nonempty({ message: 'Nomor kontrak tidak boleh kosong' }),
-   status: z.nativeEnum(ContractStatus),
+   status: z.nativeEnum(SalesStatus),
    updateTolerance: z.boolean().default(false),
    remainingQty: z.preprocess(
       (val) => (val !== '' ? Number(val) : 0),
