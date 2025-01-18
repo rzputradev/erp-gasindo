@@ -52,6 +52,7 @@ export async function createContract(
       const contractCount = await db.contract.count({
          where: {
             buyerId,
+            itemId,
             createdAt: {
                gte: new Date(`${currentYear}-01-01T00:00:00Z`),
                lt: new Date(`${currentYear + 1}-01-01T00:00:00Z`)
@@ -78,8 +79,6 @@ export async function createContract(
       );
       const toleranceWeigh = (quantity ?? 0) * ((tolerance ?? 0) / 100);
 
-      const totalRemainingQuantity = toleranceWeigh + (quantity ?? 0);
-
       await db.$transaction(async (tx) => {
          await tx.contract.create({
             data: {
@@ -88,9 +87,9 @@ export async function createContract(
                itemId,
                contractNo,
                vat,
-               price: price || 0,
-               quantity: quantity || 0,
-               remainingQty: totalRemainingQuantity,
+               price: price,
+               quantity: quantity,
+               remainingQty: quantity,
                tolerance,
                toleranceWeigh,
                terms

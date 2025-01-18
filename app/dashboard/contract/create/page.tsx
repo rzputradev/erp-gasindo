@@ -20,11 +20,12 @@ export default async function Page() {
       where: { type: 'MILL' }
    });
    const buyers: Buyer[] = await db.buyer.findMany();
-   const items: Item[] = await db.item.findMany({
+   const items: any = await db.item.findMany({
       where: {
-         categories: {
-            every: { key: { in: ['commodity', 'weighing'] } }
-         }
+         AND: [
+            { categories: { some: { key: 'commodity' } } },
+            { categories: { some: { key: 'weighing' } } }
+         ]
       }
    });
 

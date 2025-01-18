@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { checkPermissions } from '@/data/user';
 import { db } from '@/lib/db';
 import { topUpContractSchema } from '@/lib/schemas/contract';
-import { ContractStatus } from '@prisma/client';
+import { SalesStatus } from '@prisma/client';
 
 export async function topUp(values: z.infer<typeof topUpContractSchema>) {
    try {
@@ -16,24 +16,25 @@ export async function topUp(values: z.infer<typeof topUpContractSchema>) {
          'AND'
       );
       if (!access) {
-         return { error: 'Anda tidak memiliki akses.' };
+         return { error: 'Anda tidak memiliki akses' };
       }
 
       // Validate input data using Zod schema
-      const parsed = topUpContractSchema.safeParse(values);
-      if (!parsed.success) {
-         return { error: 'Data tidak valid.', details: parsed.error.errors };
+      const { success, data: parsedValues } =
+         topUpContractSchema.safeParse(values);
+      if (!success) {
+         return { error: 'Data tidak valid' };
       }
 
-      const { id, topUpQty } = parsed.data;
+      const { id, topUpQty } = parsedValues;
 
       // Fetch the existing contract from the database
       const existingContract = await db.contract.findUnique({ where: { id } });
       if (!existingContract) {
-         return { error: 'Kontrak tidak ditemukan.' };
+         return { error: 'Kontrak tidak ditemukan' };
       }
 
-      if (existingContract.status !== ContractStatus.ACTIVE) {
+      if (existingContract.status !== SalesStatus.ACTIVE) {
          return { error: 'Hanya kontrak aktif yang bisa melakukan isi ulang' };
       }
 
@@ -42,8 +43,12 @@ export async function topUp(values: z.infer<typeof topUpContractSchema>) {
          await tx.contract.update({
             where: { id },
             data: {
-               remainingQty: existingContract.remainingQty + (topUpQty || 0),
-               topUpQty: (existingContract.topUpQty || 0) + (topUpQty || 0)
+               remainingQty: {
+                  increment: topUpQty
+               },
+               topUpQty: {
+                  increment: topUpQty
+               }
             }
          });
       });

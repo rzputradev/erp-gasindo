@@ -30,26 +30,29 @@ import { startTransition, useState } from 'react';
 import { CircleFadingArrowUp, Save } from 'lucide-react';
 import { topUp } from '@/actions/contract/top-up';
 import { toast } from 'sonner';
+import { topUpOrderSchema } from '@/lib/schemas/order';
+import { formatNumber } from '@/lib/utils';
 
 interface TopUpProps {
    id: string;
+   remainingContractQty: number;
 }
 
-export function TopUp({ id }: TopUpProps) {
+export function TopUp({ id, remainingContractQty }: TopUpProps) {
    const router = useRouter();
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
    const [isPending, setIspending] = useState<boolean>(false);
 
-   const form = useForm<z.infer<typeof topUpContractSchema>>({
-      resolver: zodResolver(topUpContractSchema),
+   const form = useForm<z.infer<typeof topUpOrderSchema>>({
+      resolver: zodResolver(topUpOrderSchema),
       defaultValues: {
          id: id,
-         totalQty: 0
+         topUpQty: 0
       }
    });
 
-   function onSubmit(values: z.infer<typeof topUpContractSchema>) {
+   function onSubmit(values: z.infer<typeof topUpOrderSchema>) {
       setIspending(true);
       setError(undefined);
       setSuccess(undefined);
@@ -87,9 +90,10 @@ export function TopUp({ id }: TopUpProps) {
          </DialogTrigger>
          <DialogContent className="sm:max-w-xl">
             <DialogHeader>
-               <DialogTitle>Isi Ulang Kontrak</DialogTitle>
+               <DialogTitle>Isi Ulang Pengambilan</DialogTitle>
                <DialogDescription>
-                  Menambah kuantitas tidak akan merubah berat toleransi awal
+                  Maksimal isi ulang pengambilan adalah{' '}
+                  {formatNumber(remainingContractQty)} Kg
                </DialogDescription>
             </DialogHeader>
             <Form {...form}>
@@ -99,7 +103,7 @@ export function TopUp({ id }: TopUpProps) {
                >
                   <FormField
                      control={form.control}
-                     name="totalQty"
+                     name="topUpQty"
                      render={({ field }) => (
                         <FormItem>
                            <FormLabel>Kuantitas (Kg)</FormLabel>

@@ -50,7 +50,7 @@ export function TableAction({ locations, buyers, items }: TableActionsProps) {
             />
             <DataTableFilterBox
                filterKey="location"
-               title="Lokasi"
+               title="Pabrik"
                options={LOCATION_OPTIONS}
                setFilterValue={setLocationFilter}
                filterValue={locationFilter}

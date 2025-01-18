@@ -3,28 +3,23 @@
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { useState, startTransition } from 'react';
+import { startTransition, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-
-import { createBuyerSchema } from '@/lib/schemas/buyer';
-import { createBuyer } from '@/actions/buyer/create';
 
 import { Button } from '@/components/ui/button';
 import {
    Form,
    FormControl,
+   FormDescription,
    FormField,
    FormItem,
    FormLabel,
    FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { createContractSchema } from '@/lib/schemas/contract';
 import {
    Select,
    SelectContent,
@@ -32,18 +27,18 @@ import {
    SelectTrigger,
    SelectValue
 } from '@/components/ui/select';
-import { Buyer, ContractStatus, Item, Location } from '@prisma/client';
-import { createContract } from '@/actions/contract/create';
-import Link from 'next/link';
-import { CircleChevronLeft, Save, Undo2, X } from 'lucide-react';
+import { Contract } from '@prisma/client';
+import { Save } from 'lucide-react';
+import { createOrderSchema } from '@/lib/schemas/order';
+import { formatNumber } from '@/lib/utils';
+import { createOrder } from '@/actions/order/create';
+import { toast } from 'sonner';
 
 interface CreateFromProps {
-   locations: Location[];
-   buyers: Buyer[];
-   items: Item[];
+   contracts: Contract[];
 }
 
-export function CreateForm({ locations, buyers, items }: CreateFromProps) {
+export function CreateForm({ contracts }: CreateFromProps) {
    const router = useRouter();
    const params = useSearchParams();
    const [success, setSuccess] = useState<string | undefined>(undefined);
@@ -52,27 +47,20 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
 
    const contractId = params.get('contractId');
 
-   const form = useForm<z.infer<typeof createContractSchema>>({
-      resolver: zodResolver(createContractSchema),
+   const form = useForm<z.infer<typeof createOrderSchema>>({
+      resolver: zodResolver(createOrderSchema),
       defaultValues: {
-         buyerId: contractId || '',
-         itemId: '',
-         locationId: '',
-         price: 0,
-         vat: 0,
-         tolerance: 0,
-         totalQty: 0,
-         status: ContractStatus.CREATED,
-         terms: ''
+         contractId: contractId || '',
+         quantity: 0
       }
    });
 
-   function onSubmit(values: z.infer<typeof createContractSchema>) {
+   function onSubmit(values: z.infer<typeof createOrderSchema>) {
       setIspending(true);
       setError(undefined);
       setSuccess(undefined);
       startTransition(() => {
-         createContract(values)
+         createOrder(values)
             .then((res) => {
                setIspending(false);
                form.reset();
@@ -83,7 +71,7 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
-                  router.push('/dashboard/contract');
+                  router.push('/dashboard/order');
                }
             })
             .catch((e) => {
@@ -99,7 +87,7 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
       <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
-               Tambah Kontrak
+               Tambah Pengambilan
             </CardTitle>
          </CardHeader>
          <CardContent>
@@ -111,10 +99,10 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                      <FormField
                         control={form.control}
-                        name="buyerId"
+                        name="contractId"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Pembeli</FormLabel>
+                              <FormLabel>Nomor Kontrak</FormLabel>
                               <FormControl>
                                  <Select
                                     onValueChange={field.onChange}
@@ -122,26 +110,40 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
                                     disabled={isPending}
                                  >
                                     <SelectTrigger>
-                                       <SelectValue placeholder="Pilih Pembeli" />
+                                       <SelectValue placeholder="Pilih kontrak" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                       {buyers.length > 0 ? (
-                                          buyers.map((buyer) => (
+                                       {contracts.length > 0 ? (
+                                          contracts.map((contract) => (
                                              <SelectItem
-                                                key={buyer.id}
-                                                value={buyer.id}
+                                                key={contract.id}
+                                                value={contract.id}
+                                                className="flex flex-col items-start justify-start gap-2"
                                              >
-                                                {buyer.name}
+                                                <span>
+                                                   {contract.contractNo}
+                                                </span>
+                                                <p>
+                                                   {formatNumber(
+                                                      contract.remainingQty
+                                                   )}{' '}
+                                                   Kg
+                                                </p>
                                              </SelectItem>
                                           ))
                                        ) : (
-                                          <div className="px-4 py-2 text-sm text-gray-500">
-                                             Tidak ada pembeli yang tersedia
+                                          <div className="px-4 py-2 text-sm text-muted-foreground">
+                                             Tidak ada kontrak yang tersedia
                                           </div>
                                        )}
                                     </SelectContent>
                                  </Select>
                               </FormControl>
+                              <FormDescription className="line-clamp-2">
+                                 Pilih nomor kontrak untuk pengambilan produk.
+                                 Pastikan kuantitas yang tersisa pada kontrak
+                                 mencukupi
+                              </FormDescription>
                               <FormMessage />
                            </FormItem>
                         )}
@@ -149,86 +151,10 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
 
                      <FormField
                         control={form.control}
-                        name="locationId"
+                        name="quantity"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Tempat Pengambilan</FormLabel>
-                              <FormControl>
-                                 <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                    disabled={isPending}
-                                 >
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih lokasi" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                       {locations.length > 0 ? (
-                                          locations.map((location) => (
-                                             <SelectItem
-                                                key={location.id}
-                                                value={location.id}
-                                             >
-                                                {location.name}
-                                             </SelectItem>
-                                          ))
-                                       ) : (
-                                          <div className="px-4 py-2 text-sm text-gray-500">
-                                             Tidak ada lokasi yang tersedia
-                                          </div>
-                                       )}
-                                    </SelectContent>
-                                 </Select>
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="itemId"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Produk</FormLabel>
-                              <FormControl>
-                                 <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                    disabled={isPending}
-                                 >
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih lokasi" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                       {items.length > 0 ? (
-                                          items.map((item) => (
-                                             <SelectItem
-                                                key={item.id}
-                                                value={item.id}
-                                             >
-                                                {item.name}
-                                             </SelectItem>
-                                          ))
-                                       ) : (
-                                          <div className="px-4 py-2 text-sm text-gray-500">
-                                             Tidak ada produk yang tersedia
-                                          </div>
-                                       )}
-                                    </SelectContent>
-                                 </Select>
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="price"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Harga (Rp)</FormLabel>
+                              <FormLabel>Kuantitas (Kg)</FormLabel>
                               <FormControl>
                                  <Input
                                     type="number"
@@ -237,151 +163,28 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
                                     {...field}
                                  />
                               </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="vat"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>PPN (%)</FormLabel>
-                              <FormControl>
-                                 <Input
-                                    type="number"
-                                    placeholder="Masukkan PPN"
-                                    disabled={isPending}
-                                    {...field}
-                                 />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="totalQty"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Kuantitas (Kg)</FormLabel>
-                              <FormControl>
-                                 <Input
-                                    type="number"
-                                    placeholder="Masukkan kuantitas"
-                                    disabled={isPending}
-                                    {...field}
-                                 />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="tolerance"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Toleransi (%)</FormLabel>
-                              <FormControl>
-                                 <Input
-                                    type="number"
-                                    placeholder="Masukkan toleransi kuantitas"
-                                    disabled={isPending}
-                                    {...field}
-                                 />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="status"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Status Kontrak</FormLabel>
-                              <Select
-                                 onValueChange={field.onChange}
-                                 defaultValue={field.value}
-                                 disabled={isPending}
-                              >
-                                 <FormControl>
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih Status" />
-                                    </SelectTrigger>
-                                 </FormControl>
-                                 <SelectContent>
-                                    <SelectItem value={ContractStatus.CREATED}>
-                                       Dibuat
-                                    </SelectItem>
-                                    <SelectItem value={ContractStatus.ACTIVE}>
-                                       Aktif
-                                    </SelectItem>
-                                    <SelectItem value={ContractStatus.CANCELED}>
-                                       Di Batalkan
-                                    </SelectItem>
-                                    <SelectItem value={ContractStatus.CLOSED}>
-                                       Selesai
-                                    </SelectItem>
-                                 </SelectContent>
-                              </Select>
+                              <FormDescription>
+                                 Masukkan jumlah kuantitas produk yang akan
+                                 dilakukan pengambilan.
+                              </FormDescription>
                               <FormMessage />
                            </FormItem>
                         )}
                      />
                   </div>
-
-                  <FormField
-                     control={form.control}
-                     name="terms"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Ketentuan</FormLabel>
-                           <FormControl>
-                              <Textarea
-                                 placeholder="Masukkan ketentuan kontrak"
-                                 className="resize-none"
-                                 disabled={isPending}
-                                 {...field}
-                              />
-                           </FormControl>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
 
                   <FormSuccess message={success} />
                   <FormError message={error} />
 
-                  <div className="flex flex-wrap items-center gap-4">
-                     <Button
-                        type="submit"
-                        disabled={isPending}
-                        size={'sm'}
-                        className="flex items-center"
-                     >
-                        <Save />
-                        Simpan
-                     </Button>
-
-                     <Link
-                        href={'/dashboard/contract'}
-                        className="cursor-pointer"
-                     >
-                        <Button
-                           disabled={isPending}
-                           variant={'secondary'}
-                           size={'sm'}
-                        >
-                           Kembali
-                        </Button>
-                     </Link>
-                  </div>
+                  <Button
+                     type="submit"
+                     disabled={isPending}
+                     size={'sm'}
+                     className="contracts-center flex"
+                  >
+                     <Save />
+                     Simpan
+                  </Button>
                </form>
             </Form>
          </CardContent>

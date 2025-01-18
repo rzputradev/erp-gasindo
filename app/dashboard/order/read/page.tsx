@@ -2,13 +2,12 @@ import { notFound, unauthorized } from 'next/navigation';
 import { SearchParams } from 'nuqs';
 import { Suspense } from 'react';
 
-import { db } from '@/lib/db';
 import { checkPermissions } from '@/data/user';
+import { db } from '@/lib/db';
 
-import { ViewDetail } from '../_components/view-detail';
-import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
-import { Buyer, Item, Location } from '@prisma/client';
+import PageContainer from '@/components/layout/page-container';
+import { ViewDetail } from '../_components/view-detail';
 
 export const metadata = {
    title: 'Dashboard : Rincian Kontrak'
@@ -28,34 +27,20 @@ export default async function Page(props: pageProps) {
       return notFound();
    }
 
-   const data = await db.contract.findUnique({ where: { id: id as string } });
+   const data: any = await db.order.findUnique({
+      where: { id: id as string },
+      include: { contract: true }
+   });
 
    if (!data) {
       return notFound();
    }
 
-   const locations: Location[] = await db.location.findMany({
-      where: { type: 'MILL' }
-   });
-   const buyers: Buyer[] = await db.buyer.findMany();
-   const items: Item[] = await db.item.findMany({
-      where: {
-         categories: {
-            every: { key: { in: ['commodity', 'weighing'] } }
-         }
-      }
-   });
-
    return (
       <PageContainer scrollable>
          <div className="flex-1 space-y-4">
             <Suspense fallback={<FormCardSkeleton />}>
-               <ViewDetail
-                  data={data}
-                  buyers={buyers}
-                  items={items}
-                  locations={locations}
-               />
+               <ViewDetail data={data} />
             </Suspense>
          </div>
       </PageContainer>

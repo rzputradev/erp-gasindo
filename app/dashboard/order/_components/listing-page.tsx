@@ -1,53 +1,61 @@
 import { Prisma } from '@prisma/client';
 
 import { db } from '@/lib/db';
-import { searchContractParamsCache } from '@/lib/params/contract';
 
 import { columns } from './tables/columns';
 import { DataTable } from '@/components/ui/table/data-table';
+import { searchOrderParamsCache } from '@/lib/params/order';
 
 export async function ListingPage() {
-   const page = searchContractParamsCache.get('page');
-   const search = searchContractParamsCache.get('q');
-   const pageLimit = searchContractParamsCache.get('limit');
-   const location = searchContractParamsCache.get('location');
+   const page = searchOrderParamsCache.get('page');
+   const search = searchOrderParamsCache.get('q');
+   const pageLimit = searchOrderParamsCache.get('limit');
+   const location = searchOrderParamsCache.get('location');
    const locationArray = location ? (location.split('.') as string[]) : [];
-   const buyer = searchContractParamsCache.get('buyer');
+   const buyer = searchOrderParamsCache.get('buyer');
    const buyerArray = buyer ? (buyer.split('.') as string[]) : [];
-   const item = searchContractParamsCache.get('item');
+   const item = searchOrderParamsCache.get('item');
    const itemArray = item ? (item.split('.') as string[]) : [];
 
-   const filters: Prisma.ContractFindManyArgs = {
+   const filters: Prisma.OrderFindManyArgs = {
       skip: (page - 1) * pageLimit,
       take: pageLimit,
       where: {
          ...(search && {
             OR: [
-               { contractNo: { contains: search, mode: 'insensitive' } },
-               { item: { name: { contains: search, mode: 'insensitive' } } },
-               { location: { name: { contains: search, mode: 'insensitive' } } }
+               { orderNo: { contains: search, mode: 'insensitive' } },
+               {
+                  contract: {
+                     item: { name: { contains: search, mode: 'insensitive' } }
+                  }
+               },
+               {
+                  contract: {
+                     location: {
+                        name: { contains: search, mode: 'insensitive' }
+                     }
+                  }
+               }
             ]
          }),
          ...(locationArray.length > 0 && {
-            locationId: {
-               in: locationArray
+            contract: {
+               locationId: { in: locationArray }
             }
          }),
          ...(buyerArray.length > 0 && {
-            buyerId: {
-               in: buyerArray
+            contract: {
+               buyerId: { in: buyerArray }
             }
          }),
          ...(itemArray.length > 0 && {
-            itemId: {
-               in: itemArray
+            contract: {
+               itemId: { in: itemArray }
             }
          })
       },
       include: {
-         buyer: true,
-         item: true,
-         location: true
+         contract: true
       },
       orderBy: {
          createdAt: 'desc'
@@ -55,8 +63,8 @@ export async function ListingPage() {
    };
 
    const [data, totalData] = await Promise.all([
-      db.contract.findMany(filters),
-      db.contract.count({ where: filters.where })
+      db.order.findMany(filters),
+      db.order.count({ where: filters.where })
    ]);
 
    return <DataTable columns={columns} data={data} totalItems={totalData} />;

@@ -9,9 +9,10 @@ import { useRouter } from 'next/navigation';
 import {
    Buyer,
    Contract,
-   ContractStatus,
    Item,
-   Location
+   Location,
+   Order,
+   SalesStatus
 } from '@prisma/client';
 import { CircleFadingArrowUp, Save, Undo2 } from 'lucide-react';
 import Link from 'next/link';
@@ -44,52 +45,45 @@ import {
    SelectValue
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { updateOrderSchema } from '@/lib/schemas/order';
+import { formatNumber } from '@/lib/utils';
+import { updateOrder } from '@/actions/order/update';
 
 interface UpdateFormProps {
-   data: Contract;
-   locations: Location[];
-   buyers: Buyer[];
-   items: Item[];
+   data: Order & {
+      contract?: Contract;
+   };
 }
 
-export function UpdateForm({
-   data,
-   locations,
-   buyers,
-   items
-}: UpdateFormProps) {
+export function UpdateForm({ data }: UpdateFormProps) {
    const router = useRouter();
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
    const [isPending, setIspending] = useState<boolean>(false);
-   const [isUpdateTolerance, setIsUpdateTolerance] = useState<boolean>(false);
    const topUpAccess = useCheckPermissions(
-      ['contract:create', 'contract:update'],
+      ['order:create', 'order:update'],
       'AND'
    );
+   const remainingContractQty = data.contract?.remainingQty || 0;
 
-   const form = useForm<z.infer<typeof updateContracSchema>>({
-      resolver: zodResolver(updateContracSchema),
+   const form = useForm<z.infer<typeof updateOrderSchema>>({
+      resolver: zodResolver(updateOrderSchema),
       defaultValues: {
          id: data.id,
-         buyerId: data.buyerId || '',
-         itemId: data.itemId || '',
-         locationId: data.locationId || '',
-         price: data.price,
-         vat: data.vat || 0,
-         tolerance: data.tolerance || 0,
+         orderNo: data.orderNo,
+         quantity: data.quantity,
+         remainingQty: data.remainingQty,
          status: data.status,
-         terms: data.terms || '',
-         updateTolerance: false
+         topUpQty: data.topUpQty || 0
       }
    });
 
-   function onSubmit(values: z.infer<typeof updateContracSchema>) {
+   function onSubmit(values: z.infer<typeof updateOrderSchema>) {
       setIspending(true);
       setError(undefined);
       setSuccess(undefined);
       startTransition(() => {
-         updateContract(values)
+         updateOrder(values)
             .then((res) => {
                setIspending(false);
                if (res?.error) {
@@ -100,7 +94,7 @@ export function UpdateForm({
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
-                  router.push(`/dashboard/contract/read?id=${data.id}`);
+                  router.push(`/dashboard/order/read?id=${data.id}`);
                }
             })
             .catch((e) => {
@@ -116,10 +110,20 @@ export function UpdateForm({
       <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="flex items-start justify-between">
-               <span className="text-left text-2xl font-bold">
-                  Perbaharui Kontrak
-               </span>
-               {topUpAccess && <TopUp id={data.id} />}
+               <div className="flex flex-col gap-1">
+                  <span className="text-left text-2xl font-bold">
+                     Perbaharui Pengambilan
+                  </span>
+                  <p className="text-sm font-normal text-muted-foreground">
+                     {data.contract?.contractNo}
+                  </p>
+               </div>
+               {topUpAccess && remainingContractQty > 0 && (
+                  <TopUp
+                     id={data.id}
+                     remainingContractQty={remainingContractQty}
+                  />
+               )}
             </CardTitle>
          </CardHeader>
          <CardContent>
@@ -131,128 +135,14 @@ export function UpdateForm({
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                      <FormField
                         control={form.control}
-                        name="buyerId"
+                        name="orderNo"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Pembeli</FormLabel>
-                              <FormControl>
-                                 <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                    disabled={isPending}
-                                 >
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih Pembeli" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                       {buyers.length > 0 ? (
-                                          buyers.map((buyer) => (
-                                             <SelectItem
-                                                key={buyer.id}
-                                                value={buyer.id}
-                                             >
-                                                {buyer.name}
-                                             </SelectItem>
-                                          ))
-                                       ) : (
-                                          <div className="px-4 py-2 text-sm text-gray-500">
-                                             Tidak ada pembeli yang tersedia
-                                          </div>
-                                       )}
-                                    </SelectContent>
-                                 </Select>
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="locationId"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Tempat Pengambilan</FormLabel>
-                              <FormControl>
-                                 <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                    disabled={isPending}
-                                 >
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih lokasi" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                       {locations.length > 0 ? (
-                                          locations.map((location) => (
-                                             <SelectItem
-                                                key={location.id}
-                                                value={location.id}
-                                             >
-                                                {location.name}
-                                             </SelectItem>
-                                          ))
-                                       ) : (
-                                          <div className="px-4 py-2 text-sm text-gray-500">
-                                             Tidak ada lokasi yang tersedia
-                                          </div>
-                                       )}
-                                    </SelectContent>
-                                 </Select>
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="itemId"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Produk</FormLabel>
-                              <FormControl>
-                                 <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                    disabled={isPending}
-                                 >
-                                    <SelectTrigger>
-                                       <SelectValue placeholder="Pilih lokasi" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                       {items.length > 0 ? (
-                                          items.map((item) => (
-                                             <SelectItem
-                                                key={item.id}
-                                                value={item.id}
-                                             >
-                                                {item.name}
-                                             </SelectItem>
-                                          ))
-                                       ) : (
-                                          <div className="px-4 py-2 text-sm text-gray-500">
-                                             Tidak ada produk yang tersedia
-                                          </div>
-                                       )}
-                                    </SelectContent>
-                                 </Select>
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
-
-                     <FormField
-                        control={form.control}
-                        name="price"
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Harga (Rp)</FormLabel>
+                              <FormLabel>Nomor Pengambilan</FormLabel>
                               <FormControl>
                                  <Input
-                                    type="number"
-                                    placeholder="Masukkan harga"
+                                    type="text"
+                                    placeholder="Masukkan nomor pengambilan"
                                     disabled={isPending}
                                     {...field}
                                  />
@@ -264,15 +154,15 @@ export function UpdateForm({
 
                      <FormField
                         control={form.control}
-                        name="vat"
+                        name="quantity"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>PPN (%)</FormLabel>
+                              <FormLabel>Kuantitas (Kg)</FormLabel>
                               <FormControl>
                                  <Input
                                     type="number"
-                                    placeholder="Masukkan PPN"
-                                    disabled={isPending}
+                                    placeholder="Masukkan kuantitas"
+                                    disabled
                                     {...field}
                                  />
                               </FormControl>
@@ -281,91 +171,50 @@ export function UpdateForm({
                         )}
                      />
 
-                     <FormItem>
-                        <FormLabel>Kuantitas (Kg)</FormLabel>
-                        <FormControl>
-                           <Input
-                              defaultValue={data.totalQty}
-                              type="number"
-                              disabled
-                           />
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-
                      <FormField
                         control={form.control}
-                        name="tolerance"
+                        name="remainingQty"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Toleransi (%)</FormLabel>
+                              <FormLabel>Sisa Kuantitas (Kg)</FormLabel>
                               <FormControl>
                                  <Input
                                     type="number"
-                                    placeholder="Masukkan toleransi kuantitas"
-                                    disabled={isPending || !isUpdateTolerance}
+                                    placeholder="Masukkan sisa kuantitas"
+                                    disabled
                                     {...field}
                                  />
                               </FormControl>
-                              <div className="flex items-center gap-2">
-                                 <Checkbox
-                                    id="updateTolerance"
-                                    checked={isUpdateTolerance}
-                                    onCheckedChange={(checked) => {
-                                       const newCheckedState = checked === true;
-                                       form.setValue(
-                                          'updateTolerance',
-                                          newCheckedState
-                                       );
-                                       setIsUpdateTolerance(newCheckedState);
-                                    }}
-                                 />
-                                 <label
-                                    htmlFor="updateTolerance"
-                                    className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                 >
-                                    Perbaharui persentase toleransi
-                                 </label>
-                              </div>
-                              {isUpdateTolerance && (
-                                 <FormDescription>
-                                    Mengubah nilai toleransi akan secara
-                                    otomatis memperbarui nilai berat toleransi
-                                    dan sisa kuantitas terkait
-                                 </FormDescription>
-                              )}
+                              <FormMessage />
                            </FormItem>
                         )}
                      />
 
-                     <FormItem>
-                        <FormLabel>Berat Toleransi (Kg)</FormLabel>
-                        <FormControl>
-                           <Input
-                              type="number"
-                              defaultValue={data.toleranceWeigh || 0}
-                              disabled
-                           />
-                        </FormControl>
-                     </FormItem>
-
-                     <FormItem>
-                        <FormLabel>Sisa Kuantitas (Kg)</FormLabel>
-                        <FormControl>
-                           <Input
-                              defaultValue={data.remainingQty}
-                              type="text"
-                              disabled
-                           />
-                        </FormControl>
-                     </FormItem>
+                     <FormField
+                        control={form.control}
+                        name="topUpQty"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Isi Ulang (Kg)</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    type="number"
+                                    placeholder="Masukkan isi ulang"
+                                    disabled
+                                    {...field}
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
 
                      <FormField
                         control={form.control}
                         name="status"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Status Kontrak</FormLabel>
+                              <FormLabel>Status Pengambilan</FormLabel>
                               <Select
                                  onValueChange={field.onChange}
                                  defaultValue={field.value}
@@ -377,17 +226,17 @@ export function UpdateForm({
                                     </SelectTrigger>
                                  </FormControl>
                                  <SelectContent>
-                                    <SelectItem value={ContractStatus.CREATED}>
-                                       Dibuat
+                                    <SelectItem value={SalesStatus.PENDING}>
+                                       Ditunda
                                     </SelectItem>
-                                    <SelectItem value={ContractStatus.ACTIVE}>
-                                       Aktif
+                                    <SelectItem value={SalesStatus.ACTIVE}>
+                                       Dalam Proses
                                     </SelectItem>
-                                    <SelectItem value={ContractStatus.CANCELED}>
-                                       Di Batalkan
-                                    </SelectItem>
-                                    <SelectItem value={ContractStatus.CLOSED}>
+                                    <SelectItem value={SalesStatus.COMPLETED}>
                                        Selesai
+                                    </SelectItem>
+                                    <SelectItem value={SalesStatus.CANCELED}>
+                                       Dibatalkan
                                     </SelectItem>
                                  </SelectContent>
                               </Select>
@@ -397,52 +246,17 @@ export function UpdateForm({
                      />
                   </div>
 
-                  <FormField
-                     control={form.control}
-                     name="terms"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Ketentuan</FormLabel>
-                           <FormControl>
-                              <Textarea
-                                 placeholder="Masukkan ketentuan kontrak"
-                                 className="resize-none"
-                                 disabled={isPending}
-                                 {...field}
-                              />
-                           </FormControl>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-
                   <FormSuccess message={success} />
                   <FormError message={error} />
 
-                  <div className="flex flex-wrap items-center gap-4">
-                     <Button
-                        type="submit"
-                        disabled={isPending}
-                        size={'sm'}
-                        className="flex items-center"
-                     >
-                        <Save />
-                        Simpan
-                     </Button>
-
-                     <Link
-                        href={'/dashboard/contract'}
-                        className="cursor-pointer"
-                     >
-                        <Button
-                           disabled={isPending}
-                           variant={'secondary'}
-                           size={'sm'}
-                        >
-                           Kembali
-                        </Button>
-                     </Link>
-                  </div>
+                  <Button
+                     type="submit"
+                     disabled={isPending}
+                     size={'sm'}
+                     className="flex items-center"
+                  >
+                     <Save /> Simpan
+                  </Button>
                </form>
             </Form>
          </CardContent>

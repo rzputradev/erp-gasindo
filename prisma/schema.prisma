@@ -34,17 +34,11 @@ enum UnitType {
    PCS
 }
 
-enum ContractStatus {
-   CREATED
+enum SalesStatus {
+   PENDING
    ACTIVE
-   CANCELED
-   CLOSED
-}
-
-enum OrderStatus {
-   CREATED
-   ONLOAD
    COMPLETED
+   CANCELED
 }
 
 enum VehicleType {
@@ -180,11 +174,11 @@ model Buyer {
 }
 
 model Contract {
-   id             String         @id @default(cuid())
+   id             String      @id @default(cuid())
    buyerId        String?
    itemId         String?
    locationId     String?
-   status         ContractStatus @default(CREATED)
+   status         SalesStatus @default(PENDING)
    contractNo     String
    price          Float
    vat            Float?
@@ -214,7 +208,7 @@ model Order {
    quantity       Int
    remainingQty   Int
    topUpQty       Int?
-   status         OrderStatus     @default(CREATED)
+   status         SalesStatus     @default(PENDING)
    outgoingScales OutgoingScale[]
 
    contract Contract? @relation(fields: [contractId], references: [id], onDelete: SetNull)

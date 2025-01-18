@@ -18,9 +18,10 @@ export async function updateContract(
       }
 
       // Validate input data
-      const parsed = updateContracSchema.safeParse(values);
-      if (!parsed.success) {
-         return { error: 'Data tidak valid', details: parsed.error.errors };
+      const { success, data: parsedValues } =
+         updateContracSchema.safeParse(values);
+      if (!success) {
+         return { error: 'Data tidak valid' };
       }
 
       const {
@@ -38,7 +39,8 @@ export async function updateContract(
          remainingQty,
          toleranceWeigh,
          topUpQty
-      } = parsed.data;
+      } = parsedValues;
+
       // Check if the contract exists
       const existingContract = await db.contract.findUnique({ where: { id } });
       if (!existingContract) {
@@ -46,17 +48,9 @@ export async function updateContract(
       }
 
       let newToleranceWeigh = toleranceWeigh;
-      let newRemainingQty = remainingQty;
 
       if (updateTolerance) {
          newToleranceWeigh = (quantity || 0) * ((tolerance ?? 0) / 100);
-         newRemainingQty =
-            (remainingQty || 0) - (toleranceWeigh || 0) + newToleranceWeigh;
-
-         if (newRemainingQty < 0)
-            return {
-               error: 'Sisa kuantitas < 0 setelah update persentase toleransi'
-            };
       }
 
       // Update the contract in a transaction
@@ -72,7 +66,7 @@ export async function updateContract(
                terms,
                tolerance,
                toleranceWeigh: newToleranceWeigh,
-               remainingQty: newRemainingQty,
+               remainingQty,
                vat,
                topUpQty
             }
