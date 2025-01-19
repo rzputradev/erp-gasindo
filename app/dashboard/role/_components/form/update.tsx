@@ -79,7 +79,7 @@ export function UpdateForm({ data, allPermissions }: UpdateFormProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-md">
+      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Perbaharui Role

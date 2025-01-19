@@ -1,257 +1,257 @@
 [
    {
       "key": "user:read",
-      "name": "Melihat pengguna",
+      "name": "Baca pengguna",
       "description": "Memungkinkan pengguna untuk melihat data pengguna anpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
       "key": "user:create",
-      "name": "Menambahkan pengguna",
+      "name": "Tambah pengguna",
       "description": "Memungkinkan pengguna untuk menambahkan data pengguna baru ke sistem."
    },
    {
       "key": "user:update",
-      "name": "Memperbarui pengguna",
+      "name": "Perbaharui pengguna",
       "description": "Memungkinkan pengguna untuk memperbarui informasi pengguna yang sudah ada."
    },
    {
       "key": "user:delete",
-      "name": "Menghapus pengguna",
+      "name": "Hapus pengguna",
       "description": "Memungkinkan pengguna untuk menghapus data pengguna dari sistem."
    },
    {
-      "key": "incoming-scale:read",
-      "name": "Melihat timbangan barang masuk",
+      "key": "incoming:read",
+      "name": "Baca timbangan barang masuk",
       "description": "Memungkinkan pengguna untuk melihat data timbangan barang masuk tanpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
-      "key": "incoming-scale:create",
-      "name": "Menambahkan timbangan barang masuk",
+      "key": "incoming:create",
+      "name": "Tambah timbangan barang masuk",
       "description": "Memungkinkan pengguna untuk menambahkan data timbangan barang masuk baru ke sistem."
    },
    {
-      "key": "incoming-scale:update",
-      "name": "Memperbarui timbangan barang masuk",
+      "key": "incoming:update",
+      "name": "Perbaharui timbangan barang masuk",
       "description": "Memungkinkan pengguna untuk memperbarui data timbangan barang masuk yang sudah ada."
    },
    {
-      "key": "incoming-scale:delete",
-      "name": "Menghapus timbangan barang masuk",
+      "key": "incoming:delete",
+      "name": "Hapus timbangan barang masuk",
       "description": "Memungkinkan pengguna untuk menghapus data timbangan barang masuk dari sistem."
    },
    {
-      "key": "incoming-scale:multi-location",
-      "name": "Mengelota timbangan barang masuk banyak lokasi",
-      "description": "Memungkinkan pengguna untuk mengelola data timbangan barang masuk dari sistem banyak lokasi."
+      "key": "incoming:multi-location",
+      "name": "Kelola timbangan barang masuk banyak lokasi",
+      "description": "Memungkinkan pengguna untuk mengelola data timbangan barang masuk dari banyak lokasi di sistem."
    },
    {
-      "key": "outgoing-scale:read",
-      "name": "Melihat timbangan barang keluar",
+      "key": "outgoing:read",
+      "name": "Baca timbangan barang keluar",
       "description": "Memungkinkan pengguna untuk melihat data timbangan barang keluar tanpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
-      "key": "outgoing-scale:create",
-      "name": "Menambahkan timbangan barang keluar",
+      "key": "outgoing:create",
+      "name": "Tambah timbangan barang keluar",
       "description": "Memungkinkan pengguna untuk menambahkan data timbangan barang keluar baru ke sistem."
    },
    {
-      "key": "outgoing-scale:update",
-      "name": "Memperbarui timbangan barang keluar",
+      "key": "outgoing:update",
+      "name": "Perbaharui timbangan barang keluar",
       "description": "Memungkinkan pengguna untuk memperbarui data timbangan barang keluar yang sudah ada."
    },
    {
-      "key": "outgoing-scale:delete",
-      "name": "Menghapus timbangan barang keluar",
+      "key": "outgoing:delete",
+      "name": "Hapus timbangan barang keluar",
       "description": "Memungkinkan pengguna untuk menghapus data timbangan barang keluar dari sistem."
    },
    {
-      "key": "outgoing-scale:multi-location",
-      "name": "Mengelota timbangan barang keluar di banyak lokasi",
+      "key": "outgoing:multi-location",
+      "name": "Kelola timbangan barang keluar di banyak lokasi",
+      "description": "Memungkinkan pengguna untuk mengelola data timbangan barang keluar dari sistem di banyak lokasi."
+   },
+   {
+      "key": "outgoing:download-full",
+      "name": "Kelola timbangan barang keluar di banyak lokasi",
       "description": "Memungkinkan pengguna untuk mengelola data timbangan barang keluar dari sistem di banyak lokasi."
    },
    {
       "key": "permission:read",
-      "name": "Melihat izin",
+      "name": "Baca izin",
       "description": "Memungkinkan pengguna untuk melihat daftar data izin tanpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
       "key": "permission:create",
-      "name": "Menambahkan izin",
+      "name": "Tambah izin",
       "description": "Memungkinkan pengguna untuk menambahkan data izin baru ke sistem."
    },
    {
       "key": "permission:update",
-      "name": "Memperbarui izin",
+      "name": "Perbaharui izin",
       "description": "Memungkinkan pengguna untuk memperbarui informasi data izin yang sudah ada."
    },
    {
       "key": "permission:delete",
-      "name": "Menghapus izin",
+      "name": "Hapus izin",
       "description": "Memungkinkan pengguna untuk menghapus data izin dari sistem."
    },
    {
       "key": "role:read",
-      "name": "Melihat peran",
+      "name": "Baca peran",
       "description": "Memungkinkan pengguna untuk melihat daftar data peran tanpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
       "key": "role:create",
-      "name": "Menambahkan peran",
+      "name": "Tambah peran",
       "description": "Memungkinkan pengguna untuk menambahkan data peran baru ke sistem."
    },
    {
       "key": "role:update",
-      "name": "Memperbarui peran",
+      "name": "Perbaharui peran",
       "description": "Memungkinkan pengguna untuk memperbarui informasi data peran yang sudah ada."
    },
    {
       "key": "role:delete",
-      "name": "Menghapus peran",
+      "name": "Hapus peran",
       "description": "Memungkinkan pengguna untuk menghapus data peran dari sistem."
    },
    {
       "key": "location:read",
-      "name": "Melihat banyak lokasi",
+      "name": "Baca banyak lokasi",
       "description": "Memungkinkan pengguna untuk melihat banyak data lokasi tanpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
       "key": "location:create",
-      "name": "Menambahkan lokasi",
+      "name": "Tambah lokasi",
       "description": "Memungkinkan pengguna untuk menambahkan data lokasi baru ke sistem."
    },
    {
       "key": "location:update",
-      "name": "Memperbarui lokasi",
+      "name": "Perbaharui lokasi",
       "description": "Memungkinkan pengguna untuk memperbarui data lokasi yang sudah ada."
    },
    {
       "key": "location:delete",
-      "name": "Menghapus lokasi",
+      "name": "Hapus lokasi",
       "description": "Memungkinkan pengguna untuk menghapus data lokasi dari sistem."
    },
    {
-      "key": "item-category:read",
-      "name": "Melihat kategori item",
+      "key": "category:read",
+      "name": "Baca kategori item",
       "description": "Memungkinkan pengguna untuk melihat kategori item tanpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
-      "key": "item-category:create",
-      "name": "Menambahkan kategori item",
+      "key": "category:create",
+      "name": "Tambah kategori item",
       "description": "Memungkinkan pengguna untuk menambahkan kategori barang baru ke sistem."
    },
    {
-      "key": "item-category:update",
-      "name": "Memperbarui kategori item",
+      "key": "category:update",
+      "name": "Perbaharui kategori item",
       "description": "Memungkinkan pengguna untuk memperbarui kategori item yang sudah ada."
    },
    {
-      "key": "item-category:delete",
-      "name": "Menghapus kategori item",
+      "key": "category:delete",
+      "name": "Hapus kategori item",
       "description": "Memungkinkan pengguna untuk menghapus kategori item dari sistem."
    },
    {
       "key": "item:read",
-      "name": "Melihat barang",
+      "name": "Baca barang",
       "description": "Memungkinkan pengguna untuk melihat data barang tanpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
       "key": "item:create",
-      "name": "Menambahkan barang",
+      "name": "Tambah barang",
       "description": "Memungkinkan pengguna untuk menambahkan data barang baru ke sistem."
    },
    {
       "key": "item:update",
-      "name": "Memperbarui barang",
+      "name": "Perbaharui barang",
       "description": "Memungkinkan pengguna untuk memperbarui data barang yang sudah ada."
    },
    {
       "key": "item:delete",
-      "name": "Menghapus barang",
+      "name": "Hapus barang",
       "description": "Memungkinkan pengguna untuk menghapus data barang dari sistem."
    },
    {
       "key": "supplier:read",
-      "name": "Melihat pemasok",
+      "name": "Baca pemasok",
       "description": "Memungkinkan pengguna untuk melihat data pemasok tanpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
       "key": "supplier:create",
-      "name": "Menambahkan pemasok",
+      "name": "Tambah pemasok",
       "description": "Memungkinkan pengguna untuk menambahkan data pemasok baru ke sistem."
    },
    {
       "key": "supplier:update",
-      "name": "Memperbarui pemasok",
+      "name": "Perbaharui pemasok",
       "description": "Memungkinkan pengguna untuk memperbarui data pemasok yang sudah ada."
    },
    {
       "key": "supplier:delete",
-      "name": "Menghapus pemasok",
+      "name": "Hapus pemasok",
       "description": "Memungkinkan pengguna untuk menghapus data pemasok dari sistem."
    },
    {
       "key": "buyer:read",
-      "name": "Melihat pembeli",
+      "name": "Baca pembeli",
       "description": "Memungkinkan pengguna untuk melihat data pembeli tanpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
       "key": "buyer:create",
-      "name": "Menambahkan pembeli",
+      "name": "Tambah pembeli",
       "description": "Memungkinkan pengguna untuk menambahkan data pembeli baru ke sistem."
    },
    {
       "key": "buyer:update",
-      "name": "Memperbarui pembeli",
+      "name": "Perbaharui pembeli",
       "description": "Memungkinkan pengguna untuk memperbarui data pembeli yang sudah ada."
    },
    {
       "key": "buyer:delete",
-      "name": "Menghapus pembeli",
+      "name": "Hapus pembeli",
       "description": "Memungkinkan pengguna untuk menghapus data pembeli dari sistem."
    },
    {
-      "key": "vehicle-type:read",
-      "name": "Melihat jenis kendaraan",
-      "description": "Memungkinkan pengguna untuk melihat data jenis kendaraan tanpa kemampuan untuk mengubah atau menghapusnya."
-   },
-   {
       "key": "contract:create",
-      "name": "Menambahkan kontrak",
+      "name": "Tambah kontrak",
       "description": "Memungkinkan pengguna untuk menambahkan data kontrak baru ke sistem."
    },
    {
       "key": "contract:update",
-      "name": "Memperbarui kontrak",
+      "name": "Perbaharui kontrak",
       "description": "Memungkinkan pengguna untuk memperbarui data kontrak yang sudah ada."
    },
    {
       "key": "contract:delete",
-      "name": "Menghapus kontrak",
+      "name": "Hapus kontrak",
       "description": "Memungkinkan pengguna untuk menghapus data kontrak dari sistem."
    },
    {
       "key": "contract:read",
-      "name": "Melihat kontrak",
+      "name": "Baca kontrak",
       "description": "Memungkinkan pengguna untuk melihat data kontrak tanpa kemampuan untuk mengubah atau menghapusnya."
    },
    {
       "key": "order:create",
-      "name": "Menambahkan pesanan",
+      "name": "Tambah Pengambilan",
       "description": "Memungkinkan pengguna untuk menambahkan data pesanan baru ke sistem."
    },
    {
       "key": "order:update",
-      "name": "Memperbarui pesanan",
+      "name": "Perbaharui Pengambilan",
       "description": "Memungkinkan pengguna untuk memperbarui data pesanan yang sudah ada."
    },
    {
       "key": "order:delete",
-      "name": "Menghapus pesanan",
+      "name": "Hapus Pengambilan",
       "description": "Memungkinkan pengguna untuk menghapus data pesanan dari sistem."
    },
    {
       "key": "order:read",
-      "name": "Melihat pesanan",
+      "name": "Baca Pengambilan",
       "description": "Memungkinkan pengguna untuk melihat data pesanan tanpa kemampuan untuk mengubah atau menghapusnya."
    }
 ]

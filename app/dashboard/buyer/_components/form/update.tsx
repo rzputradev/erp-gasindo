@@ -109,16 +109,17 @@ export function UpdateForm({ data }: UpdateFormProps) {
                            </FormItem>
                         )}
                      />
+
                      <FormField
                         control={form.control}
                         name="key"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Key</FormLabel>
+                              <FormLabel>Kode</FormLabel>
                               <FormControl>
                                  <Input
                                     type="text"
-                                    placeholder="Masukkan key"
+                                    placeholder="Masukkan kode"
                                     disabled={isPending}
                                     {...field}
                                  />
