@@ -188,16 +188,16 @@ export const navItems: NavItem[] = [
             icon: 'ticketPlus',
             isActive: false,
             shortcut: ['b', 'm'],
-            permission: 'incoming-scale:read',
+            permission: 'incoming:read',
             items: []
          },
          {
             title: 'Barang Keluar',
-            url: '/dashboard/scale-in',
+            url: '/dashboard/outgoing',
             icon: 'ticketMinus',
             isActive: false,
             shortcut: ['b', 'k'],
-            permission: 'outgoing-scale:read',
+            permission: 'outgoing:read',
             items: []
          }
       ]
@@ -220,11 +220,11 @@ export const navItems: NavItem[] = [
          },
          {
             title: 'Kategori Barang',
-            url: '/dashboard/item-category',
+            url: '/dashboard/category',
             icon: 'libraryBig',
             isActive: true,
             shortcut: ['i', 'i'],
-            permission: 'item-category:read',
+            permission: 'category:read',
             items: []
          }
       ]
@@ -243,33 +243,6 @@ export const navItems: NavItem[] = [
             isActive: true,
             shortcut: ['l', 'l'],
             permission: 'location:read',
-            items: []
-         },
-         {
-            title: 'Pemasok',
-            url: '/dashboard/supplier',
-            icon: 'packagePlus',
-            isActive: true,
-            shortcut: ['p', 'k'],
-            permission: 'supplier:read',
-            items: []
-         },
-         {
-            title: 'Tipe Kendaraan',
-            url: '/dashboard/vehicle-type',
-            icon: 'car',
-            isActive: true,
-            shortcut: ['t', 'k'],
-            permission: 'vehicle-type:read',
-            items: []
-         },
-         {
-            title: 'Pengangkutan',
-            url: '/dashboard/transporter',
-            icon: 'bus',
-            isActive: true,
-            shortcut: ['p', 'n'],
-            permission: 'transporter:read',
             items: []
          }
       ]

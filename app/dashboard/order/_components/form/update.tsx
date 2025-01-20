@@ -107,7 +107,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
+      <Card className="mx-auto w-full">
          <CardHeader>
             <CardTitle className="flex items-start justify-between">
                <div className="flex flex-col gap-1">
@@ -118,12 +118,15 @@ export function UpdateForm({ data }: UpdateFormProps) {
                      {data.contract?.contractNo}
                   </p>
                </div>
-               {topUpAccess && remainingContractQty > 0 && (
-                  <TopUp
-                     id={data.id}
-                     remainingContractQty={remainingContractQty}
-                  />
-               )}
+               {topUpAccess &&
+                  remainingContractQty > 0 &&
+                  data.status === SalesStatus.ACTIVE &&
+                  data.contract?.status === SalesStatus.ACTIVE && (
+                     <TopUp
+                        id={data.id}
+                        remainingContractQty={remainingContractQty}
+                     />
+                  )}
             </CardTitle>
          </CardHeader>
          <CardContent>

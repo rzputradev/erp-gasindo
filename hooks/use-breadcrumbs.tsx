@@ -103,7 +103,7 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
    // Item Type
    '/dashboard/category': [
       { title: 'Beranda', link: '/dashboard' },
-      { title: 'Tipe Barang', link: '/dashboard/category' }
+      { title: 'Kategori Barang', link: '/dashboard/category' }
    ],
    '/dashboard/category/create': [
       { title: 'Beranda', link: '/dashboard' },

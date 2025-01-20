@@ -92,7 +92,7 @@ export function CreateForm({ locations, buyers, items }: CreateFromProps) {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
+      <Card className="mx-auto w-full">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
                Tambah Kontrak

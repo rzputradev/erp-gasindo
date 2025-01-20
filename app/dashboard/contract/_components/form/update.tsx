@@ -112,7 +112,7 @@ export function UpdateForm({
    }
 
    return (
-      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
+      <Card className="mx-auto w-full">
          <CardHeader>
             <CardTitle className="flex items-start justify-between">
                <span className="text-left text-2xl font-bold">
@@ -440,7 +440,7 @@ export function UpdateForm({
                                  </FormControl>
                                  <SelectContent>
                                     <SelectItem value={SalesStatus.PENDING}>
-                                       Tertunda
+                                       Ditunda
                                     </SelectItem>
                                     <SelectItem value={SalesStatus.ACTIVE}>
                                        Aktif
@@ -449,7 +449,7 @@ export function UpdateForm({
                                        Selesai
                                     </SelectItem>
                                     <SelectItem value={SalesStatus.CANCELED}>
-                                       Di Batalkan
+                                       Dibatalkan
                                     </SelectItem>
                                  </SelectContent>
                               </Select>

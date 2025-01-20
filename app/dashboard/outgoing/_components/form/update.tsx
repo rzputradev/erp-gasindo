@@ -4,12 +4,15 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { startTransition, useState } from 'react';
+import { useState, startTransition } from 'react';
+import { Buyer } from '@prisma/client';
+import { Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { createCategorySchema } from '@/lib/schemas/category';
-import { createItemCategory } from '@/actions/category/create';
+import { updateBuyer } from '@/actions/buyer/update';
+import { updateBuyerSchema } from '@/lib/schemas/buyer';
 
+import { FormError } from '@/components/form-error';
 import { Button } from '@/components/ui/button';
 import {
    Form,
@@ -22,41 +25,47 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 
-export function CreateForm() {
+interface UpdateFormProps {
+   data: Buyer;
+}
+
+export function UpdateForm({ data }: UpdateFormProps) {
    const router = useRouter();
+   const [isPending, setIspending] = useState<boolean>(false);
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
-   const [isPending, setIspending] = useState<boolean>(false);
 
-   const form = useForm<z.infer<typeof createCategorySchema>>({
-      resolver: zodResolver(createCategorySchema),
+   const form = useForm<z.infer<typeof updateBuyerSchema>>({
+      resolver: zodResolver(updateBuyerSchema),
       defaultValues: {
-         name: '',
-         key: '',
-         description: ''
+         id: data.id,
+         name: data.name,
+         key: data.key,
+         tin: data.tin,
+         phone: data.phone,
+         address: data.address
       }
    });
 
-   function onSubmit(values: z.infer<typeof createCategorySchema>) {
+   function onSubmit(values: z.infer<typeof updateBuyerSchema>) {
       setIspending(true);
       setError(undefined);
       setSuccess(undefined);
       startTransition(() => {
-         createItemCategory(values)
+         updateBuyer(values)
             .then((res) => {
                setIspending(false);
-               form.reset();
                if (res?.error) {
                   setError(res.error);
                   toast.error(res.error);
+                  form.reset();
                }
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
-                  router.push('/dashboard/item-category');
+                  router.push(`/dashboard/buyer/read?id=${data.id}`);
                }
             })
             .catch((e) => {
@@ -72,7 +81,7 @@ export function CreateForm() {
       <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
-               Tambah Kategori Barang
+               Perbaharui Pembeli
             </CardTitle>
          </CardHeader>
          <CardContent>
@@ -100,16 +109,54 @@ export function CreateForm() {
                            </FormItem>
                         )}
                      />
+
                      <FormField
                         control={form.control}
                         name="key"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Key</FormLabel>
+                              <FormLabel>Kode</FormLabel>
                               <FormControl>
                                  <Input
                                     type="text"
-                                    placeholder="Masukkan key"
+                                    placeholder="Masukkan kode"
+                                    disabled={isPending}
+                                    {...field}
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+
+                     <FormField
+                        control={form.control}
+                        name="tin"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Surat Wajib Pajak</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    type="text"
+                                    placeholder="Masukkan nomor surat"
+                                    disabled={isPending}
+                                    {...field}
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>No Handphone</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    type="text"
+                                    placeholder="Masukkan nomor handphone"
                                     disabled={isPending}
                                     {...field}
                                  />
@@ -122,13 +169,13 @@ export function CreateForm() {
 
                   <FormField
                      control={form.control}
-                     name="description"
+                     name="address"
                      render={({ field }) => (
                         <FormItem>
-                           <FormLabel>Deskripsi</FormLabel>
+                           <FormLabel>Alamat</FormLabel>
                            <FormControl>
                               <Textarea
-                                 placeholder="Tulis deskipsi"
+                                 placeholder="Masukkan alamat"
                                  className="resize-none"
                                  disabled={isPending}
                                  {...field}
@@ -142,8 +189,14 @@ export function CreateForm() {
                   <FormSuccess message={success} />
                   <FormError message={error} />
 
-                  <Button type="submit" disabled={isPending}>
-                     Submit
+                  <Button
+                     type="submit"
+                     disabled={isPending}
+                     size={'sm'}
+                     className="flex items-center"
+                  >
+                     <Save />
+                     Simpan
                   </Button>
                </form>
             </Form>

@@ -1,0 +1,17 @@
+[
+   {
+      "name": "Komoditas",
+      "key": "commodity",
+      "description": "Barang atau produk hasil olahan yang diperdagangkan di pasar, seperti bahan mentah atau produk jadi."
+   },
+   {
+      "name": "Proses Timbangan",
+      "key": "weighing",
+      "description": "Proses pengukuran berat barang saat masuk atau keluar menggunakan timbangan untuk pencatatan dan kontrol."
+   },
+   {
+      "name": "Buah",
+      "key": "fruit",
+      "description": "Kategori bahan utama yang digunakan di pabrik kelapa sawit untuk produksi."
+   }
+]

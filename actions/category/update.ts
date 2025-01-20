@@ -4,17 +4,17 @@ import { z } from 'zod';
 import { checkPermissions } from '@/data/user';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import { updateItemTypeSchema } from '@/lib/schemas/item-type';
+import { updateCategorySchema } from '@/lib/schemas/category';
 
 export async function updateItemCategory(
-   values: z.infer<typeof updateItemTypeSchema>
+   values: z.infer<typeof updateCategorySchema>
 ) {
    try {
-      const access = await checkPermissions(['item-category:update']);
+      const access = await checkPermissions(['category:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
-         updateItemTypeSchema.safeParse(values);
+         updateCategorySchema.safeParse(values);
       if (!success) return { error: 'Data tidak valid' };
 
       const { id, name, key, description } = parsedValues;

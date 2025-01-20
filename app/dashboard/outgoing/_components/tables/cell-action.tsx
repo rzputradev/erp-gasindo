@@ -2,12 +2,11 @@
 
 import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
-import { Edit, MoreHorizontal, ReceiptText, Trash } from 'lucide-react';
+import { Edit, MoreHorizontal, ReceiptText, Trash, View } from 'lucide-react';
 import { toast } from 'sonner';
-import { ItemCategory } from '@prisma/client';
+import { Buyer } from '@prisma/client';
 
-import { deleteItemCategory } from '@/actions/category/delete';
-import { useCheckPermissions } from '@/hooks/use-user';
+import { deleteBuyer } from '@/actions/buyer/delete';
 
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
@@ -18,9 +17,10 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useCheckPermissions } from '@/hooks/use-user';
 
 interface CellActionProps {
-   data: ItemCategory;
+   data: Buyer;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -28,13 +28,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
    const [open, setOpen] = useState(false);
    const router = useRouter();
 
-   const updateAccess = useCheckPermissions(['item-category:update']);
-   const deleteAccess = useCheckPermissions(['item-category:delete']);
+   const updateAccess = useCheckPermissions(['buyer:update']);
+   const deleteAccess = useCheckPermissions(['buyer:delete']);
 
    const onConfirm = async () => {
       setLoading(true);
       startTransition(() => {
-         deleteItemCategory(data.id)
+         deleteBuyer(data.id)
             .then((res) => {
                if (res?.error) {
                   toast.error(res.error);
@@ -46,7 +46,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                setOpen(false);
             })
             .catch((e) => {
-               toast.error('Something went wrong!');
+               console.log(e);
+               toast.error('Terjadi kesalahan, silakan coba lagi');
             });
       });
    };
@@ -67,25 +68,25 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-               <DropdownMenuLabel>Actions</DropdownMenuLabel>
+               <DropdownMenuLabel>Aksi</DropdownMenuLabel>
 
                <DropdownMenuItem
-                  className="flex items-center space-x-2"
+                  className="flex cursor-pointer items-center gap-2"
                   onClick={() =>
-                     router.push(`/dashboard/item-category/read?id=${data.id}`)
+                     router.push(`/dashboard/buyer/read?id=${data.id}`)
                   }
+                  disabled={loading}
                >
                   <ReceiptText className="size-4" /> <p>Rincian</p>
                </DropdownMenuItem>
 
                {updateAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() =>
-                        router.push(
-                           `/dashboard/item-category/update?id=${data.id}`
-                        )
+                        router.push(`/dashboard/buyer/update?id=${data.id}`)
                      }
+                     disabled={loading}
                   >
                      <Edit className="size-4" /> <p>Perbaharui</p>
                   </DropdownMenuItem>
@@ -93,8 +94,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {deleteAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() => setOpen(true)}
+                     disabled={loading}
                   >
                      <Trash className="size-4" /> <p>Hapus</p>
                   </DropdownMenuItem>

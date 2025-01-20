@@ -2,7 +2,7 @@
    {
       "key": "super-admin",
       "name": "Super Admin",
-      "description": "Memiliki akses penuh ke semua fitur dan data dalam sistem, termasuk manajemen pengguna, peran, dan permission.",
+      "description": "Memiliki akses penuh ke seluruh fitur dan data dalam sistem, termasuk manajemen pengguna, peran, dan izin.",
       "permissions": [
          "user:read",
          "user:create",
@@ -24,10 +24,10 @@
          "item:create",
          "item:update",
          "item:delete",
-         "item-type:read",
-         "item-type:create",
-         "item-type:update",
-         "item-type:delete"
+         "category:read",
+         "category:create",
+         "category:update",
+         "category:delete"
       ]
    }
 ]

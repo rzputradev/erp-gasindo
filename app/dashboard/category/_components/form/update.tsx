@@ -7,8 +7,7 @@ import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
 import { ItemCategory } from '@prisma/client';
 
-import { updatePermissionSchema } from '@/lib/schemas/permission';
-import { updateItemCategory } from '@/actions/item-category/update';
+import { updateItemCategory } from '@/actions/category/update';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,6 +23,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormSuccess } from '@/components/form-success';
 import { FormError } from '@/components/form-error';
+import { updateCategorySchema } from '@/lib/schemas/category';
 
 interface UpdateFormProps {
    data: ItemCategory;
@@ -34,8 +34,8 @@ export function UpdateForm({ data }: UpdateFormProps) {
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
 
-   const form = useForm<z.infer<typeof updatePermissionSchema>>({
-      resolver: zodResolver(updatePermissionSchema),
+   const form = useForm<z.infer<typeof updateCategorySchema>>({
+      resolver: zodResolver(updateCategorySchema),
       defaultValues: {
          id: data.id,
          name: data.name,
@@ -44,7 +44,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
       }
    });
 
-   function onSubmit(values: z.infer<typeof updatePermissionSchema>) {
+   function onSubmit(values: z.infer<typeof updateCategorySchema>) {
       setIspending(true);
       setError(undefined);
       setSuccess(undefined);

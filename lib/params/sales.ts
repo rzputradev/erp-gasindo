@@ -5,7 +5,7 @@ import {
    parseAsString
 } from 'nuqs/server';
 
-export const searchContractParams = {
+export const searchSalesParams = {
    page: parseAsInteger.withDefault(1),
    limit: parseAsInteger.withDefault(10),
    q: parseAsString,
@@ -14,6 +14,5 @@ export const searchContractParams = {
    item: parseAsString
 };
 
-export const searchContractParamsCache =
-   createSearchParamsCache(searchContractParams);
-export const serialize = createSerializer(searchContractParams);
+export const searchSaleParamsCache = createSearchParamsCache(searchSalesParams);
+export const serialize = createSerializer(searchSalesParams);

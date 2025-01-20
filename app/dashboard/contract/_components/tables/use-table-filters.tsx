@@ -1,42 +1,35 @@
 'use client';
 
+import { searchSalesParams } from '@/lib/params/sales';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
-
-import { searchContractParams } from '@/lib/params/contract';
 
 export function useTableFilters() {
    const [searchQuery, setSearchQuery] = useQueryState(
       'q',
-      searchContractParams.q
+      searchSalesParams.q
          .withOptions({ shallow: false, throttleMs: 1000 })
          .withDefault('')
    );
 
    const [page, setPage] = useQueryState(
       'page',
-      searchContractParams.page.withDefault(1)
+      searchSalesParams.page.withDefault(1)
    );
 
    const [locationFilter, setLocationFilter] = useQueryState(
       'location',
-      searchContractParams.location
-         .withOptions({ shallow: false })
-         .withDefault('')
+      searchSalesParams.location.withOptions({ shallow: false }).withDefault('')
    );
 
    const [buyerFilter, setBuyerFilter] = useQueryState(
       'buyer',
-      searchContractParams.location
-         .withOptions({ shallow: false })
-         .withDefault('')
+      searchSalesParams.location.withOptions({ shallow: false }).withDefault('')
    );
 
    const [itemFilter, setItemFilter] = useQueryState(
       'item',
-      searchContractParams.location
-         .withOptions({ shallow: false })
-         .withDefault('')
+      searchSalesParams.location.withOptions({ shallow: false }).withDefault('')
    );
 
    const resetFilters = useCallback(() => {

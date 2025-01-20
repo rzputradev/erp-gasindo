@@ -7,6 +7,7 @@ import { checkPermissions } from '@/data/user';
 import { db } from '@/lib/db';
 import { updateContracSchema } from '@/lib/schemas/contract';
 import { updateOrderSchema } from '@/lib/schemas/order';
+import { SalesStatus } from '@prisma/client';
 
 export async function updateOrder(values: z.infer<typeof updateOrderSchema>) {
    try {
@@ -24,11 +25,25 @@ export async function updateOrder(values: z.infer<typeof updateOrderSchema>) {
 
       const { id, orderNo, quantity, remainingQty, status, topUpQty } =
          parsed.data;
+
       // Check if the contract exists
-      const existingOrder = await db.order.findUnique({ where: { id } });
+      const existingOrder = await db.order.findUnique({
+         where: { id },
+         include: { contract: true }
+      });
       if (!existingOrder) {
          return { error: 'Pengambilan tidak ditemukan.' };
       }
+
+      if (existingOrder.status !== SalesStatus.ACTIVE)
+         return {
+            error: 'Hanya pengambilan yang aktif yang bisa melakukan isi ulang'
+         };
+
+      if (existingOrder.contract?.status !== SalesStatus.ACTIVE)
+         return {
+            error: 'Hanya kontrak aktif yang bisa melakukan isi ulang pengambilan'
+         };
 
       // Update the contract in a transaction
       await db.$transaction(async (tx) => {

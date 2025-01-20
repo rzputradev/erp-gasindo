@@ -4,8 +4,7 @@ import Link from 'next/link';
 import { Plus } from 'lucide-react';
 
 import { checkPermissions } from '@/data/user';
-import { searchOrderParamsCache, serialize } from '@/lib/params/order';
-import { cn } from '@/lib/utils';
+import { searchSaleParamsCache, serialize } from '@/lib/params/sales';
 
 import { TableAction } from './_components/tables/table-action';
 import { ListingPage } from './_components/listing-page';
@@ -28,7 +27,7 @@ export const metadata = {
 
 export default async function Page(props: pageProps) {
    const searchParams = await props.searchParams;
-   searchOrderParamsCache.parse(searchParams);
+   searchSaleParamsCache.parse(searchParams);
 
    const readAccess = await checkPermissions(['order:read']);
    const createAccess = await checkPermissions(['order:create']);

@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client';
 
 import { db } from '@/lib/db';
+import { searchSaleParamsCache } from '@/lib/params/sales';
 
 import { columns } from './tables/columns';
 import { DataTable } from '@/components/ui/table/data-table';
-import { searchSaleParamsCache } from '@/lib/params/sales';
 
 export async function ListingPage() {
    const page = searchSaleParamsCache.get('page');
@@ -17,45 +17,16 @@ export async function ListingPage() {
    const item = searchSaleParamsCache.get('item');
    const itemArray = item ? (item.split('.') as string[]) : [];
 
-   const filters: Prisma.OrderFindManyArgs = {
+   const filters: Prisma.BuyerFindManyArgs = {
       skip: (page - 1) * pageLimit,
       take: pageLimit,
       where: {
          ...(search && {
             OR: [
-               { orderNo: { contains: search, mode: 'insensitive' } },
-               {
-                  contract: {
-                     item: { name: { contains: search, mode: 'insensitive' } }
-                  }
-               },
-               {
-                  contract: {
-                     location: {
-                        name: { contains: search, mode: 'insensitive' }
-                     }
-                  }
-               }
+               { name: { contains: search, mode: 'insensitive' } },
+               { key: { contains: search, mode: 'insensitive' } }
             ]
-         }),
-         ...(locationArray.length > 0 && {
-            contract: {
-               locationId: { in: locationArray }
-            }
-         }),
-         ...(buyerArray.length > 0 && {
-            contract: {
-               buyerId: { in: buyerArray }
-            }
-         }),
-         ...(itemArray.length > 0 && {
-            contract: {
-               itemId: { in: itemArray }
-            }
          })
-      },
-      include: {
-         contract: true
       },
       orderBy: {
          createdAt: 'desc'
@@ -63,8 +34,8 @@ export async function ListingPage() {
    };
 
    const [data, totalData] = await Promise.all([
-      db.order.findMany(filters),
-      db.order.count({ where: filters.where })
+      db.buyer.findMany(filters),
+      db.buyer.count({ where: filters.where })
    ]);
 
    return <DataTable columns={columns} data={data} totalItems={totalData} />;

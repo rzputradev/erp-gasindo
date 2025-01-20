@@ -20,7 +20,7 @@ type pageProps = {
 export default async function Page(props: pageProps) {
    const { id } = await props.searchParams;
 
-   const access = await checkPermissions(['item-category:read']);
+   const access = await checkPermissions(['category:read']);
    if (!access) return unauthorized();
 
    if (!id) {

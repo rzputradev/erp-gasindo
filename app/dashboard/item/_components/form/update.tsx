@@ -34,6 +34,7 @@ import { X } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormSuccess } from '@/components/form-success';
 import { FormError } from '@/components/form-error';
+import { useRouter } from 'next/navigation';
 
 interface UpdateFormProps {
    data: Item & { categories?: ItemCategory[] };
@@ -41,6 +42,7 @@ interface UpdateFormProps {
 }
 
 export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
+   const router = useRouter();
    const [isPending, setIsPending] = useState(false);
    const [success, setSuccess] = useState<string | undefined>();
    const [error, setError] = useState<string | undefined>();
@@ -73,6 +75,7 @@ export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
+                  router.push(`/dashboard/item/read?id=${data.id}`);
                }
             })
             .catch(() => {
@@ -142,18 +145,27 @@ export function UpdateForm({ data, itemCategories }: UpdateFormProps) {
                               <FormLabel>Satuan</FormLabel>
                               <Select
                                  onValueChange={field.onChange}
-                                 value={field.value}
+                                 defaultValue={field.value}
                                  disabled={isPending}
                               >
-                                 <SelectTrigger>
-                                    <SelectValue placeholder="Pilih satuan" />
-                                 </SelectTrigger>
+                                 <FormControl>
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Satuan item" />
+                                    </SelectTrigger>
+                                 </FormControl>
                                  <SelectContent>
-                                    {Object.values(UnitType).map((unit) => (
-                                       <SelectItem key={unit} value={unit}>
-                                          {unit}
-                                       </SelectItem>
-                                    ))}
+                                    <SelectItem value={UnitType.KG}>
+                                       Kilogram
+                                    </SelectItem>
+                                    <SelectItem value={UnitType.LTR}>
+                                       Liter
+                                    </SelectItem>
+                                    <SelectItem value={UnitType.PCS}>
+                                       Keping
+                                    </SelectItem>
+                                    <SelectItem value={UnitType.TON}>
+                                       Ton
+                                    </SelectItem>
                                  </SelectContent>
                               </Select>
                               <FormMessage />

@@ -3,9 +3,8 @@ import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 
-import { searchContractParamsCache, serialize } from '@/lib/params/contract';
 import { checkPermissions } from '@/data/user';
-import { cn } from '@/lib/utils';
+import { searchSaleParamsCache, serialize } from '@/lib/params/sales';
 
 import { TableAction } from './_components/tables/table-action';
 import { ListingPage } from './_components/listing-page';
@@ -28,7 +27,7 @@ export const metadata = {
 
 export default async function Page(props: pageProps) {
    const searchParams = await props.searchParams;
-   searchContractParamsCache.parse(searchParams);
+   searchSaleParamsCache.parse(searchParams);
 
    const readAccess = await checkPermissions(['contract:read']);
    const createAccess = await checkPermissions(['contract:create']);

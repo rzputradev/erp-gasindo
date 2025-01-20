@@ -26,10 +26,9 @@ import { Check, X } from 'lucide-react';
 
 interface ViewDetailProps {
    data: Item & { categories?: ItemCategory[] };
-   itemTypes: ItemCategory[];
 }
 
-export function ViewDetail({ data, itemTypes }: ViewDetailProps) {
+export function ViewDetail({ data }: ViewDetailProps) {
    const form = useForm();
 
    return (
@@ -110,32 +109,11 @@ export function ViewDetail({ data, itemTypes }: ViewDetailProps) {
 
                   <FormItem>
                      <FormLabel>Dibuat Pada</FormLabel>
-                     <FormControl>
-                        <Input
-                           type="text"
-                           defaultValue={
-                              data.createdAt
-                                 ? new Date(data.createdAt).toLocaleDateString()
-                                 : 'N/A'
-                           }
-                           disabled
-                        />
-                     </FormControl>
-                  </FormItem>
-
-                  <FormItem>
-                     <FormLabel>Terakhir di Perbaharui</FormLabel>
-                     <FormControl>
-                        <Input
-                           type="text"
-                           defaultValue={
-                              data.updatedAt
-                                 ? new Date(data.updatedAt).toLocaleDateString()
-                                 : 'N/A'
-                           }
-                           disabled
-                        />
-                     </FormControl>
+                     <FormDescription>
+                        {data.createdAt
+                           ? new Date(data.createdAt).toLocaleString()
+                           : 'N/A'}
+                     </FormDescription>
                   </FormItem>
                </div>
             </Form>

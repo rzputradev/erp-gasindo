@@ -4,18 +4,18 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 
 import { db } from '@/lib/db';
-import { createItemTypeSchema } from '@/lib/schemas/item-type';
+import { createCategorySchema } from '@/lib/schemas/category';
 import { checkPermissions } from '@/data/user';
 
 export async function createItemCategory(
-   values: z.infer<typeof createItemTypeSchema>
+   values: z.infer<typeof createCategorySchema>
 ) {
    try {
-      const access = await checkPermissions(['item-category:create']);
+      const access = await checkPermissions(['category:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
-         createItemTypeSchema.safeParse(values);
+         createCategorySchema.safeParse(values);
       if (!success) return { error: 'Data tidak valid' };
 
       const { name, key, description } = parsedValues;
