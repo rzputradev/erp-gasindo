@@ -1,5 +1,6 @@
 'use client';
 
+import { DataTableFilterDateRange } from '@/components/ui/table/data-table-filter-date-range';
 import { useTableFilters } from './use-table-filters';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
@@ -9,6 +10,8 @@ export function TableAction() {
       isAnyFilterActive,
       resetFilters,
       searchQuery,
+      dateRangeFilter,
+      setDateRangeFilter,
       setPage,
       setSearchQuery
    } = useTableFilters();
@@ -22,6 +25,13 @@ export function TableAction() {
                setSearchQuery={setSearchQuery}
                setPage={setPage}
             />
+
+            <DataTableFilterDateRange
+               setPage={setPage}
+               dateRange={dateRangeFilter}
+               setDateRange={setDateRangeFilter}
+            />
+
             <DataTableResetFilter
                isFilterActive={isAnyFilterActive}
                onReset={resetFilters}

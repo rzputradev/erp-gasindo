@@ -3,51 +3,80 @@
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 
-import { searchSalesParams } from '@/lib/params/sales';
+import { searchOutgoingParams } from '@/lib/params/outgoing';
 
 export function useTableFilters() {
    const [searchQuery, setSearchQuery] = useQueryState(
       'q',
-      searchSalesParams.q
+      searchOutgoingParams.q
          .withOptions({ shallow: false, throttleMs: 1000 })
          .withDefault('')
    );
 
    const [page, setPage] = useQueryState(
       'page',
-      searchSalesParams.page.withDefault(1)
+      searchOutgoingParams.page.withDefault(1)
+   );
+
+   const [dateRangeFilter, setDateRangeFilter] = useQueryState(
+      'dateRange',
+      searchOutgoingParams.dateRange.withOptions({
+         shallow: false,
+         throttleMs: 1000
+      })
    );
 
    const [locationFilter, setLocationFilter] = useQueryState(
       'location',
-      searchSalesParams.location.withOptions({ shallow: false }).withDefault('')
+      searchOutgoingParams.location
+         .withOptions({ shallow: false })
+         .withDefault('')
    );
 
    const [buyerFilter, setBuyerFilter] = useQueryState(
       'buyer',
-      searchSalesParams.location.withOptions({ shallow: false }).withDefault('')
+      searchOutgoingParams.location
+         .withOptions({ shallow: false })
+         .withDefault('')
    );
 
    const [itemFilter, setItemFilter] = useQueryState(
       'item',
-      searchSalesParams.location.withOptions({ shallow: false }).withDefault('')
+      searchOutgoingParams.location
+         .withOptions({ shallow: false })
+         .withDefault('')
    );
 
    const resetFilters = useCallback(() => {
       setSearchQuery(null);
+      setDateRangeFilter(null);
       setLocationFilter(null);
       setBuyerFilter(null);
       setItemFilter(null);
       setPage(1);
-   }, [setSearchQuery, setPage]);
+   }, [
+      setSearchQuery,
+      setPage,
+      setDateRangeFilter,
+      setLocationFilter,
+      setItemFilter
+   ]);
 
    const isAnyFilterActive = useMemo(() => {
-      return !!searchQuery || !!locationFilter || !!buyerFilter || !!itemFilter;
-   }, [searchQuery, locationFilter, buyerFilter, itemFilter]);
+      return (
+         !!searchQuery ||
+         !!dateRangeFilter ||
+         !!locationFilter ||
+         !!buyerFilter ||
+         !!itemFilter
+      );
+   }, [searchQuery, dateRangeFilter, locationFilter, buyerFilter, itemFilter]);
 
    return {
       searchQuery,
       setSearchQuery,
+      dateRangeFilter,
+      setDateRangeFilter,
       locationFilter,
       setLocationFilter,
       buyerFilter,

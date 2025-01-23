@@ -27,22 +27,21 @@ export const columns: ColumnDef<Order & { contract?: Contract }>[] = [
       header: 'Nomor Pengambilan'
    },
    {
-      // accessorKey: 'price',
       accessorKey: 'contract.contractNo',
       header: 'Nomor Kontrak'
    },
    {
-      // accessorKey: 'price',
+      id: 'price',
       header: 'Kuantitas',
       cell: ({ row }) => `${formatNumber(row.original.quantity)} Kg`
    },
    {
-      // accessorKey: 'remainingQty',
+      id: 'remainingQty',
       header: 'Sisa Kuantitas',
       cell: ({ row }) => `${formatNumber(row.original.remainingQty)} Kg`
    },
    {
-      // accessorKey: 'status',
+      id: 'status',
       header: 'Status',
       cell: ({ row }) => {
          const status = row.original.status;

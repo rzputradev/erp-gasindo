@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 import { updateContract } from '@/actions/contract/update';
 import { updateContracSchema } from '@/lib/schemas/contract';
-import { useCheckPermissions } from '@/hooks/use-user';
+import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
 
 import { TopUp } from './top-up';
 import { Button } from '@/components/ui/button';
@@ -52,12 +52,14 @@ export function UpdateForm({
    buyers,
    items
 }: UpdateFormProps) {
+   const user = useCurrentUser();
    const router = useRouter();
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
    const [isPending, setIspending] = useState<boolean>(false);
    const [isUpdateTolerance, setIsUpdateTolerance] = useState<boolean>(false);
    const topUpAccess = useCheckPermissions(
+      user,
       ['contract:create', 'contract:update'],
       'AND'
    );

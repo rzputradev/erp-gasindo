@@ -4,14 +4,15 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { createSupplierSchema } from '@/lib/schemas/supplier';
 
 export async function createSupplier(
    values: z.infer<typeof createSupplierSchema>
 ) {
    try {
-      const access = await checkPermissions(['supplier:create']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['supplier:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

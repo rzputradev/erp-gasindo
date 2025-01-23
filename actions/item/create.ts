@@ -4,12 +4,13 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { createItemSchema } from '@/lib/schemas/item';
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 export async function createItem(values: z.infer<typeof createItemSchema>) {
    try {
       // Check user permissions
-      const access = await checkPermissions(['item:create']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['item:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       // Validate input data

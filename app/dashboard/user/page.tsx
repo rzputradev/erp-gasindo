@@ -5,7 +5,7 @@ import { Plus } from 'lucide-react';
 import { Location, Role } from '@prisma/client';
 import { unauthorized } from 'next/navigation';
 
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { cn } from '@/lib/utils';
 import { db } from '@/lib/db';
 import { searchUserParamsCache, serialize } from '@/lib/params/user';
@@ -27,11 +27,12 @@ export const metadata = {
 };
 
 export default async function Page(props: pageProps) {
+   const user = await currentUser();
    const searchParams = await props.searchParams;
    searchUserParamsCache.parse(searchParams);
 
-   const readAccess = await checkPermissions(['user:read']);
-   const createAccess = await checkPermissions(['user:create']);
+   const readAccess = await checkPermissions(user, ['user:read']);
+   const createAccess = await checkPermissions(user, ['user:create']);
    if (!readAccess) return unauthorized();
 
    const key = serialize({ ...searchParams });

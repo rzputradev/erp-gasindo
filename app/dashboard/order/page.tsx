@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { searchSaleParamsCache, serialize } from '@/lib/params/sales';
 
 import { TableAction } from './_components/tables/table-action';
@@ -26,11 +26,12 @@ export const metadata = {
 };
 
 export default async function Page(props: pageProps) {
+   const user = await currentUser();
    const searchParams = await props.searchParams;
    searchSaleParamsCache.parse(searchParams);
 
-   const readAccess = await checkPermissions(['order:read']);
-   const createAccess = await checkPermissions(['order:create']);
+   const readAccess = await checkPermissions(user, ['order:read']);
+   const createAccess = await checkPermissions(user, ['order:create']);
    if (!readAccess) return unauthorized();
 
    const key = serialize({ ...searchParams });

@@ -10,7 +10,8 @@ export async function updateSupplier(
    values: z.infer<typeof updateSupplierSchema>
 ) {
    try {
-      const access = await checkPermissions(['supplier:update']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['supplier:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

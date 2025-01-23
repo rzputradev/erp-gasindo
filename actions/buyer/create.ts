@@ -5,12 +5,13 @@ import { revalidatePath } from 'next/cache';
 import { unauthorized } from 'next/navigation';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { createBuyerSchema } from '@/lib/schemas/buyer';
 
 export async function createBuyer(values: z.infer<typeof createBuyerSchema>) {
    try {
-      const access = await checkPermissions(['buyer:create']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['buyer:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

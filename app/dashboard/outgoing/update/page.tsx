@@ -3,11 +3,12 @@ import { SearchParams } from 'nuqs';
 import { Suspense } from 'react';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 import { UpdateForm } from '../_components/form/update';
 import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
+import { OutgoingScale } from '@prisma/client';
 
 export const metadata = {
    title: 'Dashboard : Perbaharui Pembeli'
@@ -18,16 +19,20 @@ type pageProps = {
 };
 
 export default async function Page(props: pageProps) {
+   const user = await currentUser();
    const { id } = await props.searchParams;
 
-   const access = await checkPermissions(['buyer:update']);
+   const access = await checkPermissions(user, ['buyer:update']);
    if (!access) return unauthorized();
 
    if (!id) {
       return notFound();
    }
 
-   const data = await db.buyer.findUnique({ where: { id: id as string } });
+   const data: any = await db.outgoingScale.findUnique({
+      where: { id: id as string },
+      include: { order: true }
+   });
 
    if (!data) {
       return notFound();

@@ -5,13 +5,14 @@ import { hash } from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { createUserSchema } from '@/lib/schemas/user';
 import { saveImage } from '@/lib/file-uploader';
 
 export async function createUser(values: z.infer<typeof createUserSchema>) {
    try {
-      const access = await checkPermissions(['user:create']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['user:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

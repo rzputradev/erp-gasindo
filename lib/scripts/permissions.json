@@ -30,9 +30,9 @@
       "description": "Mengizinkan pengguna untuk menambahkan data timbangan barang masuk baru ke dalam sistem."
    },
    {
-      "key": "incoming:create-manual",
-      "name": "Tambah Timbangan Masuk Manual",
-      "description": "Mengizinkan pengguna untuk menambahkan data timbangan barang masuk secara manual ke dalam sistem."
+      "key": "incoming:manual",
+      "name": "Input Manual Timbangan Masuk",
+      "description": "Mengizinkan pengguna untuk input data timbangan barang masuk secara manual ke dalam sistem."
    },
    {
       "key": "incoming:update",
@@ -50,9 +50,9 @@
       "description": "Mengizinkan pengguna untuk mengelola data timbangan barang masuk dari beberapa lokasi dalam sistem."
    },
    {
-      "key": "outgoing:download-full",
-      "name": "Unduh Data Lengkap Timbangan Masuk",
-      "description": "Mengizinkan pengguna untuk mengunduh data lengkap timbangan barang masuk dari sistem."
+      "key": "incoming:full-access",
+      "name": "Mengakses Data Lengkap Timbangan Masuk",
+      "description": "Mengizinkan pengguna untuk mengakses data lengkap timbangan barang masuk dari sistem."
    },
    {
       "key": "outgoing:read",
@@ -65,9 +65,9 @@
       "description": "Mengizinkan pengguna untuk menambahkan data timbangan barang keluar baru ke dalam sistem."
    },
    {
-      "key": "outgoing:create-manual",
-      "name": "Tambah Timbangan Keluar Manual",
-      "description": "Mengizinkan pengguna untuk menambahkan data timbangan barang keluar secara manual ke dalam sistem."
+      "key": "outgoing:manual",
+      "name": "Input Manual Timbangan Keluar",
+      "description": "Mengizinkan pengguna untuk menginput data berat timbangan barang keluar secara manual ke dalam sistem."
    },
    {
       "key": "outgoing:update",
@@ -85,9 +85,9 @@
       "description": "Mengizinkan pengguna untuk mengelola data timbangan barang keluar dari beberapa lokasi dalam sistem."
    },
    {
-      "key": "outgoing:download-full",
-      "name": "Unduh Data Lengkap Timbangan Keluar",
-      "description": "Mengizinkan pengguna untuk mengunduh data lengkap timbangan barang keluar dari sistem."
+      "key": "outgoing:full-access",
+      "name": "Mengakses Data Lengkap Timbangan Keluar",
+      "description": "Mengizinkan pengguna untuk mengakses data lengkap timbangan barang keluar dari sistem."
    },
    {
       "key": "permission:read",

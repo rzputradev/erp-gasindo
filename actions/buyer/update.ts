@@ -4,12 +4,13 @@ import { z } from 'zod';
 import { updateBuyerSchema } from '@/lib/schemas/buyer';
 import { revalidatePath } from 'next/cache';
 
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 
 export async function updateBuyer(values: z.infer<typeof updateBuyerSchema>) {
    try {
-      const access = await checkPermissions(['buyer:update']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['buyer:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

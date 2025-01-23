@@ -5,13 +5,14 @@ import { revalidatePath } from 'next/cache';
 
 import { db } from '@/lib/db';
 import { createCategorySchema } from '@/lib/schemas/category';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 export async function createItemCategory(
    values: z.infer<typeof createCategorySchema>
 ) {
    try {
-      const access = await checkPermissions(['category:create']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['category:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

@@ -15,7 +15,7 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useCheckPermissions } from '@/hooks/use-user';
+import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
 import { deleteContract } from '@/actions/contract/delete';
 import { deleteOrder } from '@/actions/order/delete';
 
@@ -24,12 +24,13 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+   const user = useCurrentUser();
    const [loading, setLoading] = useState(false);
    const [open, setOpen] = useState(false);
    const router = useRouter();
 
-   const updateAccess = useCheckPermissions(['order:update']);
-   const deleteAccess = useCheckPermissions(['order:delete']);
+   const updateAccess = useCheckPermissions(user, ['order:update']);
+   const deleteAccess = useCheckPermissions(user, ['order:delete']);
 
    const onConfirm = async () => {
       setLoading(true);

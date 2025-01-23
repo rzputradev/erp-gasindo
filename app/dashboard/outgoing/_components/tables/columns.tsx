@@ -1,11 +1,13 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Buyer } from '@prisma/client';
+import { OutgoingScale } from '@prisma/client';
 
 import { CellAction } from './cell-action';
+import { formatNumber } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
-export const columns: ColumnDef<Buyer>[] = [
+export const columns: ColumnDef<OutgoingScale>[] = [
    {
       id: 'rowNumber',
       header: 'No',
@@ -21,20 +23,51 @@ export const columns: ColumnDef<Buyer>[] = [
       enableHiding: false
    },
    {
-      accessorKey: 'name',
-      header: 'Nama'
+      accessorKey: 'ticketNo',
+      header: 'Nomor Tiket'
    },
    {
-      accessorKey: 'key',
-      header: 'Kode'
+      accessorKey: 'order.orderNo',
+      header: 'Nomor Surat Pengambilan'
    },
    {
-      accessorKey: 'phone',
-      header: 'No telepon'
+      id: 'weightIn',
+      header: 'Tara',
+      cell: ({ row }) => `${formatNumber(row.original.weightIn)} Kg`
    },
    {
-      accessorKey: 'address',
-      header: 'Alamat'
+      id: 'weightOut',
+      header: 'Bruto',
+      cell: ({ row }) => `${formatNumber(row.original.weightOut || 0)} Kg`
+   },
+   {
+      // id: 'finalWeight',
+      header: 'Neto',
+      cell: ({ row }) => {
+         if (row.original.exitTime) {
+            return (
+               <p>
+                  {formatNumber(
+                     (row.original.weightOut || 0) - row.original.weightIn
+                  )}{' '}
+                  Kg
+               </p>
+            );
+         } else {
+            return <p>0 Kg</p>;
+         }
+      }
+   },
+   {
+      id: 'status',
+      header: 'Status',
+      cell: ({ row }) => {
+         if (row.original.exitTime) {
+            return <Badge variant="outline">Selesai</Badge>;
+         } else {
+            return <Badge variant="default">Dimuat</Badge>;
+         }
+      }
    },
    {
       id: 'actions',

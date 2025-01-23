@@ -3,8 +3,8 @@ import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 
-import { searchSaleParamsCache, serialize } from '@/lib/params/sales';
-import { checkPermissions } from '@/data/user';
+import { searchOutgoingParamsCache, serialize } from '@/lib/params/outgoing';
+import { checkPermissions, currentUser } from '@/data/user';
 
 import { TableAction } from './_components/tables/table-action';
 import { ListingPage } from './_components/listing-page';
@@ -24,11 +24,13 @@ export const metadata = {
 };
 
 export default async function Page(props: pageProps) {
+   const user = await currentUser();
    const searchParams = await props.searchParams;
-   searchSaleParamsCache.parse(searchParams);
+   searchOutgoingParamsCache.parse(searchParams);
 
-   const readAccess = await checkPermissions(['outgoing:read']);
-   const createAccess = await checkPermissions(['outgoing:create']);
+   const readAccess = await checkPermissions(user, ['outgoing:read']);
+   const createAccess = await checkPermissions(user, ['outgoing:create']);
+
    if (!readAccess) return unauthorized();
 
    const key = serialize({ ...searchParams });
@@ -37,9 +39,12 @@ export default async function Page(props: pageProps) {
       <PageContainer scrollable>
          <div className="space-y-4">
             <div className="flex items-start justify-between">
-               <Heading title={`Pembeli`} description="Kelola data pembeli" />
+               <Heading
+                  title={`Barang Keluar`}
+                  description="Kelola data timbangan barang keluar"
+               />
                {createAccess && (
-                  <Link href={'/dashboard/buyer/create'}>
+                  <Link href={'/dashboard/outgoing/create'}>
                      <Button size={'sm'} className="flex items-center">
                         <Plus className="size 4" /> Tambah
                      </Button>

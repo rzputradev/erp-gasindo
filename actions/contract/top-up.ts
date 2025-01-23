@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { topUpContractSchema } from '@/lib/schemas/contract';
 import { SalesStatus } from '@prisma/client';
@@ -11,7 +11,9 @@ import { SalesStatus } from '@prisma/client';
 export async function topUp(values: z.infer<typeof topUpContractSchema>) {
    try {
       // Check user permissions
+      const user = await currentUser();
       const access = await checkPermissions(
+         user,
          ['contract:update', 'contract:create'],
          'AND'
       );

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { unauthorized } from 'next/navigation';
 
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { cn } from '@/lib/utils';
 import { searchLocationParamsCache, serialize } from '@/lib/params/location';
 
@@ -25,11 +25,12 @@ export const metadata = {
 };
 
 export default async function Page(props: pageProps) {
+   const user = await currentUser();
    const searchParams = await props.searchParams;
    searchLocationParamsCache.parse(searchParams);
 
-   const createAccess = await checkPermissions(['location:create']);
-   const readAccess = await checkPermissions(['location:read']);
+   const createAccess = await checkPermissions(user, ['location:create']);
+   const readAccess = await checkPermissions(user, ['location:read']);
    if (!readAccess) return unauthorized();
 
    const key = serialize({ ...searchParams });

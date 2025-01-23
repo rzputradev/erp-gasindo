@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { createContractSchema } from '@/lib/schemas/contract';
 import { monthToRoman } from '@/lib/utils';
 
@@ -30,7 +30,8 @@ export async function createContract(
    values: z.infer<typeof createContractSchema>
 ) {
    try {
-      const access = await checkPermissions(['contract:create']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['contract:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

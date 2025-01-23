@@ -2,7 +2,7 @@
 
 import { Buyer } from '@prisma/client';
 import { useForm } from 'react-hook-form';
-import { useCheckPermissions } from '@/hooks/use-user';
+import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
 import { MoreVertical, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 
@@ -32,7 +32,8 @@ interface ViewDetailProps {
 
 export function ViewDetail({ data }: ViewDetailProps) {
    const router = useRouter();
-   const createContractAccess = useCheckPermissions(['contract:create']);
+   const user = useCurrentUser();
+   const createContractAccess = useCheckPermissions(user, ['contract:create']);
 
    const form = useForm();
 

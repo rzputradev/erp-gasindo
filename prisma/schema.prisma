@@ -179,7 +179,7 @@ model Contract {
    itemId         String?
    locationId     String?
    status         SalesStatus @default(PENDING)
-   contractNo     String
+   contractNo     String      @unique
    price          Float
    vat            Float?
    quantity       Int
@@ -218,23 +218,22 @@ model Order {
 }
 
 model IncomingScale {
-   id           String       @id @default(cuid())
-   queueNo      String       @unique
-   vehicleType  VehicleType?
-   itemId       String?
-   price        Int
-   driver       String
-   plateNo      String
-   licenseNo    String
-   origin       String
-   entryTime    DateTime     @default(now())
-   weighingTime DateTime?
-   exitTime     DateTime?
-   weightIn     Int
-   weightOut    Int?
-   quality      Float?       @default(0)
-   waybillNo    String?
-   note         String?
+   id          String      @id @default(cuid())
+   ticketNo    String      @unique
+   vehicleType VehicleType
+   itemId      String?
+   price       Int
+   driver      String
+   plateNo     String
+   licenseNo   String
+   origin      String
+   entryTime   DateTime    @default(now())
+   exitTime    DateTime?
+   weightIn    Int
+   weightOut   Int?
+   quality     Float?      @default(0)
+   waybillNo   String?
+   note        String?
 
    item SupplierItem? @relation(fields: [itemId], references: [id], onDelete: SetNull)
 
@@ -242,33 +241,31 @@ model IncomingScale {
    updatedAt  DateTime @updatedAt
    locationId String?
 
-   @@index([queueNo, plateNo, exitTime, itemId])
+   @@index([ticketNo, plateNo, exitTime, itemId])
 }
 
 model OutgoingScale {
-   id           String       @id @default(cuid())
-   queueNo      String       @unique
-   transporter  Transporter?
-   orderId      String?
-   splitId      String?      @unique
-   driver       String
-   plateNo      String
-   licenseNo    String
-   entryTime    DateTime     @default(now())
-   weighingTime DateTime?
-   exitTime     DateTime?
-   weightIn     Int
-   weightOut    Int?
-   seal         String?
-   poNo         String?
-   sto          Float?
-   so           Float?
-   ffa          Float?
-   moist        Float?
-   broken       Float?
-   dirty        Float?
-   fiber        Float?
-   note         String?
+   id          String      @id @default(cuid())
+   ticketNo    String      @unique
+   orderId     String?
+   splitId     String?     @unique
+   transporter Transporter
+   driver      String
+   plateNo     String
+   licenseNo   String
+   entryTime   DateTime    @default(now())
+   exitTime    DateTime?
+   weightIn    Int
+   weightOut   Int?
+   seal        String?
+   sto         Float?
+   so          Float?
+   ffa         Float?
+   moist       Float?
+   broken      Float?
+   dirty       Float?
+   fiber       Float?
+   note        String?
 
    splitOrder OutgoingScale? @relation("SplitRelation")
    mainOrder  OutgoingScale? @relation("SplitRelation", fields: [splitId], references: [id], onDelete: SetNull)
@@ -278,7 +275,7 @@ model OutgoingScale {
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
 
-   @@index([queueNo, orderId, splitId])
+   @@index([ticketNo, orderId, splitId])
 }
 
 // User Model

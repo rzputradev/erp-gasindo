@@ -4,14 +4,15 @@ import { z } from 'zod';
 import { hash } from 'bcryptjs';
 import { revalidateTag } from 'next/cache';
 
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { updateUserSchema } from '@/lib/schemas/user';
 import { saveImage, deleteImage } from '@/lib/file-uploader';
 
 export async function updateUser(values: z.infer<typeof updateUserSchema>) {
    try {
-      const access = await checkPermissions(['user:update']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['user:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

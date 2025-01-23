@@ -3,7 +3,7 @@ import { SearchParams } from 'nuqs';
 import { Suspense } from 'react';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 import { UpdateForm } from '../_components/form/update';
 import PageContainer from '@/components/layout/page-container';
@@ -19,9 +19,10 @@ type pageProps = {
 };
 
 export default async function Page(props: pageProps) {
+   const user = await currentUser();
    const { id } = await props.searchParams;
 
-   const access = await checkPermissions(['buyer:read']);
+   const access = await checkPermissions(user, ['buyer:read']);
    if (!access) return unauthorized();
 
    if (!id) {

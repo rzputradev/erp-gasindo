@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { updateContracSchema } from '@/lib/schemas/contract';
 
@@ -12,7 +12,8 @@ export async function updateContract(
 ) {
    try {
       // Check permissions
-      const access = await checkPermissions(['contract:update']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['contract:update']);
       if (!access) {
          return { error: 'Anda tidak memiliki akses' };
       }
@@ -26,6 +27,7 @@ export async function updateContract(
 
       const {
          id,
+         contractNo,
          buyerId,
          itemId,
          locationId,
@@ -45,6 +47,14 @@ export async function updateContract(
       const existingContract = await db.contract.findUnique({ where: { id } });
       if (!existingContract) {
          return { error: 'Kontrak tidak ditemukan.' };
+      }
+
+      if (contractNo !== existingContract.contractNo) {
+         const existingContractNo = await db.contract.findUnique({
+            where: { contractNo }
+         });
+         if (existingContractNo)
+            return { error: 'Nomor kontrak sudah dipakai' };
       }
 
       let newToleranceWeigh = toleranceWeigh;

@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { unauthorized } from 'next/navigation';
 
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 import { CreateForm } from '../_components/form/create';
 import PageContainer from '@/components/layout/page-container';
@@ -12,7 +12,8 @@ export const metadata = {
 };
 
 export default async function Page() {
-   const access = await checkPermissions(['supplier:create']);
+   const user = await currentUser();
+   const access = await checkPermissions(user, ['supplier:create']);
    if (!access) return unauthorized();
 
    return (
