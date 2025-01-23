@@ -8,7 +8,7 @@ import { Buyer, Contract, SalesStatus, Item, Location } from '@prisma/client';
 import { Edit, MoreVertical, PlusCircle, Printer, Trash } from 'lucide-react';
 import Link from 'next/link';
 
-import { useCheckPermissions } from '@/hooks/use-user';
+import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
 import { deleteContract } from '@/actions/contract/delete';
 
 import { Button } from '@/components/ui/button';
@@ -52,8 +52,9 @@ export function ViewDetail({
    buyers,
    items
 }: UpdateFormProps) {
+   const user = useCurrentUser();
    const router = useRouter();
-   const createOrderAccess = useCheckPermissions(['buyer:create']);
+   const createOrderAccess = useCheckPermissions(user, ['buyer:create']);
 
    const form = useForm();
 
@@ -198,7 +199,7 @@ export function ViewDetail({
                      <FormLabel>PPN (%)</FormLabel>
                      <FormControl>
                         <Input
-                           defaultValue={data.vat || 0}
+                           defaultValue={data.vat || undefined}
                            type="number"
                            disabled
                         />
@@ -221,7 +222,7 @@ export function ViewDetail({
                      <FormLabel>Isi Ulang (Kg)</FormLabel>
                      <FormControl>
                         <Input
-                           defaultValue={data.topUpQty || 0}
+                           defaultValue={data.topUpQty || undefined}
                            type="number"
                            disabled
                         />
@@ -233,7 +234,7 @@ export function ViewDetail({
                      <FormLabel>Toleransi (%)</FormLabel>
                      <FormControl>
                         <Input
-                           defaultValue={data.tolerance || 0}
+                           defaultValue={data.tolerance || undefined}
                            type="number"
                            disabled
                         />
@@ -245,7 +246,7 @@ export function ViewDetail({
                      <FormControl>
                         <Input
                            type="number"
-                           defaultValue={data.toleranceWeigh || 0}
+                           defaultValue={data.toleranceWeigh || undefined}
                            disabled
                         />
                      </FormControl>
@@ -298,7 +299,7 @@ export function ViewDetail({
                      <FormLabel>Ketentuan</FormLabel>
                      <FormControl>
                         <Textarea
-                           defaultValue={data.terms || ''}
+                           defaultValue={data.terms || undefined}
                            className="resize-none"
                            disabled
                         />

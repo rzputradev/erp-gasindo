@@ -2,9 +2,17 @@
 
 import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
-import { Edit, MoreHorizontal, ReceiptText, Trash, View } from 'lucide-react';
+import {
+   Edit,
+   MoreHorizontal,
+   ReceiptText,
+   Ticket,
+   TicketCheck,
+   Trash,
+   View
+} from 'lucide-react';
 import { toast } from 'sonner';
-import { Buyer } from '@prisma/client';
+import { OutgoingScale } from '@prisma/client';
 
 import { deleteBuyer } from '@/actions/buyer/delete';
 
@@ -17,24 +25,27 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useCheckPermissions } from '@/hooks/use-user';
+import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
+import { deleteOutgoing } from '@/actions/outgoing/delete';
 
 interface CellActionProps {
-   data: Buyer;
+   data: OutgoingScale;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+   const user = useCurrentUser();
    const [loading, setLoading] = useState(false);
    const [open, setOpen] = useState(false);
    const router = useRouter();
 
-   const updateAccess = useCheckPermissions(['buyer:update']);
-   const deleteAccess = useCheckPermissions(['buyer:delete']);
+   const readAccess = useCheckPermissions(user, ['outgoing:read']);
+   const updateAccess = useCheckPermissions(user, ['outgoing:update']);
+   const deleteAccess = useCheckPermissions(user, ['outgoing:delete']);
 
    const onConfirm = async () => {
       setLoading(true);
       startTransition(() => {
-         deleteBuyer(data.id)
+         deleteOutgoing(data.id)
             .then((res) => {
                if (res?.error) {
                   toast.error(res.error);
@@ -73,7 +84,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                <DropdownMenuItem
                   className="flex cursor-pointer items-center gap-2"
                   onClick={() =>
-                     router.push(`/dashboard/buyer/read?id=${data.id}`)
+                     router.push(`/dashboard/outgoing/read?id=${data.id}`)
                   }
                   disabled={loading}
                >
@@ -84,7 +95,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                   <DropdownMenuItem
                      className="flex cursor-pointer items-center gap-2"
                      onClick={() =>
-                        router.push(`/dashboard/buyer/update?id=${data.id}`)
+                        router.push(`/dashboard/outgoing/update?id=${data.id}`)
                      }
                      disabled={loading}
                   >

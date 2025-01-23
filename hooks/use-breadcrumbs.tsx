@@ -226,6 +226,32 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Rincian', link: '/dashboard/order/read' }
    ],
 
+   // Order
+   '/dashboard/outgoing': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Barang Keluar', link: '/dashboard/outgoing' }
+   ],
+   '/dashboard/outgoing/create': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Barang Keluar', link: '/dashboard/outgoing' },
+      { title: 'Timbang Masuk', link: '/dashboard/outgoing/create' }
+   ],
+   '/dashboard/outgoing/update': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Barang Keluar', link: '/dashboard/outgoing' },
+      { title: 'Perbaharui', link: '/dashboard/outgoing/update' }
+   ],
+   '/dashboard/outgoing/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Barang Keluar', link: '/dashboard/outgoing' },
+      { title: 'Rincian', link: '/dashboard/outgoing/read' }
+   ],
+   '/dashboard/outgoing/exit': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Barang Keluar', link: '/dashboard/outgoing' },
+      { title: 'Timbang Keluar', link: '/dashboard/outgoing/exit' }
+   ],
+
    // Setting
    '/dashboard/personal': [
       { title: 'Beranda', link: '/dashboard' },

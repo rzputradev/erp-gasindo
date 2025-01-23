@@ -5,7 +5,7 @@ import { MoreVertical, PlusCircle, Printer } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
-import { useCheckPermissions } from '@/hooks/use-user';
+import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -39,8 +39,9 @@ interface ViewDetailProps {
 }
 
 export function ViewDetail({ data }: ViewDetailProps) {
+   const user = useCurrentUser();
    const router = useRouter();
-   const createOutgoingScaleAccess = useCheckPermissions([
+   const createOutgoingScaleAccess = useCheckPermissions(user, [
       'outgoing-scale:create'
    ]);
 
@@ -62,7 +63,7 @@ export function ViewDetail({ data }: ViewDetailProps) {
                   <DropdownMenuTrigger asChild>
                      <Button variant="ghost" className="h-8 w-8 p-0">
                         <span className="sr-only">Buka menu</span>
-                        <MoreVertical className="h-4 w-4" />
+                        <MoreVertical className="size-4" />
                      </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -128,7 +129,7 @@ export function ViewDetail({ data }: ViewDetailProps) {
                      <FormLabel>Isi Ulang (Kg)</FormLabel>
                      <FormControl>
                         <Input
-                           defaultValue={data.topUpQty || 0}
+                           defaultValue={data.topUpQty || undefined}
                            type="number"
                            disabled
                         />

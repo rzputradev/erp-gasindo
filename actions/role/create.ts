@@ -5,11 +5,12 @@ import { revalidatePath } from 'next/cache';
 import { createRoleSchema } from '@/lib/schemas/role';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 export async function createRole(values: z.infer<typeof createRoleSchema>) {
    try {
-      const access = await checkPermissions(['role:create']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['role:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

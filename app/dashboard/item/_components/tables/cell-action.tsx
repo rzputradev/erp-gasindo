@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Item } from '@prisma/client';
 
 import { deleteItem } from '@/actions/item/delete';
-import { useCheckPermissions } from '@/hooks/use-user';
+import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
 
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
@@ -24,12 +24,13 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+   const user = useCurrentUser();
    const [loading, setLoading] = useState(false);
    const [open, setOpen] = useState(false);
    const router = useRouter();
 
-   const updateAccess = useCheckPermissions(['item:update']);
-   const deleteAccess = useCheckPermissions(['item:delete']);
+   const updateAccess = useCheckPermissions(user, ['item:update']);
+   const deleteAccess = useCheckPermissions(user, ['item:delete']);
 
    const onConfirm = async () => {
       setLoading(true);

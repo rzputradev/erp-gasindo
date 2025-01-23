@@ -7,48 +7,66 @@ import { toast } from 'sonner';
 import { useState, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { createBuyerSchema } from '@/lib/schemas/buyer';
-import { createBuyer } from '@/actions/buyer/create';
+import { formatNumber } from '@/lib/utils';
+import { createOutgoing } from '@/actions/outgoing/create';
+import { Order, Transporter } from '@prisma/client';
 
+import { ManualWeight } from '../../../../../components/manual-weight';
+import { AutoWeight } from '../../../../../components/auto-weight';
 import { Button } from '@/components/ui/button';
 import {
    Form,
    FormControl,
+   FormDescription,
    FormField,
    FormItem,
    FormLabel,
    FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { Save } from 'lucide-react';
+import { createOutgoingSchema } from '@/lib/schemas/outgoing';
+import {
+   Select,
+   SelectContent,
+   SelectItem,
+   SelectTrigger,
+   SelectValue
+} from '@/components/ui/select';
 
-export function CreateForm() {
+interface CreateFormProps {
+   orders: Order[];
+   manualInput: boolean;
+}
+
+export function CreateForm({ orders, manualInput }: CreateFormProps) {
    const router = useRouter();
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
    const [isPending, setIspending] = useState<boolean>(false);
 
-   const form = useForm<z.infer<typeof createBuyerSchema>>({
-      resolver: zodResolver(createBuyerSchema),
+   const form = useForm<z.infer<typeof createOutgoingSchema>>({
+      resolver: zodResolver(createOutgoingSchema),
       defaultValues: {
-         name: '',
-         key: '',
-         tin: '',
-         phone: '',
-         address: ''
+         weightIn: 0,
+         orderId: '',
+         driver: '',
+         licenseNo: '',
+         plateNo: '',
+         transporter: Transporter.BUYER
       }
    });
 
-   function onSubmit(values: z.infer<typeof createBuyerSchema>) {
+   function onSubmit(values: z.infer<typeof createOutgoingSchema>) {
       setIspending(true);
       setError(undefined);
       setSuccess(undefined);
+      // console.log({ values })
       startTransition(() => {
-         createBuyer(values)
+         createOutgoing(values)
             .then((res) => {
                setIspending(false);
                form.reset();
@@ -59,7 +77,7 @@ export function CreateForm() {
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
-                  router.push('/dashboard/buyer');
+                  router.push('/dashboard/outgoing');
                }
             })
             .catch((e) => {
@@ -72,10 +90,10 @@ export function CreateForm() {
    }
 
    return (
-      <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
+      <Card className="mx-auto w-full">
          <CardHeader>
             <CardTitle className="text-left text-2xl font-bold">
-               Tambah Pembeli
+               Barang Keluar - Timbang Masuk
             </CardTitle>
          </CardHeader>
          <CardContent>
@@ -85,34 +103,75 @@ export function CreateForm() {
                   className="space-y-8"
                >
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                     {manualInput ? (
+                        <ManualWeight
+                           form={form}
+                           isPending={isPending}
+                           weightField="weightIn"
+                        />
+                     ) : (
+                        <AutoWeight form={form} weightField="weightIn" />
+                     )}
+
                      <FormField
                         control={form.control}
-                        name="name"
+                        name="orderId"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Nama</FormLabel>
+                              <FormLabel>Nomor Pengambilan</FormLabel>
                               <FormControl>
-                                 <Input
-                                    placeholder="Masukkan nama"
-                                    type="text"
+                                 <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
                                     disabled={isPending}
-                                    {...field}
-                                 />
+                                 >
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Pilih pengambilan" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                       {orders.length > 0 ? (
+                                          orders.map((order) => (
+                                             <SelectItem
+                                                key={order.id}
+                                                value={order.id}
+                                                className="flex flex-col items-start justify-start gap-2"
+                                             >
+                                                <span>{order.orderNo}</span>
+                                                <p>
+                                                   {formatNumber(
+                                                      order.remainingQty
+                                                   )}{' '}
+                                                   Kg
+                                                </p>
+                                             </SelectItem>
+                                          ))
+                                       ) : (
+                                          <div className="px-4 py-2 text-sm text-muted-foreground">
+                                             Tidak ada kontrak yang tersedia
+                                          </div>
+                                       )}
+                                    </SelectContent>
+                                 </Select>
                               </FormControl>
                               <FormMessage />
+                              <FormDescription className="line-clamp-2">
+                                 Pastikan kuantitas yang tersisa pada
+                                 pengambilan mencukupi
+                              </FormDescription>
                            </FormItem>
                         )}
                      />
+
                      <FormField
                         control={form.control}
-                        name="key"
+                        name="driver"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Kode</FormLabel>
+                              <FormLabel>Pengemudi</FormLabel>
                               <FormControl>
                                  <Input
                                     type="text"
-                                    placeholder="Masukkan kode"
+                                    placeholder="Masukkan pengemudi"
                                     disabled={isPending}
                                     {...field}
                                  />
@@ -124,14 +183,14 @@ export function CreateForm() {
 
                      <FormField
                         control={form.control}
-                        name="tin"
+                        name="licenseNo"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Surat Wajib Pajak</FormLabel>
+                              <FormLabel>Nomor Identitas</FormLabel>
                               <FormControl>
                                  <Input
                                     type="text"
-                                    placeholder="Masukkan nomor surat"
+                                    placeholder="Masukkan nomor identitas"
                                     disabled={isPending}
                                     {...field}
                                  />
@@ -140,44 +199,56 @@ export function CreateForm() {
                            </FormItem>
                         )}
                      />
+
                      <FormField
                         control={form.control}
-                        name="phone"
+                        name="plateNo"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>No Handphone</FormLabel>
+                              <FormLabel>Nomor Kendaraan</FormLabel>
                               <FormControl>
                                  <Input
                                     type="text"
-                                    placeholder="Masukkan nomor handphone"
+                                    placeholder="Masukkan nomor kendaraan"
                                     disabled={isPending}
                                     {...field}
                                  />
                               </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+
+                     <FormField
+                        control={form.control}
+                        name="transporter"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Penyedia Angkutan</FormLabel>
+                              <Select
+                                 onValueChange={field.onChange}
+                                 defaultValue={field.value}
+                                 disabled={isPending}
+                              >
+                                 <FormControl>
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Pilih Penyedia Angkutan" />
+                                    </SelectTrigger>
+                                 </FormControl>
+                                 <SelectContent>
+                                    <SelectItem value={Transporter.BUYER}>
+                                       Disediakan Pembeli
+                                    </SelectItem>
+                                    <SelectItem value={Transporter.SELLER}>
+                                       Disediakan Penjual
+                                    </SelectItem>
+                                 </SelectContent>
+                              </Select>
                               <FormMessage />
                            </FormItem>
                         )}
                      />
                   </div>
-
-                  <FormField
-                     control={form.control}
-                     name="address"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Alamat</FormLabel>
-                           <FormControl>
-                              <Textarea
-                                 placeholder="Masukkan alamat"
-                                 className="resize-none"
-                                 disabled={isPending}
-                                 {...field}
-                              />
-                           </FormControl>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
 
                   <FormSuccess message={success} />
                   <FormError message={error} />

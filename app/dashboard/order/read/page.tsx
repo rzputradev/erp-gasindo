@@ -2,7 +2,7 @@ import { notFound, unauthorized } from 'next/navigation';
 import { SearchParams } from 'nuqs';
 import { Suspense } from 'react';
 
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 
 import FormCardSkeleton from '@/components/form-card-skeleton';
@@ -18,9 +18,10 @@ type pageProps = {
 };
 
 export default async function Page(props: pageProps) {
+   const user = await currentUser();
    const { id } = await props.searchParams;
 
-   const access = await checkPermissions(['contract:read']);
+   const access = await checkPermissions(user, ['contract:read']);
    if (!access) return unauthorized();
 
    if (!id) {

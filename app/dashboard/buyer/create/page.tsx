@@ -4,14 +4,15 @@ import { unauthorized } from 'next/navigation';
 import { CreateForm } from '../_components/form/create';
 import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 export const metadata = {
    title: 'Dashboard : Tambah Pembeli'
 };
 
 export default async function Page() {
-   const access = await checkPermissions(['buyer:create']);
+   const user = await currentUser();
+   const access = await checkPermissions(user, ['buyer:create']);
    if (!access) return unauthorized();
 
    return (

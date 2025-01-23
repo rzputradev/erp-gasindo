@@ -1,6 +1,6 @@
-import { db } from '@/lib/db';
 import { auth } from '@/auth';
-import { notFound } from 'next/navigation';
+import { db } from '@/lib/db';
+import { User } from 'next-auth';
 
 export async function getUserByEmail(email: string) {
    try {
@@ -53,14 +53,11 @@ export async function currentUser() {
 }
 
 export async function checkPermissions(
+   user: User | undefined,
    requiredPermissions: string[],
    checkMode: 'AND' | 'OR' = 'OR'
 ): Promise<boolean> {
-   const user = await currentUser();
-
-   if (!user) {
-      return false;
-   }
+   if (!user) return false;
 
    const userPermissions = user.permissions || [];
 

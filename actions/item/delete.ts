@@ -2,12 +2,13 @@
 
 import { revalidatePath } from 'next/cache';
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 export async function deleteItem(id: string) {
    try {
       // Check permissions
-      const access = await checkPermissions(['item:delete']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['item:delete']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       // Validate the input

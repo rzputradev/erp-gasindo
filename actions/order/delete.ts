@@ -3,11 +3,12 @@
 import { revalidatePath } from 'next/cache';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 export async function deleteOrder(id: string) {
    try {
-      const access = await checkPermissions(['order:delete']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['order:delete']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       if (!id) return { error: 'Id diperlukan' };

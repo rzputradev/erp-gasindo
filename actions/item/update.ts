@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { updateItemSchema } from '@/lib/schemas/item';
@@ -9,7 +9,8 @@ import { updateItemSchema } from '@/lib/schemas/item';
 export async function updateItem(values: z.infer<typeof updateItemSchema>) {
    try {
       // Check permissions
-      const access = await checkPermissions(['item:update']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['item:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       // Validate incoming data

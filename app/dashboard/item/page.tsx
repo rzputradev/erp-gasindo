@@ -8,7 +8,7 @@ import { unauthorized } from 'next/navigation';
 import { db } from '@/lib/db';
 import { cn } from '@/lib/utils';
 import { searchItemParamsCache, serialize } from '@/lib/params/item';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 import { ListingPage } from './_components/listing-page';
 import { TableAction } from './_components/tables/table-action';
@@ -27,11 +27,12 @@ export const metadata = {
 };
 
 export default async function Page(props: pageProps) {
+   const user = await currentUser();
    const searchParams = await props.searchParams;
    searchItemParamsCache.parse(searchParams);
 
-   const readAccess = await checkPermissions(['item:read']);
-   const createAccess = await checkPermissions(['item:create']);
+   const readAccess = await checkPermissions(user, ['item:read']);
+   const createAccess = await checkPermissions(user, ['item:create']);
    if (!readAccess) return unauthorized();
 
    const key = serialize({ ...searchParams });

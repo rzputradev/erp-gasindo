@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { updateContracSchema } from '@/lib/schemas/contract';
 import { updateOrderSchema } from '@/lib/schemas/order';
@@ -12,7 +12,8 @@ import { SalesStatus } from '@prisma/client';
 export async function updateOrder(values: z.infer<typeof updateOrderSchema>) {
    try {
       // Check permissions
-      const access = await checkPermissions(['order:update']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['order:update']);
       if (!access) {
          return { error: 'Anda tidak memiliki akses' };
       }
@@ -35,10 +36,13 @@ export async function updateOrder(values: z.infer<typeof updateOrderSchema>) {
          return { error: 'Pengambilan tidak ditemukan.' };
       }
 
-      if (existingOrder.status !== SalesStatus.ACTIVE)
-         return {
-            error: 'Hanya pengambilan yang aktif yang bisa melakukan isi ulang'
-         };
+      if (orderNo !== existingOrder.orderNo) {
+         const existingOrderNo = await db.order.findUnique({
+            where: { orderNo }
+         });
+         if (existingOrderNo)
+            return { error: 'Nomor pengambilan sudah dipakai' };
+      }
 
       if (existingOrder.contract?.status !== SalesStatus.ACTIVE)
          return {

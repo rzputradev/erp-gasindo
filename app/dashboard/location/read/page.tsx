@@ -4,10 +4,9 @@ import { Suspense } from 'react';
 
 import { db } from '@/lib/db';
 
-import { UpdateForm } from '../_components/form/update';
-import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
-import { checkPermissions } from '@/data/user';
+import PageContainer from '@/components/layout/page-container';
+import { checkPermissions, currentUser } from '@/data/user';
 import { ViewDetail } from '../_components/view-detail';
 
 export const metadata = {
@@ -19,9 +18,10 @@ type pageProps = {
 };
 
 export default async function Page(props: pageProps) {
+   const user = await currentUser();
    const { id } = await props.searchParams;
 
-   const access = await checkPermissions(['location:read']);
+   const access = await checkPermissions(user, ['location:read']);
    if (!access) return unauthorized();
 
    if (!id) {

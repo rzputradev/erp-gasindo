@@ -1,6 +1,7 @@
-import * as z from 'zod';
 import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
+import { topUp } from '@/actions/order/top-up';
 import { Button } from '@/components/ui/button';
 import {
    Dialog,
@@ -12,10 +13,6 @@ import {
    DialogTitle,
    DialogTrigger
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { topUpContractSchema } from '@/lib/schemas/contract';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
    Form,
    FormControl,
@@ -25,13 +22,14 @@ import {
    FormLabel,
    FormMessage
 } from '@/components/ui/form';
-import { useRouter } from 'next/navigation';
-import { startTransition, useState } from 'react';
-import { CircleFadingArrowUp, Save } from 'lucide-react';
-import { topUp } from '@/actions/contract/top-up';
-import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
 import { topUpOrderSchema } from '@/lib/schemas/order';
 import { formatNumber } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CircleFadingArrowUp, Save } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { startTransition, useState } from 'react';
+import { toast } from 'sonner';
 
 interface TopUpProps {
    id: string;
@@ -68,7 +66,7 @@ export function TopUp({ id, remainingContractQty }: TopUpProps) {
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
-                  router.push(`/dashboard/contract/read?id=${id}`);
+                  router.push(`/dashboard/order/read?id=${id}`);
                }
             })
             .catch((e) => {

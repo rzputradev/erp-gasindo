@@ -4,14 +4,15 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { updatePermissionSchema } from '@/lib/schemas/permission';
 
 export async function updatePermission(
    values: z.infer<typeof updatePermissionSchema>
 ) {
    try {
-      const access = await checkPermissions(['permission:update']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['permission:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

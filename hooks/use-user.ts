@@ -1,6 +1,5 @@
-import { currentUser } from '@/data/user';
+import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
-import { notFound, unauthorized } from 'next/navigation';
 
 export function useCurrentUser() {
    const session = useSession();
@@ -9,14 +8,11 @@ export function useCurrentUser() {
 }
 
 export function useCheckPermissions(
+   user: User | undefined,
    requiredPermissions: string[],
    checkMode: 'AND' | 'OR' = 'OR'
 ): boolean {
-   const user = useCurrentUser();
-
-   if (!user) {
-      return false;
-   }
+   if (!user) return false;
 
    const userPermissions = user.permissions || [];
 

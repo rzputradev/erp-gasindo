@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { updateCategorySchema } from '@/lib/schemas/category';
@@ -10,7 +10,8 @@ export async function updateItemCategory(
    values: z.infer<typeof updateCategorySchema>
 ) {
    try {
-      const access = await checkPermissions(['category:update']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['category:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

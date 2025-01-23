@@ -5,11 +5,12 @@ import { revalidateTag } from 'next/cache';
 
 import { db } from '@/lib/db';
 import { updateRoleSchema } from '@/lib/schemas/role';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 export async function updateRole(values: z.infer<typeof updateRoleSchema>) {
    try {
-      const access = await checkPermissions(['role:update']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['role:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

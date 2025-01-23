@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { unauthorized } from 'next/navigation';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 import { CreateForm } from '../_components/form/create';
 import PageContainer from '@/components/layout/page-container';
@@ -14,11 +14,12 @@ export const metadata = {
 };
 
 export default async function Page() {
+   const user = await currentUser();
    const permissions: Permission[] = await db.permission.findMany({
       orderBy: { key: 'asc' }
    });
 
-   const access = await checkPermissions(['role:create']);
+   const access = await checkPermissions(user, ['role:create']);
    if (!access) return unauthorized();
 
    return (

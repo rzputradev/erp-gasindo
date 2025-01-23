@@ -1,42 +1,30 @@
 'use client';
 
-import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Contract, Order, SalesStatus } from '@prisma/client';
+import { Save } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { startTransition, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { useState, startTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import {
-   Buyer,
-   Contract,
-   Item,
-   Location,
-   Order,
-   SalesStatus
-} from '@prisma/client';
-import { CircleFadingArrowUp, Save, Undo2 } from 'lucide-react';
-import Link from 'next/link';
+import * as z from 'zod';
 
-import { updateContract } from '@/actions/contract/update';
-import { updateContracSchema } from '@/lib/schemas/contract';
-import { useCheckPermissions } from '@/hooks/use-user';
+import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
 
-import { TopUp } from './top-up';
+import { updateOrder } from '@/actions/order/update';
+import { FormError } from '@/components/form-error';
+import { FormSuccess } from '@/components/form-success';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
    Form,
    FormControl,
-   FormDescription,
    FormField,
    FormItem,
    FormLabel,
    FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { FormError } from '@/components/form-error';
-import { FormSuccess } from '@/components/form-success';
 import {
    Select,
    SelectContent,
@@ -44,10 +32,8 @@ import {
    SelectTrigger,
    SelectValue
 } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 import { updateOrderSchema } from '@/lib/schemas/order';
-import { formatNumber } from '@/lib/utils';
-import { updateOrder } from '@/actions/order/update';
+import { TopUp } from './top-up';
 
 interface UpdateFormProps {
    data: Order & {
@@ -56,11 +42,13 @@ interface UpdateFormProps {
 }
 
 export function UpdateForm({ data }: UpdateFormProps) {
+   const user = useCurrentUser();
    const router = useRouter();
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
    const [isPending, setIspending] = useState<boolean>(false);
    const topUpAccess = useCheckPermissions(
+      user,
       ['order:create', 'order:update'],
       'AND'
    );

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { unauthorized } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { searchBaseParamsCache, serialize } from '@/lib/params/base';
 
 import { ListingPage } from './_components/listing-page';
@@ -25,11 +25,12 @@ export const metadata = {
 };
 
 export default async function Page(props: pageProps) {
+   const user = await currentUser();
    const searchParams = await props.searchParams;
    searchBaseParamsCache.parse(searchParams);
 
-   const createAccess = await checkPermissions(['permission:create']);
-   const readAccess = await checkPermissions(['permission:read']);
+   const createAccess = await checkPermissions(user, ['permission:create']);
+   const readAccess = await checkPermissions(user, ['permission:read']);
    if (!readAccess) return unauthorized();
 
    const key = serialize({ ...searchParams });

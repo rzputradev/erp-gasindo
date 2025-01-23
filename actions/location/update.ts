@@ -5,13 +5,14 @@ import { revalidateTag } from 'next/cache';
 import { updateLocationSchema } from '@/lib/schemas/location';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 export async function updateLocation(
    values: z.infer<typeof updateLocationSchema>
 ) {
    try {
-      const access = await checkPermissions(['location:update']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['location:update']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

@@ -3,7 +3,7 @@ import { ItemCategory } from '@prisma/client';
 import { unauthorized } from 'next/navigation';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 
 import { CreateForm } from '../_components/form/create';
 import PageContainer from '@/components/layout/page-container';
@@ -14,9 +14,10 @@ export const metadata = {
 };
 
 export default async function Page() {
+   const user = await currentUser();
    const itemTypes: ItemCategory[] = await db.itemCategory.findMany();
 
-   const access = await checkPermissions(['item:create']);
+   const access = await checkPermissions(user, ['item:create']);
    if (!access) return unauthorized();
 
    return (

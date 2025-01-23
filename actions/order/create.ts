@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 
 import { db } from '@/lib/db';
-import { checkPermissions } from '@/data/user';
+import { checkPermissions, currentUser } from '@/data/user';
 import { createContractSchema } from '@/lib/schemas/contract';
 import { monthToRoman } from '@/lib/utils';
 import { createOrderSchema } from '@/lib/schemas/order';
@@ -28,7 +28,8 @@ function generateOrderNo(
 
 export async function createOrder(values: z.infer<typeof createOrderSchema>) {
    try {
-      const access = await checkPermissions(['order:create']);
+      const user = await currentUser();
+      const access = await checkPermissions(user, ['order:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =
@@ -67,8 +68,6 @@ export async function createOrder(values: z.infer<typeof createOrderSchema>) {
       });
 
       const newOrderNumber = orderCount + 1;
-
-      console.log(orderCount);
 
       const orderNo = generateOrderNo(
          newOrderNumber,
