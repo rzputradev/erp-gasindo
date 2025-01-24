@@ -11,7 +11,7 @@
       "key": "TBSR",
       "unit": "KG",
       "categories": ["weighing", "fruit"],
-      "description": "Sisa tandan buah segar (TBS1) yang telah disortir dan dijual ulang, siap untuk diproses lebih lanjut."
+      "description": "Sisa tandan buah segar (TBS) yang telah disortir namun masih memiliki potensi untuk tetap di olah."
    },
    {
       "name": "Berondolan",

@@ -56,7 +56,7 @@ export function CreateForm() {
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
-                  router.push('/dashboard/item-category');
+                  router.push('/dashboard/category');
                }
             })
             .catch((e) => {

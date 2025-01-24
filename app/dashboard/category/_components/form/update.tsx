@@ -24,12 +24,14 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormSuccess } from '@/components/form-success';
 import { FormError } from '@/components/form-error';
 import { updateCategorySchema } from '@/lib/schemas/category';
+import { useRouter } from 'next/navigation';
 
 interface UpdateFormProps {
    data: ItemCategory;
 }
 
 export function UpdateForm({ data }: UpdateFormProps) {
+   const router = useRouter();
    const [isPending, setIspending] = useState<boolean>(false);
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
@@ -60,6 +62,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
+                  router.push(`/dashboard/category/read?id=${data.id}`);
                }
             })
             .catch((e) => {

@@ -25,6 +25,7 @@ import {
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
+import { formatDate } from '@/lib/utils';
 
 interface ViewDetailProps {
    data: Buyer;
@@ -116,9 +117,7 @@ export function ViewDetail({ data }: ViewDetailProps) {
                   <FormItem>
                      <FormLabel>Dibuat Pada</FormLabel>
                      <FormDescription>
-                        {data.createdAt
-                           ? new Date(data.createdAt).toLocaleString()
-                           : 'N/A'}
+                        {formatDate(data.createdAt)}
                      </FormDescription>
                   </FormItem>
                </div>

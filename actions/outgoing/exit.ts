@@ -20,7 +20,7 @@ function generateTicketNo(
 export async function exitOutgoing(values: z.infer<typeof exitOutgoingSchema>) {
    try {
       const user = await currentUser();
-      const access = await checkPermissions(user, ['outgoing:update']);
+      const access = await checkPermissions(user, ['outgoing:create']);
       if (!access) return { error: 'Anda tidak memiliki akses' };
 
       const { success, data: parsedValues } =

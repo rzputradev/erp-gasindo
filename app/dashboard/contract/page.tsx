@@ -43,7 +43,7 @@ export default async function Page(props: pageProps) {
    const items: Item[] = await db.item.findMany({
       where: {
          categories: {
-            every: { key: { in: ['commodity', 'weighing'] } }
+            every: { key: { in: ['commodity', 'outgoing-scale'] } }
          }
       }
    });

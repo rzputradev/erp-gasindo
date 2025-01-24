@@ -31,6 +31,7 @@ import {
    SelectTrigger,
    SelectValue
 } from '@/components/ui/select';
+import { formatDate } from '@/lib/utils';
 
 interface ViewDetailProps {
    data: Order & {
@@ -164,9 +165,7 @@ export function ViewDetail({ data }: ViewDetailProps) {
                   <FormItem className="md:col-span-2">
                      <FormLabel>Dibuat Pada</FormLabel>
                      <FormDescription>
-                        {data.createdAt
-                           ? new Date(data.createdAt).toLocaleString()
-                           : 'N/A'}
+                        {formatDate(data.createdAt)}
                      </FormDescription>
                   </FormItem>
                </div>

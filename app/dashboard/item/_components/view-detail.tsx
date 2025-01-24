@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Check, X } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
 
 interface ViewDetailProps {
    data: Item & { categories?: ItemCategory[] };
@@ -110,9 +111,7 @@ export function ViewDetail({ data }: ViewDetailProps) {
                   <FormItem>
                      <FormLabel>Dibuat Pada</FormLabel>
                      <FormDescription>
-                        {data.createdAt
-                           ? new Date(data.createdAt).toLocaleString()
-                           : 'N/A'}
+                        {formatDate(data.createdAt)}
                      </FormDescription>
                   </FormItem>
                </div>

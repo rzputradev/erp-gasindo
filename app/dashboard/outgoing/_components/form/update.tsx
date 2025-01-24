@@ -11,7 +11,7 @@ import * as z from 'zod';
 
 import { updateOutgoing } from '@/actions/outgoing/update';
 import { updateOutgoingSchema } from '@/lib/schemas/outgoing';
-import { cn } from '@/lib/utils';
+import { cn, formatDate } from '@/lib/utils';
 
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
@@ -227,7 +227,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
                                           )}
                                        >
                                           {field.value ? (
-                                             field.value.toLocaleString()
+                                             formatDate(field.value)
                                           ) : (
                                              <span>Pilih waktu</span>
                                           )}
@@ -274,7 +274,7 @@ export function UpdateForm({ data }: UpdateFormProps) {
                                           )}
                                        >
                                           {field.value ? (
-                                             field.value.toLocaleString()
+                                             formatDate(field.value)
                                           ) : (
                                              <span>Pilih waktu</span>
                                           )}

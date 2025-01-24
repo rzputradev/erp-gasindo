@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { Active, DataRef, Over } from '@dnd-kit/core';
 import { ColumnDragData } from '@/app/dashboard/kanban/_components/board-column';
 import { TaskDragData } from '@/app/dashboard/kanban/_components/task-card';
+import { format } from 'date-fns';
 
 type DraggableData = ColumnDragData | TaskDragData;
 
@@ -65,4 +66,8 @@ export const monthToRoman: { [key: number]: string } = {
 
 export function formatNumber(number: number) {
    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+export function formatDate(date: Date) {
+   return date ? format(new Date(date), 'M/d/yyyy, h:mm a') : 'N/A';
 }

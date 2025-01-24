@@ -35,6 +35,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FormSuccess } from '@/components/form-success';
 import { FormError } from '@/components/form-error';
+import { useRouter } from 'next/navigation';
 
 interface UpdateFormProps {
    data: User;
@@ -43,6 +44,7 @@ interface UpdateFormProps {
 }
 
 export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
+   const router = useRouter();
    const user = useCurrentUser();
    const [isPending, setIspending] = useState(false);
    const [error, setError] = useState<string | undefined>(undefined);
@@ -83,6 +85,8 @@ export function UpdateForm({ data, locations, roles }: UpdateFormProps) {
                   toast.success(res.success);
                   if (values.id === user?.id) {
                      signOut();
+                  } else {
+                     router.push(`/dashboard/user/read?id=${data.id}`);
                   }
                }
             })

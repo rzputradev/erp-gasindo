@@ -72,7 +72,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
                <DropdownMenuItem
-                  className="flex items-center space-x-2"
+                  className="flex cursor-pointer items-center gap-2"
                   onClick={() =>
                      router.push(`/dashboard/role/read?id=${data.id}`)
                   }
@@ -82,7 +82,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {updateAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() =>
                         router.push(`/dashboard/role/update?id=${data.id}`)
                      }
@@ -93,7 +93,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {deleteAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() => setOpen(true)}
                   >
                      <Trash className="size-4" /> <span>Delete</span>

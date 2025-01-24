@@ -14,6 +14,8 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 import { unauthorized } from 'next/navigation';
+import { db } from '@/lib/db';
+import { Buyer, Item, Location } from '@prisma/client';
 
 type pageProps = {
    searchParams: Promise<SearchParams>;
@@ -35,6 +37,18 @@ export default async function Page(props: pageProps) {
 
    const key = serialize({ ...searchParams });
 
+   const locations: Location[] = await db.location.findMany({
+      where: { type: 'MILL' }
+   });
+   const buyers: Buyer[] = await db.buyer.findMany();
+   const items: Item[] = await db.item.findMany({
+      where: {
+         categories: {
+            every: { key: { in: ['commodity', 'outgoing-scale'] } }
+         }
+      }
+   });
+
    return (
       <PageContainer scrollable>
          <div className="space-y-4">
@@ -52,7 +66,7 @@ export default async function Page(props: pageProps) {
                )}
             </div>
             <Separator />
-            <TableAction />
+            <TableAction locations={locations} buyers={buyers} items={items} />
             <Suspense
                key={key}
                fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}

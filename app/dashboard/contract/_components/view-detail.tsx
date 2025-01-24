@@ -38,6 +38,7 @@ import {
    DropdownMenuLabel,
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { formatDate } from '@/lib/utils';
 
 interface UpdateFormProps {
    data: Contract;
@@ -309,9 +310,7 @@ export function ViewDetail({
                   <FormItem>
                      <FormLabel>Dibuat Pada</FormLabel>
                      <FormDescription>
-                        {data.createdAt
-                           ? new Date(data.createdAt).toLocaleString()
-                           : 'N/A'}
+                        {formatDate(data.createdAt)}
                      </FormDescription>
                   </FormItem>
                </div>

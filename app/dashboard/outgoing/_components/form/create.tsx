@@ -11,8 +11,8 @@ import { formatNumber } from '@/lib/utils';
 import { createOutgoing } from '@/actions/outgoing/create';
 import { Order, Transporter } from '@prisma/client';
 
-import { ManualWeight } from '../../../../../components/manual-weight';
-import { AutoWeight } from '../../../../../components/auto-weight';
+import { ManualWeight } from '@/components/manual-weight';
+import { AutoWeight } from '@/components/auto-weight';
 import { Button } from '@/components/ui/button';
 import {
    Form,

@@ -5,6 +5,7 @@ import { Location, LocationType } from '@prisma/client';
 import {
    Form,
    FormControl,
+   FormDescription,
    FormItem,
    FormLabel,
    FormMessage
@@ -19,6 +20,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { formatDate } from '@/lib/utils';
 
 interface ViewDetailProps {
    data: Location;
@@ -101,17 +103,9 @@ export function ViewDetail({ data }: ViewDetailProps) {
 
                   <FormItem>
                      <FormLabel>Terakhir di Perbaharui</FormLabel>
-                     <FormControl>
-                        <Input
-                           type="text"
-                           defaultValue={
-                              data.updatedAt
-                                 ? new Date(data.updatedAt).toLocaleDateString()
-                                 : 'N/A'
-                           }
-                           disabled
-                        />
-                     </FormControl>
+                     <FormDescription>
+                        {formatDate(data.createdAt)}
+                     </FormDescription>
                   </FormItem>
                </div>
             </Form>

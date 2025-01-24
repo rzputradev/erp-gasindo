@@ -1,13 +1,7 @@
 'use client';
 
 import { Order, OutgoingScale, Transporter } from '@prisma/client';
-import {
-   CalendarIcon,
-   MoreVertical,
-   PlusCircle,
-   Printer,
-   TicketSlash
-} from 'lucide-react';
+import { MoreVertical, Printer, TicketSlash } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 import {
@@ -16,7 +10,15 @@ import {
    AccordionItem,
    AccordionTrigger
 } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+   DropdownMenu,
+   DropdownMenuContent,
+   DropdownMenuItem,
+   DropdownMenuLabel,
+   DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import {
    Form,
    FormControl,
@@ -34,17 +36,10 @@ import {
    SelectValue
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import {
-   DropdownMenu,
-   DropdownMenuContent,
-   DropdownMenuItem,
-   DropdownMenuLabel,
-   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
+import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { formatNumber } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 
 interface ViewDetailProps {
    data: OutgoingScale & {
@@ -168,7 +163,7 @@ export function ViewDetail({ data }: ViewDetailProps) {
                         <FormLabel>Waktu Masuk</FormLabel>
                         <FormControl className="flex justify-between">
                            <Input
-                              defaultValue={data.entryTime.toLocaleString()}
+                              defaultValue={formatDate(data.entryTime)}
                               type="text"
                               disabled
                            />
@@ -180,9 +175,7 @@ export function ViewDetail({ data }: ViewDetailProps) {
                            <FormLabel>Waktu Keluar</FormLabel>
                            <FormControl className="flex justify-between">
                               <Input
-                                 defaultValue={
-                                    data.exitTime?.toLocaleString() || undefined
-                                 }
+                                 defaultValue={formatDate(data.exitTime)}
                                  type="text"
                                  disabled
                               />
@@ -378,9 +371,7 @@ export function ViewDetail({ data }: ViewDetailProps) {
                   <FormItem className="md:col-span-2">
                      <FormLabel>Dibuat Pada</FormLabel>
                      <FormDescription>
-                        {data.createdAt
-                           ? new Date(data.createdAt).toLocaleString()
-                           : 'N/A'}
+                        {formatDate(data.createdAt)}
                      </FormDescription>
                   </FormItem>
                </div>

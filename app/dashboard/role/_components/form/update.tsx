@@ -26,6 +26,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
+import { useRouter } from 'next/navigation';
 
 interface UpdateFormProps {
    data: Role & {
@@ -35,6 +36,7 @@ interface UpdateFormProps {
 }
 
 export function UpdateForm({ data, allPermissions }: UpdateFormProps) {
+   const router = useRouter();
    const [isPending, setIspending] = useState(false);
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
@@ -67,6 +69,7 @@ export function UpdateForm({ data, allPermissions }: UpdateFormProps) {
                if (res?.success) {
                   setSuccess(res.success);
                   toast.success(res.success);
+                  router.push(`/dashboard/role/read?id=${data.id}`);
                }
             })
             .catch((e) => {

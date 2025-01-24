@@ -29,8 +29,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
    const [open, setOpen] = useState(false);
    const router = useRouter();
 
-   const updateAccess = useCheckPermissions(user, ['item-category:update']);
-   const deleteAccess = useCheckPermissions(user, ['item-category:delete']);
+   const updateAccess = useCheckPermissions(user, ['category:update']);
+   const deleteAccess = useCheckPermissions(user, ['category:delete']);
 
    const onConfirm = async () => {
       setLoading(true);
@@ -71,9 +71,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
                <DropdownMenuItem
-                  className="flex items-center space-x-2"
+                  className="flex cursor-pointer items-center gap-2"
                   onClick={() =>
-                     router.push(`/dashboard/item-category/read?id=${data.id}`)
+                     router.push(`/dashboard/category/read?id=${data.id}`)
                   }
                >
                   <ReceiptText className="size-4" /> <p>Rincian</p>
@@ -81,11 +81,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {updateAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() =>
-                        router.push(
-                           `/dashboard/item-category/update?id=${data.id}`
-                        )
+                        router.push(`/dashboard/category/update?id=${data.id}`)
                      }
                   >
                      <Edit className="size-4" /> <p>Perbaharui</p>
@@ -94,7 +92,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {deleteAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() => setOpen(true)}
                   >
                      <Trash className="size-4" /> <p>Hapus</p>

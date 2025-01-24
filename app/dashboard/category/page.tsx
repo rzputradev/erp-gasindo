@@ -46,7 +46,7 @@ export default async function Page(props: pageProps) {
                />
                {createAccess && (
                   <Link
-                     href={'/dashboard/item-category/create'}
+                     href={'/dashboard/category/create'}
                      className={cn(buttonVariants({ variant: 'default' }))}
                   >
                      <Plus className="mr-2 h-4 w-4" /> Tambah

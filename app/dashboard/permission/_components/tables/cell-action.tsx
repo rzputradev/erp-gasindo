@@ -71,7 +71,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
                <DropdownMenuItem
-                  className="flex items-center space-x-2"
+                  className="flex cursor-pointer items-center gap-2"
                   onClick={() =>
                      router.push(`/dashboard/permission/read?id=${data.id}`)
                   }
@@ -81,7 +81,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {updateAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() =>
                         router.push(
                            `/dashboard/permission/update?id=${data.id}`
@@ -94,7 +94,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                {deleteAccess && (
                   <DropdownMenuItem
-                     className="flex items-center space-x-2"
+                     className="flex cursor-pointer items-center gap-2"
                      onClick={() => setOpen(true)}
                   >
                      <Trash className="size-4" /> <p>Hapus</p>
