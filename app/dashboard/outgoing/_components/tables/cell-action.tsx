@@ -1,21 +1,12 @@
 'use client';
 
+import { OutgoingScale } from '@prisma/client';
+import { Edit, MoreHorizontal, ReceiptText, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
-import {
-   Edit,
-   MoreHorizontal,
-   ReceiptText,
-   Ticket,
-   TicketCheck,
-   Trash,
-   View
-} from 'lucide-react';
 import { toast } from 'sonner';
-import { OutgoingScale } from '@prisma/client';
 
-import { deleteBuyer } from '@/actions/buyer/delete';
-
+import { deleteOutgoing } from '@/actions/outgoing/delete';
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,7 +17,6 @@ import {
    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
-import { deleteOutgoing } from '@/actions/outgoing/delete';
 
 interface CellActionProps {
    data: OutgoingScale;

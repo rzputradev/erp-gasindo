@@ -68,7 +68,14 @@ export function DataTableFilterBox({
    return (
       <Popover>
          <PopoverTrigger asChild>
-            <Button variant="outline" className="border-dashed">
+            <Button
+               variant="outline"
+               size={'sm'}
+               className={cn(
+                  'border-dashed',
+                  !filterValue && 'text-muted-foreground'
+               )}
+            >
                <PlusCircledIcon className="mr-2 h-4 w-4" />
                {title}
                {selectedValuesSet.size > 0 && (

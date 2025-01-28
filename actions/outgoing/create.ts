@@ -6,14 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { db } from '@/lib/db';
 import { checkPermissions, currentUser } from '@/data/user';
 import { createOutgoingSchema } from '@/lib/schemas/outgoing';
-
-function generateTicketNo(
-   nextOutgoingNo: number,
-   locationKey: string,
-   currentYear: number
-): string {
-   return `OUT-${nextOutgoingNo}-${locationKey}/${currentYear}`;
-}
+import { generateTicketNo } from '@/data/outgoing';
 
 export async function createOutgoing(
    values: z.infer<typeof createOutgoingSchema>
@@ -64,33 +57,13 @@ export async function createOutgoing(
          return { error: 'Pengemudi atau kendaraan sedang dimuat' };
       }
 
-      const locationKey = existingOrder.contract?.location?.key;
-      if (!locationKey) {
+      const locationId = existingOrder.contract?.location?.id;
+      if (!locationId) {
          return { error: 'Lokasi tidak valid' };
       }
 
-      const currentYear = new Date().getFullYear();
-
-      // Count existing outgoing records for the location
-      const outgoingCount = await db.outgoingScale.count({
-         where: {
-            order: {
-               contract: {
-                  locationId: existingOrder.contract?.locationId
-               }
-            },
-            createdAt: {
-               gte: new Date(`${currentYear}-01-01T00:00:00Z`),
-               lt: new Date(`${currentYear + 1}-01-01T00:00:00Z`)
-            }
-         }
-      });
-
-      const ticketNo = generateTicketNo(
-         outgoingCount + 1,
-         locationKey,
-         currentYear
-      );
+      const ticketNo = await generateTicketNo({ locationId });
+      if (!ticketNo) return { error: 'Gagal membuat nomor tiket' };
 
       await db.$transaction(async (tx) => {
          await tx.outgoingScale.create({

@@ -1,7 +1,13 @@
 'use client';
 
-import { Order, OutgoingScale, Transporter } from '@prisma/client';
-import { MoreVertical, Printer, TicketSlash } from 'lucide-react';
+import {
+   Contract,
+   Location,
+   Order,
+   OutgoingScale,
+   Transporter
+} from '@prisma/client';
+import { MoreVertical, TicketSlash } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 import {
@@ -37,21 +43,30 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
-import { format } from 'date-fns';
+import { formatDate, formatNumber } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import { formatDate } from '@/lib/utils';
+import { Ticket } from './ticket';
+import { Transfer } from './form/transfer';
 
 interface ViewDetailProps {
    data: OutgoingScale & {
-      order?: Order;
-      splitOrder?: OutgoingScale;
+      order?: Order & {
+         contract?: Contract & {
+            location?: Location;
+         };
+      };
+      splitOrder?: OutgoingScale & {
+         order?: Order;
+      };
    };
+   orders: Order[];
 }
 
-export function ViewDetail({ data }: ViewDetailProps) {
+export function ViewDetail({ data, orders }: ViewDetailProps) {
    const user = useCurrentUser();
    const router = useRouter();
    const createAccess = useCheckPermissions(user, ['outgoing:create']);
+   const updateAccess = useCheckPermissions(user, ['outgoing:update']);
    const isExit = !!data?.exitTime;
    const form = useForm();
 
@@ -85,14 +100,24 @@ export function ViewDetail({ data }: ViewDetailProps) {
                               )
                            }
                         >
-                           <TicketSlash className="size-4" />{' '}
-                           <p>Timbang Keluar</p>
+                           <TicketSlash className="size-4" /> Timbang Keluar
                         </DropdownMenuItem>
                      )}
                      {isExit && (
-                        <DropdownMenuItem className="flex cursor-pointer items-center gap-2">
-                           <Printer className="size-4" /> <p>Cetak Tiket</p>
-                        </DropdownMenuItem>
+                        <>
+                           <DropdownMenuItem>
+                              <Ticket data={data} />
+                           </DropdownMenuItem>
+                           {updateAccess && (
+                              <DropdownMenuItem>
+                                 <Transfer
+                                    id={data.id}
+                                    neto={data.weightOut! - data.weightIn}
+                                    orders={orders}
+                                 />
+                              </DropdownMenuItem>
+                           )}
+                        </>
                      )}
                   </DropdownMenuContent>
                </DropdownMenu>

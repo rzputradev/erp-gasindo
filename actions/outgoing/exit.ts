@@ -8,14 +8,7 @@ import { z } from 'zod';
 import { exitOutgoingSchema } from '@/lib/schemas/outgoing';
 import { formatNumber } from '@/lib/utils';
 import { SalesStatus } from '@prisma/client';
-
-function generateTicketNo(
-   nextOutgoingNo: number,
-   locationKey: string,
-   currentYear: number
-): string {
-   return `OUT-${nextOutgoingNo}-${locationKey}/${currentYear}`;
-}
+import { generateTicketNo } from '@/data/outgoing';
 
 export async function exitOutgoing(values: z.infer<typeof exitOutgoingSchema>) {
    try {
@@ -104,32 +97,13 @@ export async function exitOutgoing(values: z.infer<typeof exitOutgoingSchema>) {
             };
          }
 
-         const currentYear = new Date().getFullYear();
-
-         const location = existingOutgoing.order?.contract?.location;
-         if (!location?.key || !location.id) {
+         const locationId = existingOutgoing.order?.contract?.location?.id;
+         if (!locationId) {
             return { error: 'Lokasi tidak valid' };
          }
 
-         const outgoingCount = await db.outgoingScale.count({
-            where: {
-               order: {
-                  contract: {
-                     locationId: location.id
-                  }
-               },
-               createdAt: {
-                  gte: new Date(`${currentYear}-01-01T00:00:00Z`),
-                  lt: new Date(`${currentYear + 1}-01-01T00:00:00Z`)
-               }
-            }
-         });
-
-         const ticketNo = generateTicketNo(
-            outgoingCount + 1,
-            location.key,
-            currentYear
-         );
+         const ticketNo = await generateTicketNo({ locationId });
+         if (!ticketNo) return { error: 'Gagal membuat nomor tiket' };
 
          await db.$transaction(async (tx) => {
             const newOutgoing = await tx.outgoingScale.create({

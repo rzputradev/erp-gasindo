@@ -8,6 +8,7 @@ import { columns } from './tables/columns';
 import { DataTable } from '@/components/ui/table/data-table';
 import { checkPermissions, currentUser } from '@/data/user';
 import { unauthorized } from 'next/navigation';
+import { Report } from './report';
 
 export async function ListingPage() {
    const user = await currentUser();
@@ -15,6 +16,7 @@ export async function ListingPage() {
    const multiLocationAccess = await checkPermissions(user, [
       'outgoing:multi-location'
    ]);
+   const fullAccess = await checkPermissions(user, ['outgoing:full-access']);
 
    if (!user) return unauthorized();
 
@@ -38,12 +40,9 @@ export async function ListingPage() {
    const where: Prisma.OutgoingScaleWhereInput = {
       ...(search && {
          ticketNo: { contains: search, mode: 'insensitive' }
-         // OR: [
-         //    { ticketNo: { contains: search, mode: 'insensitive' } },
-         //    { driver: { contains: search, mode: 'insensitive' } }
-         // ]
       }),
       ...(locationArray.length > 0 &&
+         multiLocationAccess &&
          multiLocationAccess && {
             order: { contract: { locationId: { in: locationArray } } }
          }),
@@ -83,7 +82,7 @@ export async function ListingPage() {
       skip: (page - 1) * pageLimit,
       take: pageLimit,
       where,
-      include: { order: true },
+      include: { order: { include: { contract: true } } },
       orderBy: [
          search
             ? { ticketNo: 'asc' }
@@ -103,5 +102,13 @@ export async function ListingPage() {
       db.outgoingScale.count({ where })
    ]);
 
-   return <DataTable columns={columns} data={data} totalItems={totalData} />;
+   return (
+      <>
+         <div className="relative">
+            <Report data={data as any} fullAccess={fullAccess} />
+         </div>
+
+         <DataTable columns={columns} data={data} totalItems={totalData} />
+      </>
+   );
 }
