@@ -71,13 +71,14 @@ export function ViewDetail({
                   <DropdownMenuTrigger asChild>
                      <Button variant="ghost" className="h-8 w-8 p-0">
                         <span className="sr-only">Buka menu</span>
-                        <MoreVertical className="h-4 w-4" />
+                        <MoreVertical className="size-4" />
                      </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                      <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                      {createOrderAccess &&
-                        data.status === SalesStatus.ACTIVE && (
+                        data.status === SalesStatus.ACTIVE &&
+                        data.remainingQty > 0 && (
                            <DropdownMenuItem
                               className="flex cursor-pointer items-center gap-2"
                               onClick={() =>
@@ -86,12 +87,12 @@ export function ViewDetail({
                                  )
                               }
                            >
-                              <PlusCircle className="size-4" />{' '}
-                              <p>Buat Pengambilan</p>
+                              <PlusCircle className="size-4" /> Buat Pengambilan
                            </DropdownMenuItem>
                         )}
                      <DropdownMenuItem className="flex cursor-pointer items-center gap-2">
-                        <Printer className="size-4" /> <p>Surat Kontrak</p>
+                        <Printer className="size-4" />
+                        Surat Kontrak
                      </DropdownMenuItem>
                   </DropdownMenuContent>
                </DropdownMenu>

@@ -1,7 +1,7 @@
-import { db } from '@/lib/db';
-import { Permission, Prisma } from '@prisma/client';
-import { searchBaseParamsCache } from '@/lib/params/base';
 import { DataTable } from '@/components/ui/table/data-table';
+import { db } from '@/lib/db';
+import { searchBaseParamsCache } from '@/lib/params/base';
+import { Prisma } from '@prisma/client';
 import { columns } from './tables/columns';
 
 export async function ListingPage() {

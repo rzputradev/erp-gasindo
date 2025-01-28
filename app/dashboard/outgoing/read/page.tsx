@@ -9,6 +9,7 @@ import { UpdateForm } from '../_components/form/update';
 import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
 import { ViewDetail } from '../_components/view-detail';
+import { SalesStatus } from '@prisma/client';
 
 export const metadata = {
    title: 'Dashboard : Rincian Pembeli'
@@ -32,8 +33,28 @@ export default async function Page(props: pageProps) {
    const data: any = await db.outgoingScale.findUnique({
       where: { id: id as string },
       include: {
-         order: true,
-         splitOrder: true
+         order: {
+            include: {
+               contract: {
+                  include: { location: true }
+               }
+            }
+         },
+         splitOrder: {
+            include: { order: true }
+         }
+      }
+   });
+
+   const orders = await db.order.findMany({
+      where: {
+         id: { not: { equals: data.orderId } },
+         status: SalesStatus.ACTIVE,
+         remainingQty: { gt: 0 },
+         contract: {
+            status: SalesStatus.ACTIVE,
+            locationId: data.order.contract.locationId
+         }
       }
    });
 
@@ -45,7 +66,7 @@ export default async function Page(props: pageProps) {
       <PageContainer scrollable>
          <div className="flex-1 space-y-4">
             <Suspense fallback={<FormCardSkeleton />}>
-               <ViewDetail data={data} />
+               <ViewDetail data={data} orders={orders} />
             </Suspense>
          </div>
       </PageContainer>

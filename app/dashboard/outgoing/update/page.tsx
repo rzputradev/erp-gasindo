@@ -2,13 +2,12 @@ import { notFound, unauthorized } from 'next/navigation';
 import { SearchParams } from 'nuqs';
 import { Suspense } from 'react';
 
-import { db } from '@/lib/db';
 import { checkPermissions, currentUser } from '@/data/user';
+import { db } from '@/lib/db';
 
-import { UpdateForm } from '../_components/form/update';
-import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
-import { OutgoingScale } from '@prisma/client';
+import PageContainer from '@/components/layout/page-container';
+import { UpdateForm } from '../_components/form/update';
 
 export const metadata = {
    title: 'Dashboard : Perbaharui Pembeli'

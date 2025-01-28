@@ -53,6 +53,7 @@ export function DataTableFilterDateRange({
                <Button
                   id="date"
                   variant="outline"
+                  size={'sm'}
                   className={cn(
                      'w-fit justify-start border-dashed text-left font-normal',
                      !dateRange && 'text-muted-foreground'

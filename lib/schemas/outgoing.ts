@@ -69,3 +69,18 @@ export const updateOutgoingSchema = exitOutgoingSchema
       exitTime: z.date().optional(),
       ticketNo: z.string().nonempty({ message: 'Ticket No tidak boleh kosong' })
    });
+
+export const transferOutogingSchema = z.object({
+   id: z.string(),
+   orderId: z
+      .string()
+      .nonempty({ message: 'Nomor surat pengambilan tidak boleh kosong' }),
+   quantity: z.preprocess(
+      (val) => (val !== '' ? Number(val) : undefined),
+      z
+         .number()
+         .min(1, {
+            message: 'Kuantitas yang ingin dipindahkan tidak boleh kosong'
+         })
+   )
+});

@@ -6,6 +6,7 @@ import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-fil
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
 import { Buyer, Item, Location } from '@prisma/client';
 import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
+import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
 
 interface TableActionsProps {
    locations: Location[];
@@ -14,6 +15,11 @@ interface TableActionsProps {
 }
 
 export function TableAction({ locations, buyers, items }: TableActionsProps) {
+   const user = useCurrentUser();
+   const multiLocationAccess = useCheckPermissions(user, [
+      'outgoing:multi-location'
+   ]);
+
    const LOCATION_OPTIONS = locations.map((location) => ({
       value: location.id,
       label: location.name
@@ -26,6 +32,7 @@ export function TableAction({ locations, buyers, items }: TableActionsProps) {
       value: item.id,
       label: item.name
    }));
+
    const {
       isAnyFilterActive,
       resetFilters,
@@ -43,21 +50,21 @@ export function TableAction({ locations, buyers, items }: TableActionsProps) {
    } = useTableFilters();
 
    return (
-      <div className="space-y-4">
-         <div className="flex flex-wrap items-center gap-4">
-            <DataTableSearch
-               searchKey="nomor tiket"
-               searchQuery={searchQuery}
-               setSearchQuery={setSearchQuery}
-               setPage={setPage}
-            />
+      <div className="flex max-w-[90%] flex-wrap items-center gap-4">
+         <DataTableSearch
+            searchKey="nomor tiket"
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            setPage={setPage}
+         />
 
-            <DataTableFilterDateRange
-               setPage={setPage}
-               dateRange={dateRangeFilter}
-               setDateRange={setDateRangeFilter}
-            />
+         <DataTableFilterDateRange
+            setPage={setPage}
+            dateRange={dateRangeFilter}
+            setDateRange={setDateRangeFilter}
+         />
 
+         {multiLocationAccess && (
             <DataTableFilterBox
                filterKey="location"
                title="Pabrik"
@@ -65,26 +72,28 @@ export function TableAction({ locations, buyers, items }: TableActionsProps) {
                setFilterValue={setLocationFilter}
                filterValue={locationFilter}
             />
-            <DataTableFilterBox
-               filterKey="buyer"
-               title="Pembeli"
-               options={BUYER_OPTIONS}
-               setFilterValue={setBuyerFilter}
-               filterValue={buyerFilter}
-            />
-            <DataTableFilterBox
-               filterKey="item"
-               title="Produk"
-               options={ITEM_OPTIONS}
-               setFilterValue={setItemFilter}
-               filterValue={itemFilter}
-            />
+         )}
 
-            <DataTableResetFilter
-               isFilterActive={isAnyFilterActive}
-               onReset={resetFilters}
-            />
-         </div>
+         <DataTableFilterBox
+            filterKey="buyer"
+            title="Pembeli"
+            options={BUYER_OPTIONS}
+            setFilterValue={setBuyerFilter}
+            filterValue={buyerFilter}
+         />
+
+         <DataTableFilterBox
+            filterKey="item"
+            title="Produk"
+            options={ITEM_OPTIONS}
+            setFilterValue={setItemFilter}
+            filterValue={itemFilter}
+         />
+
+         <DataTableResetFilter
+            isFilterActive={isAnyFilterActive}
+            onReset={resetFilters}
+         />
       </div>
    );
 }
