@@ -140,10 +140,10 @@ model Supplier {
 
 model SupplierItem {
    id             String           @id @default(cuid())
+   locationId     String?
    supplierId     String?
    itemId         String?
-   locationId     String?
-   price          Int
+   price          Int?
    type           SupplierItemType @default(WEIGH)
    incomingScales IncomingScale[]
 

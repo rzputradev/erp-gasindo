@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
+import { LayoutDashboard } from 'lucide-react';
 
 export default function NotFound() {
    const router = useRouter();
@@ -25,7 +26,8 @@ export default function NotFound() {
                variant="outline"
                size="lg"
             >
-               Kembali ke Beranda
+               <LayoutDashboard className="size-4" />
+               Beranda
             </Button>
          </div>
       </div>

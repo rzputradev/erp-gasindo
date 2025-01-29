@@ -59,10 +59,9 @@ interface ViewDetailProps {
          order?: Order;
       };
    };
-   orders: Order[];
 }
 
-export function ViewDetail({ data, orders }: ViewDetailProps) {
+export function ViewDetail({ data }: ViewDetailProps) {
    const user = useCurrentUser();
    const router = useRouter();
    const createAccess = useCheckPermissions(user, ['outgoing:create']);
@@ -108,15 +107,6 @@ export function ViewDetail({ data, orders }: ViewDetailProps) {
                            <DropdownMenuItem>
                               <Ticket data={data} />
                            </DropdownMenuItem>
-                           {updateAccess && (
-                              <DropdownMenuItem>
-                                 <Transfer
-                                    id={data.id}
-                                    neto={data.weightOut! - data.weightIn}
-                                    orders={orders}
-                                 />
-                              </DropdownMenuItem>
-                           )}
                         </>
                      )}
                   </DropdownMenuContent>

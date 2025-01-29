@@ -1,31 +1,32 @@
 import { Suspense } from 'react';
 import { unauthorized } from 'next/navigation';
 
+import { checkPermissions, currentUser } from '@/data/user';
+
 import { CreateForm } from '../_components/form/create';
 import PageContainer from '@/components/layout/page-container';
 import FormCardSkeleton from '@/components/form-card-skeleton';
-import { checkPermissions, currentUser } from '@/data/user';
-import { Buyer, Item, Location } from '@prisma/client';
 import { db } from '@/lib/db';
+import { LocationType } from '@prisma/client';
 
 export const metadata = {
-   title: 'Dashboard : Tambah Kontrak'
+   title: 'Dashboard : Tambah Pemasok'
 };
 
 export default async function Page() {
    const user = await currentUser();
-   const access = await checkPermissions(user, ['contract:create']);
+   const access = await checkPermissions(user, ['supplier:create']);
    if (!access) return unauthorized();
 
-   const locations: Location[] = await db.location.findMany({
-      where: { type: 'MILL' }
+   const locations = await db.location.findMany({
+      where: { type: LocationType.MILL }
    });
-   const buyers: Buyer[] = await db.buyer.findMany();
-   const items: any = await db.item.findMany({
+   const suppliers = await db.supplier.findMany();
+   const items = await db.item.findMany({
       where: {
          AND: [
-            { categories: { some: { key: 'commodity' } } },
-            { categories: { some: { key: 'outgoing-scale' } } }
+            // { categories: { some: { key: 'commodity' } } },
+            { categories: { some: { key: 'incoming-scale' } } }
          ]
       }
    });
@@ -35,9 +36,9 @@ export default async function Page() {
          <div className="flex-1 space-y-4">
             <Suspense fallback={<FormCardSkeleton />}>
                <CreateForm
-                  buyers={buyers}
-                  items={items}
                   locations={locations}
+                  suppliers={suppliers}
+                  items={items}
                />
             </Suspense>
          </div>

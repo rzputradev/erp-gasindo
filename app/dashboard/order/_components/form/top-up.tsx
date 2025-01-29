@@ -30,6 +30,8 @@ import { CircleFadingArrowUp, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
 import { toast } from 'sonner';
+import { FormSuccess } from '@/components/form-success';
+import { FormError } from '@/components/form-error';
 
 interface TopUpProps {
    id: string;
@@ -81,9 +83,9 @@ export function TopUp({ id, remainingContractQty }: TopUpProps) {
    return (
       <Dialog>
          <DialogTrigger asChild>
-            <Button variant={'outline'}>
+            <Button variant={'outline'} size={'sm'} disabled={isPending}>
                <CircleFadingArrowUp />
-               Isi Ulang
+               <p className="hidden md:flex">Isi Ulang</p>
             </Button>
          </DialogTrigger>
          <DialogContent className="sm:max-w-xl">
@@ -122,10 +124,14 @@ export function TopUp({ id, remainingContractQty }: TopUpProps) {
                      )}
                   />
 
+                  <FormSuccess message={success} />
+                  <FormError message={error} />
+
                   <DialogFooter>
                      <div className="flex flex-wrap items-center space-x-2">
                         <Button
                            type="submit"
+                           size={'sm'}
                            disabled={isPending}
                            className="flex items-center"
                         >
@@ -134,7 +140,11 @@ export function TopUp({ id, remainingContractQty }: TopUpProps) {
                         </Button>
 
                         <DialogClose asChild>
-                           <Button type="button" variant="secondary">
+                           <Button
+                              type="button"
+                              variant="secondary"
+                              size={'sm'}
+                           >
                               Batal
                            </Button>
                         </DialogClose>

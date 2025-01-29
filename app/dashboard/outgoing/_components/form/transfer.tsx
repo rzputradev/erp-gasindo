@@ -94,10 +94,14 @@ export function Transfer({ id, neto, orders }: TransferProps) {
    return (
       <Dialog>
          <DialogTrigger asChild onClick={(e) => e.stopPropagation()}>
-            <div className="flex cursor-pointer items-center gap-2">
+            <Button
+               variant={'outline'}
+               size={'sm'}
+               className="flex cursor-pointer items-center gap-2"
+            >
                <ArrowLeftRight className="size-4" />
-               Pindahkan Pengambilan
-            </div>
+               <p className="hidden md:flex">Pindahkan</p>
+            </Button>
          </DialogTrigger>
          <DialogContent
             className="sm:max-w-2xl"

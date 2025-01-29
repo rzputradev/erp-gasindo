@@ -41,7 +41,7 @@ export const columns: ColumnDef<OutgoingScale>[] = [
       cell: ({ row }) => `${formatNumber(row.original.weightOut || 0)} Kg`
    },
    {
-      // id: 'finalWeight',
+      id: 'finalWeight',
       header: 'Neto',
       cell: ({ row }) => {
          if (row.original.exitTime) {

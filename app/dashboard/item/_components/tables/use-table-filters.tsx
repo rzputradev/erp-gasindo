@@ -13,11 +13,9 @@ export function useLocationTableFilters() {
          .withDefault('')
    );
 
-   const [itemCategoryFilter, setItemCategoryFilter] = useQueryState(
-      'itemCategory',
-      searchItemParams.itemCategory
-         .withOptions({ shallow: false })
-         .withDefault('')
+   const [categoryFilter, setCategoryFilter] = useQueryState(
+      'category',
+      searchItemParams.category.withOptions({ shallow: false }).withDefault('')
    );
 
    const [page, setPage] = useQueryState(
@@ -27,20 +25,20 @@ export function useLocationTableFilters() {
 
    const resetFilters = useCallback(() => {
       setSearchQuery(null);
-      setItemCategoryFilter(null);
+      setCategoryFilter(null);
 
       setPage(1);
-   }, [setSearchQuery, setItemCategoryFilter, setPage]);
+   }, [setSearchQuery, setCategoryFilter, setPage]);
 
    const isAnyFilterActive = useMemo(() => {
-      return !!searchQuery || !!itemCategoryFilter;
-   }, [searchQuery, itemCategoryFilter]);
+      return !!searchQuery || !!categoryFilter;
+   }, [searchQuery, categoryFilter]);
 
    return {
       searchQuery,
       setSearchQuery,
-      itemCategoryFilter,
-      setItemCategoryFilter,
+      categoryFilter,
+      setCategoryFilter,
       page,
       setPage,
       resetFilters,

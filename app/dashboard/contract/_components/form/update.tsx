@@ -359,14 +359,10 @@ export function UpdateForm({
                                  <Checkbox
                                     id="updateTolerance"
                                     checked={isUpdateTolerance}
-                                    onCheckedChange={(checked) => {
-                                       const newCheckedState = checked === true;
-                                       form.setValue(
-                                          'updateTolerance',
-                                          newCheckedState
-                                       );
-                                       setIsUpdateTolerance(newCheckedState);
-                                    }}
+                                    onCheckedChange={(checked) =>
+                                       setIsUpdateTolerance(!!checked)
+                                    }
+                                    disabled={isPending}
                                  />
                                  <label
                                     htmlFor="updateTolerance"
@@ -379,7 +375,7 @@ export function UpdateForm({
                                  <FormDescription>
                                     Mengubah nilai toleransi akan secara
                                     otomatis memperbarui nilai berat toleransi
-                                    dan sisa kuantitas terkait
+                                    dan sisa kuantitas terkait.
                                  </FormDescription>
                               )}
                            </FormItem>
