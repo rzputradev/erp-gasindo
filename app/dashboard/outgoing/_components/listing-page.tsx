@@ -23,12 +23,10 @@ export async function ListingPage() {
    const page = searchOutgoingParamsCache.get('page') || 1;
    const search = searchOutgoingParamsCache.get('q');
    const pageLimit = searchOutgoingParamsCache.get('limit') || 10;
-   const location = searchOutgoingParamsCache.get('location');
-   const locationArray = location ? location.split('.') : [];
-   const buyer = searchOutgoingParamsCache.get('buyer');
-   const buyerArray = buyer ? buyer.split('.') : [];
-   const item = searchOutgoingParamsCache.get('item');
-   const itemArray = item ? item.split('.') : [];
+   const locations =
+      searchOutgoingParamsCache.get('location')?.split('.') || [];
+   const buyers = searchOutgoingParamsCache.get('buyer')?.split('.') || [];
+   const items = searchOutgoingParamsCache.get('item')?.split('.') || [];
    const dateRange = searchOutgoingParamsCache.get('dateRange');
 
    // If user lacks multi-location access and `user.location` is undefined, return empty data
@@ -36,47 +34,44 @@ export async function ListingPage() {
       return <DataTable columns={columns} data={[]} totalItems={0} />;
    }
 
-   // Build filters based on conditions
    const where: Prisma.OutgoingScaleWhereInput = {
       ...(search && {
-         ticketNo: { contains: search, mode: 'insensitive' }
+         ticketNo: { contains: search, mode: 'insensitive' as Prisma.QueryMode }
       }),
-      ...(locationArray.length > 0 &&
-         multiLocationAccess &&
-         multiLocationAccess && {
-            order: { contract: { locationId: { in: locationArray } } }
-         }),
-      ...(buyerArray.length > 0 && {
-         order: { contract: { buyerId: { in: buyerArray } } }
-      }),
-      ...(itemArray.length > 0 && {
-         order: { contract: { itemId: { in: itemArray } } }
-      })
+      AND: [
+         ...(locations.length > 0 && multiLocationAccess
+            ? [{ order: { contract: { locationId: { in: locations } } } }]
+            : []),
+         ...(buyers.length > 0
+            ? [{ order: { contract: { buyerId: { in: buyers } } } }]
+            : []),
+         ...(items.length > 0
+            ? [{ order: { contract: { itemId: { in: items } } } }]
+            : []),
+         ...(search
+            ? []
+            : dateRange?.from && dateRange.to
+              ? [
+                   {
+                      createdAt: {
+                         gte: startOfDay(dateRange.from),
+                         lte: endOfDay(dateRange.to)
+                      }
+                   }
+                ]
+              : [
+                   {
+                      OR: [
+                         { createdAt: { gte: startOfDay(today) } },
+                         { exitTime: null }
+                      ]
+                   }
+                ]),
+         ...(!multiLocationAccess && user.location
+            ? [{ order: { contract: { location: { key: user.location } } } }]
+            : [])
+      ]
    };
-
-   if (!search) {
-      const dateFilter =
-         dateRange?.from && dateRange?.to
-            ? { gte: startOfDay(dateRange.from), lte: endOfDay(dateRange.to) }
-            : { gte: startOfDay(today) };
-
-      where.OR = [
-         { createdAt: dateFilter },
-         ...(dateRange?.from && dateRange?.to ? [] : [{ exitTime: null }])
-      ];
-   }
-
-   if (!multiLocationAccess) {
-      where.order = {
-         ...where.order,
-         contract: {
-            ...where.order?.contract!,
-            location: {
-               key: user.location!
-            }
-         } as any
-      };
-   }
 
    const filters: Prisma.OutgoingScaleFindManyArgs = {
       skip: (page - 1) * pageLimit,

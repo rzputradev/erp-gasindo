@@ -163,7 +163,7 @@ export function CreateForm() {
                   <FormSuccess message={success} />
                   <FormError message={error} />
 
-                  <Button type="submit" disabled={isPending}>
+                  <Button type="submit" size={'sm'} disabled={isPending}>
                      Submit
                   </Button>
                </form>

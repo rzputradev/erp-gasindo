@@ -9,7 +9,7 @@
          }
       ],
       "import/no-unresolved": "error",
-      "import/named": "off",
-      "no-console": "off"
+      "import/named": "off"
+      // "no-console": "off"
    }
 }

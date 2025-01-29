@@ -17,7 +17,7 @@ export function TableAction() {
       <div className="space-y-4">
          <div className="flex flex-wrap items-center gap-4">
             <DataTableSearch
-               searchKey="name"
+               searchKey="nama"
                searchQuery={searchQuery}
                setSearchQuery={setSearchQuery}
                setPage={setPage}

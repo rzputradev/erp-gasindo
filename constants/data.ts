@@ -140,6 +140,33 @@ export const navItems: NavItem[] = [
       items: []
    },
    {
+      title: 'Pembelian',
+      url: '#',
+      icon: 'shoppingCart',
+      isActive: true,
+      shortcut: ['p', 'n'],
+      items: [
+         {
+            title: 'Pemasok',
+            url: '/dashboard/supplier',
+            icon: 'contact',
+            isActive: true,
+            shortcut: ['s', 'l'],
+            permission: 'supplier:read',
+            items: []
+         },
+         {
+            title: 'Produk',
+            url: '/dashboard/product',
+            icon: 'package2',
+            isActive: false,
+            shortcut: ['p', 'c'],
+            permission: 'product:read',
+            items: []
+         }
+      ]
+   },
+   {
       title: 'Penjualan',
       url: '#',
       icon: 'walet',

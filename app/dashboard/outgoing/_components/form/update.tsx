@@ -46,18 +46,23 @@ import {
    SelectValue
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
+import { Transfer } from './transfer';
 
 interface UpdateFormProps {
    data: OutgoingScale & {
       order?: Order;
    };
+   orders: Order[];
 }
 
-export function UpdateForm({ data }: UpdateFormProps) {
+export function UpdateForm({ data, orders }: UpdateFormProps) {
+   const user = useCurrentUser();
    const router = useRouter();
    const [isPending, setIspending] = useState<boolean>(false);
    const [success, setSuccess] = useState<string | undefined>(undefined);
    const [error, setError] = useState<string | undefined>(undefined);
+   const updateAccess = useCheckPermissions(user, ['outgoing:update']);
 
    const form = useForm<z.infer<typeof updateOutgoingSchema>>({
       resolver: zodResolver(updateOutgoingSchema),
@@ -115,8 +120,8 @@ export function UpdateForm({ data }: UpdateFormProps) {
    return (
       <Card className="mx-auto w-full rounded-lg bg-sidebar/20">
          <CardHeader>
-            <CardTitle className="text-left text-2xl font-bold">
-               <div className="flex flex-col gap-1">
+            <CardTitle className="flex items-start justify-between">
+               <div className="space-y-1">
                   <span className="text-left text-2xl font-bold">
                      Perbaharui Barang Keluar
                   </span>
@@ -124,6 +129,13 @@ export function UpdateForm({ data }: UpdateFormProps) {
                      {data.order?.orderNo}
                   </p>
                </div>
+               {updateAccess && data.exitTime && data.weightOut && (
+                  <Transfer
+                     id={data.id}
+                     neto={data.weightOut - data.weightIn}
+                     orders={orders}
+                  />
+               )}
             </CardTitle>
          </CardHeader>
          <CardContent>

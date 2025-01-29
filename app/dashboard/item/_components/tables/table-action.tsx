@@ -21,8 +21,8 @@ export function TableAction({ itemCategories }: TableActionProps) {
       isAnyFilterActive,
       resetFilters,
       searchQuery,
-      itemCategoryFilter,
-      setItemCategoryFilter,
+      categoryFilter,
+      setCategoryFilter,
       setPage,
       setSearchQuery
    } = useLocationTableFilters();
@@ -40,8 +40,8 @@ export function TableAction({ itemCategories }: TableActionProps) {
                filterKey="itemCategory"
                title="Kategori Barang"
                options={ITEM_CATEGORY_OPTIONS}
-               setFilterValue={setItemCategoryFilter}
-               filterValue={itemCategoryFilter}
+               setFilterValue={setCategoryFilter}
+               filterValue={categoryFilter}
             />
             <DataTableResetFilter
                isFilterActive={isAnyFilterActive}

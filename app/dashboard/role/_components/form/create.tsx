@@ -221,7 +221,9 @@ export function CreateForm({ permissions }: CreateFormProps) {
                   <FormSuccess message={success} />
                   <FormError message={error} />
 
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit" size={'sm'} disabled={isPending}>
+                     Submit
+                  </Button>
                </form>
             </Form>
          </CardContent>

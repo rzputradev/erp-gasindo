@@ -81,9 +81,9 @@ export function TopUp({ id }: TopUpProps) {
    return (
       <Dialog>
          <DialogTrigger asChild>
-            <Button variant={'outline'}>
+            <Button variant={'outline'} size={'sm'} disabled={isPending}>
                <CircleFadingArrowUp />
-               Isi Ulang
+               <p className="hidden md:flex">Isi Ulang</p>
             </Button>
          </DialogTrigger>
          <DialogContent className="sm:max-w-xl">

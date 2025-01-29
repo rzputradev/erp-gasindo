@@ -268,5 +268,25 @@
       "key": "order:read",
       "name": "Lihat Pesanan",
       "description": "Mengizinkan pengguna untuk melihat data pesanan tanpa dapat mengubah atau menghapusnya."
+   },
+   {
+      "key": "product:create",
+      "name": "Tambah Produk",
+      "description": "Mengizinkan pengguna untuk menambahkan produk baru ke dalam sistem."
+   },
+   {
+      "key": "product:update",
+      "name": "Perbarui Produk",
+      "description": "Mengizinkan pengguna untuk memperbarui data produk yang sudah ada."
+   },
+   {
+      "key": "product:delete",
+      "name": "Hapus Produk",
+      "description": "Mengizinkan pengguna untuk menghapus data produk dari sistem."
+   },
+   {
+      "key": "product:read",
+      "name": "Lihat Produk",
+      "description": "Mengizinkan pengguna untuk melihat data produk tanpa dapat mengubah atau menghapusnya."
    }
 ]

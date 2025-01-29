@@ -3,7 +3,7 @@
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 
-import { searchOutgoingParams } from '@/lib/params/outgoing';
+import { searchOutgoingParams } from '@/lib/params/product';
 
 export function useTableFilters() {
    const [searchQuery, setSearchQuery] = useQueryState(
@@ -18,14 +18,6 @@ export function useTableFilters() {
       searchOutgoingParams.page.withDefault(1)
    );
 
-   const [dateRangeFilter, setDateRangeFilter] = useQueryState(
-      'dateRange',
-      searchOutgoingParams.dateRange.withOptions({
-         shallow: false,
-         throttleMs: 1000
-      })
-   );
-
    const [locationFilter, setLocationFilter] = useQueryState(
       'location',
       searchOutgoingParams.location
@@ -33,8 +25,8 @@ export function useTableFilters() {
          .withDefault('')
    );
 
-   const [buyerFilter, setBuyerFilter] = useQueryState(
-      'buyer',
+   const [supplierFilter, setSupplierFilter] = useQueryState(
+      'supplier',
       searchOutgoingParams.location
          .withOptions({ shallow: false })
          .withDefault('')
@@ -49,39 +41,31 @@ export function useTableFilters() {
 
    const resetFilters = useCallback(() => {
       setSearchQuery(null);
-      setDateRangeFilter(null);
       setLocationFilter(null);
-      setBuyerFilter(null);
+      setSupplierFilter(null);
       setItemFilter(null);
       setPage(1);
    }, [
       setSearchQuery,
       setPage,
-      setDateRangeFilter,
       setLocationFilter,
-      setBuyerFilter,
+      setSupplierFilter,
       setItemFilter
    ]);
 
    const isAnyFilterActive = useMemo(() => {
       return (
-         !!searchQuery ||
-         !!dateRangeFilter ||
-         !!locationFilter ||
-         !!buyerFilter ||
-         !!itemFilter
+         !!searchQuery || !!locationFilter || !!supplierFilter || !!itemFilter
       );
-   }, [searchQuery, dateRangeFilter, locationFilter, buyerFilter, itemFilter]);
+   }, [searchQuery || locationFilter || supplierFilter || itemFilter]);
 
    return {
       searchQuery,
       setSearchQuery,
-      dateRangeFilter,
-      setDateRangeFilter,
       locationFilter,
       setLocationFilter,
-      buyerFilter,
-      setBuyerFilter,
+      supplierFilter,
+      setSupplierFilter,
       itemFilter,
       setItemFilter,
       page,

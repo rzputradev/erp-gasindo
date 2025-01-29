@@ -11,7 +11,7 @@ import { searchBaseParamsCache, serialize } from '@/lib/params/base';
 import { ListingPage } from './_components/listing-page';
 import { TableAction } from './_components/tables/table-action';
 import PageContainer from '@/components/layout/page-container';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
@@ -41,11 +41,10 @@ export default async function Page(props: pageProps) {
             <div className="flex items-start justify-between">
                <Heading title={`Role`} description="Kelola data role" />
                {createAccess && (
-                  <Link
-                     href={'/dashboard/role/create'}
-                     className={cn(buttonVariants({ variant: 'default' }))}
-                  >
-                     <Plus className="mr-2 h-4 w-4" /> Tambah
+                  <Link href={'/dashboard/role/create'}>
+                     <Button size={'sm'} className="flex items-center">
+                        <Plus className="size 4" /> Tambah
+                     </Button>
                   </Link>
                )}
             </div>
