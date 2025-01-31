@@ -45,7 +45,7 @@ export function ViewDetail({ data }: ViewDetailProps) {
                      </FormItem>
 
                      <FormItem>
-                        <FormLabel>Key</FormLabel>
+                        <FormLabel>Kode</FormLabel>
                         <FormControl>
                            <Input
                               defaultValue={data.key}

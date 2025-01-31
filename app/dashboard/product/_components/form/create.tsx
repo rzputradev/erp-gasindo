@@ -216,7 +216,7 @@ export function CreateForm({ locations, suppliers, items }: CreateFormProps) {
                         name="type"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Status</FormLabel>
+                              <FormLabel>Jenis Produk</FormLabel>
                               <Select
                                  onValueChange={field.onChange}
                                  defaultValue={field.value}
@@ -224,7 +224,7 @@ export function CreateForm({ locations, suppliers, items }: CreateFormProps) {
                               >
                                  <FormControl>
                                     <SelectTrigger>
-                                       <SelectValue placeholder="Status akun" />
+                                       <SelectValue placeholder="Pilih jenis produk" />
                                     </SelectTrigger>
                                  </FormControl>
                                  <SelectContent>

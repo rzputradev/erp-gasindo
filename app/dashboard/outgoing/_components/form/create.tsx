@@ -92,8 +92,11 @@ export function CreateForm({ orders, manualInput }: CreateFormProps) {
    return (
       <Card className="mx-auto w-full">
          <CardHeader>
-            <CardTitle className="text-left text-2xl font-bold">
-               Barang Keluar - Timbang Masuk
+            <CardTitle className="flex flex-col gap-1">
+               <span className="text-left text-2xl font-bold">
+                  Barang Keluar
+               </span>
+               <p className="font-normal text-muted-foreground">Timbang Tara</p>
             </CardTitle>
          </CardHeader>
          <CardContent>

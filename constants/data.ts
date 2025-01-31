@@ -209,15 +209,15 @@ export const navItems: NavItem[] = [
       isActive: true,
       shortcut: ['t', 't'],
       items: [
-         // {
-         //    title: 'Barang Masuk',
-         //    url: '/dashboard/scale-in',
-         //    icon: 'ticketPlus',
-         //    isActive: false,
-         //    shortcut: ['b', 'm'],
-         //    permission: 'incoming:read',
-         //    items: []
-         // },
+         {
+            title: 'Barang Masuk',
+            url: '/dashboard/incoming',
+            icon: 'ticketPlus',
+            isActive: false,
+            shortcut: ['b', 'm'],
+            permission: 'incoming:read',
+            items: []
+         },
          {
             title: 'Barang Keluar',
             url: '/dashboard/outgoing',

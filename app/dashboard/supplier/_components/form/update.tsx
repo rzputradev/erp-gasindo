@@ -1,16 +1,19 @@
 'use client';
 
-import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Supplier } from '@prisma/client';
+import { startTransition, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { useState, startTransition } from 'react';
-import { Supplier } from '@prisma/client';
+import * as z from 'zod';
 
 import { updateSupplier } from '@/actions/supplier/update';
 import { updateSupplierSchema } from '@/lib/schemas/supplier';
 
+import { FormError } from '@/components/form-error';
+import { FormSuccess } from '@/components/form-success';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
    Form,
    FormControl,
@@ -21,9 +24,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { FormError } from '@/components/form-error';
-import { FormSuccess } from '@/components/form-success';
+import { Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface UpdateFormProps {
@@ -113,11 +114,11 @@ export function UpdateForm({ data }: UpdateFormProps) {
                         name="key"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Key</FormLabel>
+                              <FormLabel>Kode</FormLabel>
                               <FormControl>
                                  <Input
                                     type="text"
-                                    placeholder="Masukkan key"
+                                    placeholder="Masukkan kode"
                                     disabled={isPending}
                                     {...field}
                                  />
@@ -169,8 +170,14 @@ export function UpdateForm({ data }: UpdateFormProps) {
                   <FormSuccess message={success} />
                   <FormError message={error} />
 
-                  <Button type="submit" size={'sm'} disabled={isPending}>
-                     Submit
+                  <Button
+                     type="submit"
+                     disabled={isPending}
+                     size={'sm'}
+                     className="flex items-center"
+                  >
+                     <Save />
+                     Simpan
                   </Button>
                </form>
             </Form>

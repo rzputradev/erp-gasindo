@@ -2,16 +2,17 @@ import { notFound, unauthorized } from 'next/navigation';
 import { SearchParams } from 'nuqs';
 import { Suspense } from 'react';
 
-import { checkPermissions, currentUser } from '@/data/user';
 import { db } from '@/lib/db';
+import { checkPermissions, currentUser } from '@/data/user';
 
-import FormCardSkeleton from '@/components/form-card-skeleton';
-import PageContainer from '@/components/layout/page-container';
 import { UpdateForm } from '../_components/form/update';
+import PageContainer from '@/components/layout/page-container';
+import FormCardSkeleton from '@/components/form-card-skeleton';
+import { ViewDetail } from '../_components/view-detail';
 import { SalesStatus } from '@prisma/client';
 
 export const metadata = {
-   title: 'Dashboard : Perbaharui Pembeli'
+   title: 'Dashboard : Rincian Pembeli'
 };
 
 type pageProps = {
@@ -22,7 +23,7 @@ export default async function Page(props: pageProps) {
    const user = await currentUser();
    const { id } = await props.searchParams;
 
-   const access = await checkPermissions(user, ['outgoing:update']);
+   const access = await checkPermissions(user, ['incoming:read']);
    if (!access) return unauthorized();
 
    if (!id) {
@@ -31,30 +32,29 @@ export default async function Page(props: pageProps) {
 
    const data: any = await db.outgoingScale.findUnique({
       where: { id: id as string },
-      include: { order: { include: { contract: true } } }
+      include: {
+         order: {
+            include: {
+               contract: {
+                  include: { location: true }
+               }
+            }
+         },
+         splitOrder: {
+            include: { order: true }
+         }
+      }
    });
 
    if (!data) {
       return notFound();
    }
 
-   const orders = await db.order.findMany({
-      where: {
-         id: { not: { equals: data.orderId } },
-         status: SalesStatus.ACTIVE,
-         remainingQty: { gt: 0 },
-         contract: {
-            status: SalesStatus.ACTIVE,
-            locationId: data.order.contract.locationId
-         }
-      }
-   });
-
    return (
       <PageContainer scrollable>
          <div className="flex-1 space-y-4">
             <Suspense fallback={<FormCardSkeleton />}>
-               <UpdateForm data={data} orders={orders} />
+               <ViewDetail data={data} />
             </Suspense>
          </div>
       </PageContainer>

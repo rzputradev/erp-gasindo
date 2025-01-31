@@ -58,7 +58,7 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Rincian', link: '/dashboard/permission/read' }
    ],
 
-   // Permission
+   // Role
    '/dashboard/role': [
       { title: 'Beranda', link: '/dashboard' },
       { title: 'Peran', link: '/dashboard/role' }
@@ -226,7 +226,7 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Rincian', link: '/dashboard/order/read' }
    ],
 
-   // Order
+   // Outgoing
    '/dashboard/outgoing': [
       { title: 'Beranda', link: '/dashboard' },
       { title: 'Barang Keluar', link: '/dashboard/outgoing' }
@@ -250,6 +250,32 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
       { title: 'Beranda', link: '/dashboard' },
       { title: 'Barang Keluar', link: '/dashboard/outgoing' },
       { title: 'Timbang Keluar', link: '/dashboard/outgoing/exit' }
+   ],
+
+   // Incoming
+   '/dashboard/incoming': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Barang Masuk', link: '/dashboard/incoming' }
+   ],
+   '/dashboard/incoming/create': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Barang Masuk', link: '/dashboard/incoming' },
+      { title: 'Timbang Masuk', link: '/dashboard/incoming/create' }
+   ],
+   '/dashboard/incoming/update': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Barang Masuk', link: '/dashboard/incoming' },
+      { title: 'Perbaharui', link: '/dashboard/incoming/update' }
+   ],
+   '/dashboard/incoming/read': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Barang Masuk', link: '/dashboard/incoming' },
+      { title: 'Rincian', link: '/dashboard/incoming/read' }
+   ],
+   '/dashboard/incoming/exit': [
+      { title: 'Beranda', link: '/dashboard' },
+      { title: 'Barang Masuk', link: '/dashboard/incoming' },
+      { title: 'Timbang Masuk', link: '/dashboard/incoming/exit' }
    ],
 
    // Setting

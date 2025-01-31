@@ -6,12 +6,12 @@ import {
    parseAsString
 } from 'nuqs/server';
 
-export const searchOutgoingParams = {
+export const searchIncomingParams = {
    page: parseAsInteger.withDefault(1),
    limit: parseAsInteger.withDefault(10),
    q: parseAsString,
    location: parseAsString,
-   buyer: parseAsString,
+   supplier: parseAsString,
    item: parseAsString,
    dateRange: parseAsJson((value) => {
       if (typeof value !== 'object' || value === null) return undefined;
@@ -23,6 +23,6 @@ export const searchOutgoingParams = {
    })
 };
 
-export const searchOutgoingParamsCache =
-   createSearchParamsCache(searchOutgoingParams);
-export const serialize = createSerializer(searchOutgoingParams);
+export const searchIncomingParamsCache =
+   createSearchParamsCache(searchIncomingParams);
+export const serialize = createSerializer(searchIncomingParams);

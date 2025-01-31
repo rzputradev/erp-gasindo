@@ -42,8 +42,8 @@ enum SalesStatus {
 }
 
 enum VehicleType {
-   COLD_DEASEL_D
    COLD_DEASEL
+   COLD_DEASEL_ND
    TRONTON
    PICKUP
 }
@@ -180,7 +180,7 @@ model Contract {
    locationId     String?
    status         SalesStatus @default(PENDING)
    contractNo     String      @unique
-   price          Float
+   price          Float?
    vat            Float?
    quantity       Int
    remainingQty   Int
@@ -218,20 +218,21 @@ model Order {
 }
 
 model IncomingScale {
-   id          String      @id @default(cuid())
-   ticketNo    String      @unique
-   vehicleType VehicleType
+   id          String       @id @default(cuid())
+   ticketNo    String       @unique
+   vehicleType VehicleType?
    itemId      String?
-   price       Int
+   price       Int?
    driver      String
    plateNo     String
    licenseNo   String
-   origin      String
-   entryTime   DateTime    @default(now())
+   origin      String?
+   entryTime   DateTime     @default(now())
    exitTime    DateTime?
    weightIn    Int
    weightOut   Int?
-   quality     Float?      @default(0)
+   sorting     Float?
+   oer         Float?
    waybillNo   String?
    note        String?
 

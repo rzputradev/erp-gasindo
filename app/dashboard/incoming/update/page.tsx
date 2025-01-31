@@ -22,8 +22,11 @@ export default async function Page(props: pageProps) {
    const user = await currentUser();
    const { id } = await props.searchParams;
 
-   const access = await checkPermissions(user, ['outgoing:update']);
-   if (!access) return unauthorized();
+   const access = await checkPermissions(user, ['incoming:update']);
+   const multiLocationAccess = await checkPermissions(user, [
+      'incoming:multi-location'
+   ]);
+   if (!access || !user) return unauthorized();
 
    if (!id) {
       return notFound();
@@ -38,23 +41,16 @@ export default async function Page(props: pageProps) {
       return notFound();
    }
 
-   const orders = await db.order.findMany({
-      where: {
-         id: { not: { equals: data.orderId } },
-         status: SalesStatus.ACTIVE,
-         remainingQty: { gt: 0 },
-         contract: {
-            status: SalesStatus.ACTIVE,
-            locationId: data.order.contract.locationId
-         }
-      }
+   const products = await db.supplierItem.findMany({
+      where: multiLocationAccess ? {} : { locationId: user.location },
+      include: { supplier: true, item: true, location: true }
    });
 
    return (
       <PageContainer scrollable>
          <div className="flex-1 space-y-4">
             <Suspense fallback={<FormCardSkeleton />}>
-               <UpdateForm data={data} orders={orders} />
+               <UpdateForm data={data} products={products as any} />
             </Suspense>
          </div>
       </PageContainer>

@@ -1,23 +1,22 @@
 'use client';
 
+import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
 import { DataTableFilterDateRange } from '@/components/ui/table/data-table-filter-date-range';
-import { useTableFilters } from './use-table-filters';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
-import { Buyer, Item, Location } from '@prisma/client';
-import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
-import { useCheckPermissions, useCurrentUser } from '@/hooks/use-user';
+import { Item, Location, Supplier } from '@prisma/client';
+import { useTableFilters } from './use-table-filters';
 
 interface TableActionsProps {
    locations: Location[];
-   buyers: Buyer[];
+   suppliers: Supplier[];
    items: Item[];
    multiLocationAccess: boolean;
 }
 
 export function TableAction({
    locations,
-   buyers,
+   suppliers,
    items,
    multiLocationAccess
 }: TableActionsProps) {
@@ -25,9 +24,9 @@ export function TableAction({
       value: location.id,
       label: location.name
    }));
-   const BUYER_OPTIONS = buyers.map((buyer) => ({
-      value: buyer.id,
-      label: buyer.name
+   const SUPLIER_OPTIONS = suppliers.map((supplier) => ({
+      value: supplier.id,
+      label: supplier.name
    }));
    const ITEM_OPTIONS = items.map((item) => ({
       value: item.id,
@@ -42,8 +41,8 @@ export function TableAction({
       setDateRangeFilter,
       locationFilter,
       setLocationFilter,
-      buyerFilter,
-      setBuyerFilter,
+      supplierFilter,
+      setSupplierFilter,
       itemFilter,
       setItemFilter,
       setPage,
@@ -76,11 +75,11 @@ export function TableAction({
          )}
 
          <DataTableFilterBox
-            filterKey="buyer"
-            title="Pembeli"
-            options={BUYER_OPTIONS}
-            setFilterValue={setBuyerFilter}
-            filterValue={buyerFilter}
+            filterKey="supplier"
+            title="Pemasok"
+            options={SUPLIER_OPTIONS}
+            setFilterValue={setSupplierFilter}
+            filterValue={supplierFilter}
          />
 
          <DataTableFilterBox

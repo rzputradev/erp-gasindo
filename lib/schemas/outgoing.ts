@@ -67,7 +67,9 @@ export const updateOutgoingSchema = exitOutgoingSchema
    .extend({
       entryTime: z.date().optional(),
       exitTime: z.date().optional(),
-      ticketNo: z.string().nonempty({ message: 'Ticket No tidak boleh kosong' })
+      ticketNo: z
+         .string()
+         .nonempty({ message: 'Nomor tiket tidak boleh kosong' })
    });
 
 export const transferOutogingSchema = z.object({
@@ -77,10 +79,8 @@ export const transferOutogingSchema = z.object({
       .nonempty({ message: 'Nomor surat pengambilan tidak boleh kosong' }),
    quantity: z.preprocess(
       (val) => (val !== '' ? Number(val) : undefined),
-      z
-         .number()
-         .min(1, {
-            message: 'Kuantitas yang ingin dipindahkan tidak boleh kosong'
-         })
+      z.number().min(1, {
+         message: 'Kuantitas yang ingin dipindahkan tidak boleh kosong'
+      })
    )
 });

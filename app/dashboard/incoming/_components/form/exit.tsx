@@ -100,7 +100,7 @@ export function ExitForm({ id, ticketNo, manualInput }: ExitFormProps) {
          <CardHeader>
             <CardTitle className="flex flex-col gap-1">
                <span className="text-left text-2xl font-bold">
-                  Barang Keluar
+                  Barang Masuk
                </span>
                <p className="font-normal text-muted-foreground">{ticketNo}</p>
             </CardTitle>
