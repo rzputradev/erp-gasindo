@@ -1,0 +1,51 @@
+[
+   {
+      "name": "Tandan Buah Segar",
+      "key": "TBS",
+      "unit": "KG",
+      "categories": ["incoming-scale", "fruit"],
+      "description": "Tandan buah segar yang dipanen dari pohon kelapa sawit, digunakan dalam proses produksi minyak kelapa sawit."
+   },
+   {
+      "name": "Tandang Buah Segar Timbang Ulang",
+      "key": "TBSR",
+      "unit": "KG",
+      "categories": ["incoming-scale", "fruit"],
+      "description": "Sisa tandan buah segar (TBS) yang telah disortir namun masih memiliki potensi untuk tetap di olah."
+   },
+   {
+      "name": "Berondolan",
+      "key": "BRDL",
+      "unit": "KG",
+      "categories": ["incoming-scale", "fruit"],
+      "description": "Buah kelapa sawit yang lepas dari tandannya, lalu diproses untuk ekstraksi minyak kelapa sawit."
+   },
+   {
+      "name": "Crud Palm Oil",
+      "key": "CPO",
+      "unit": "KG",
+      "categories": ["outgoing-scale", "commodity"],
+      "description": "Minyak kelapa sawit mentah yang diperoleh dari tandan buah segar, sebelum diproses lebih lanjut melalui tahap pemurnian."
+   },
+   {
+      "name": "Palm Kernel",
+      "key": "PK",
+      "unit": "KG",
+      "categories": ["outgoing-scale", "commodity"],
+      "description": "Biji yang diperoleh dari buah kelapa sawit, digunakan untuk ekstraksi minyak atau keperluan komersial lainnya."
+   },
+   {
+      "name": "Palm Oil Mill Effluent",
+      "key": "POME",
+      "unit": "KG",
+      "categories": ["outgoing-scale", "commodity"],
+      "description": "Limbah cair dari pengolahan yang dapat diolah lebih lanjut untuk menghasilkan biogas atau pupuk cair."
+   },
+   {
+      "name": "Fiber",
+      "key": "FIBER",
+      "unit": "KG",
+      "categories": ["outgoing-scale", "commodity"],
+      "description": "Serat yang dihasilkan dari pengolahan yang biasanya digunakan dalam pembuatan bahan bakar biomassa atau produk lainnya."
+   }
+]
